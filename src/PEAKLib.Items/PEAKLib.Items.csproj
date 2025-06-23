@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>com.github.PEAKModding.PEAKLib.Items</AssemblyName>
+    <AssemblyTitle>PEAKLib.Items</AssemblyTitle>
+    <Version>0.1.0</Version>
+  </PropertyGroup>
+
+</Project>

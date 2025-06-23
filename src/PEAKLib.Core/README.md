@@ -1,3 +1,3 @@
 # PEAKLib.Core
 
-Core library for the PEAKLib community API.
+Core module of the PEAKLib community API.

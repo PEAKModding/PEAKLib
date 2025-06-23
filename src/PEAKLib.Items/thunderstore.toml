@@ -6,13 +6,14 @@ repository = "https://thunderstore.io"
 
 [package]
 namespace = "PEAKModding"
-name = "PEAKLib_Core"
-description = "Core module of the PEAKLib community API."
+name = "PEAKLib_Items"
+description = "Items module of the PEAKLib community API."
 websiteUrl = "https://github.com/PEAKModding/PEAKLib/"
 containsNsfwContent = false
 
 [package.dependencies]
 BepInEx-BepInExPack = "5.4.2403"
+PEAKModding-PEAKLib_Core = "0.1.0"
 
 [build]
 icon = "../../icon.png"
@@ -20,7 +21,7 @@ readme = "./README.md"
 outdir = "../../artifacts/thunderstore/"
 
 [[build.copy]]
-source = "../../artifacts/bin/PEAKLib.Core/release/com.github.PEAKModding.PEAKLib.Core.dll"
+source = "../../artifacts/bin/PEAKLib.Items/release/com.github.PEAKModding.PEAKLib.Items.dll"
 target = "plugins/"
 
 [[build.copy]]
