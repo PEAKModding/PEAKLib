@@ -1,0 +1,5 @@
+# Ignore MSBuild files because CSharpier's
+# formatting for those reduces readability
+*.csproj
+*.props
+*.targets

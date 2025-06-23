@@ -1,0 +1,42 @@
+<Project>
+  <!--
+    This is a special file that contains shared configuration
+    for all project files in subdirectories.
+  -->
+
+  <!-- Import our shared user configuration file -->
+  <Import
+    Project="$(SolutionRoot)Config.Build.user.props"
+    Condition="Exists('$(SolutionRoot)Config.Build.user.props')"
+  />
+
+  <!-- Primary configuration for the project -->
+  <PropertyGroup>
+    <!-- Use latest C# version. -->
+    <LangVersion>latest</LangVersion>
+    <!-- See: https://learn.microsoft.com/en-us/dotnet/csharp/nullable-references -->
+    <Nullable>enable</Nullable>
+    <!-- Build, and other generated files go nicely into artifacts/ directory. -->
+    <UseArtifactsOutput>true</UseArtifactsOutput>
+    <!-- Enable debug symbols. This will show source code line numbers in stack traces. -->
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <!-- Substitute full path to this directory with ./, hiding it from debug symbols. -->
+    <PathMap>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)'))=./</PathMap>
+  </PropertyGroup>
+
+  <!-- Custom props -->
+  <PropertyGroup>
+    <!-- Define a variable that points to this directory. -->
+    <SolutionRoot>$(MSBuildThisFileDirectory)</SolutionRoot>
+    <!-- Default values for game files. -->
+    <PathBeforeSteam Condition="'$([MSBuild]::IsOSUnixLike())' == 'true'">$(HOME)/.local/share/</PathBeforeSteam>
+    <PathBeforeSteam Condition="'$([MSBuild]::IsOSUnixLike())' != 'true'">$(MSBuildProgramFiles32)/</PathBeforeSteam>
+    <PeakGameRootDir Condition="$(PeakGameRootDir) == ''">$(PathBeforeSteam)Steam/steamapps/common/PEAK/</PeakGameRootDir>
+    <PeakPluginsDir Condition="$(PeakPluginsDir) == ''">$(PeakGameRootDir)/BepInEx/plugins/</PeakPluginsDir>
+    <ManagedDir>$(PeakGameRootDir)/PEAK_Data/Managed/</ManagedDir>
+  </PropertyGroup>
+
+</Project>

@@ -1,0 +1,16 @@
+<Project>
+
+  <PropertyGroup>
+    <!-- Set if the default steam game install directory doesn't work. -->
+    <!-- <PeakGameRootDir></PeakGameRootDir> -->
+    <!-- Set if your BepInEx/plugins/ directory isn't in the game files. -->
+    <!-- <PeakPluginsDir></PeakPluginsDir> -->
+  </PropertyGroup>
+
+  <Target Name="DeployFiles" AfterTargets="Build">
+    <Message Text="Deploy → $(PeakPluginsDir)$(AssemblyName).dll" Importance="High" />
+    <Error Text="Plugins directory '$(PeakPluginsDir)' doesn't exist!" Condition="!Exists('$(PeakPluginsDir)')" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(PeakPluginsDir)" />
+  </Target>
+
+</Project>

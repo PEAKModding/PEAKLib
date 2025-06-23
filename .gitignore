@@ -1,0 +1,31 @@
+# Ignore everything on root level
+/*
+
+# Ignore always
+*csproj.user
+*user.props
+bin/
+obj/
+
+# Add source files
+!/src/
+!/tests/
+
+# Config files
+!/.config/
+/.config/*
+!/.config/dotnet-tools.json
+
+!/.github/
+
+# Add root level files
+!/.csharpierignore
+!/.gitignore
+!/Config.Build.user.props.template
+!/CONTRIBUTING.md
+!/Directory.Build.props
+!/Directory.Build.targets
+!/icon.png
+!/LICENSE
+!/PEAKLib.sln
+!/README.md
