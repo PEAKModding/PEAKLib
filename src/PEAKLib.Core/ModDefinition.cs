@@ -25,7 +25,7 @@ public class ModDefinition
     /// </summary>
     public Version Version { get; }
 
-    public HashSet<IModContent> Content { get; }
+    public HashSet<IModContent> Content { get; } = [];
 
     static readonly Dictionary<string, ModDefinition> s_guidToMod = [];
 
@@ -86,6 +86,9 @@ public class ModDefinition
     public static bool TryGetMod(string id, [NotNullWhen(true)] out ModDefinition? modDefinition) =>
         s_guidToMod.TryGetValue(id, out modDefinition);
 
+    /// <summary>
+    /// Registers all unregistered content belonging to this <see cref="ModDefinition"/>.
+    /// </summary>
     public void RegisterContent()
     {
         foreach (var modContent in Content)
@@ -105,4 +108,12 @@ public class ModDefinition
             }
         }
     }
+
+    /// <summary>
+    /// Registers a <typeparamref name="T"/> with the game.
+    /// </summary>
+    /// <param name="content">The <typeparamref name="T"/> to register.</param>
+    /// <returns>The registered <typeparamref name="T"/> representation.</returns>
+    public RegisteredModContent<T> Register<T>(T content)
+        where T : IModContent<T> => content.Register(this);
 }

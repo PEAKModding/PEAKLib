@@ -24,6 +24,8 @@ public class RegisteredModContent<T> : IRegisteredModContent
         {
             throw new Exception($"This Content has been registered already: '{content}'");
         }
+
+        mod.Content.Add(content);
     }
 }
 
