@@ -8,7 +8,7 @@ namespace PEAKLib.Core;
 /// <summary>
 /// A representation of a mod PEAKLib understands.
 /// </summary>
-public class ModDefinition
+public class ModDefinition : IModDefinitionResolvable
 {
     /// <summary>
     /// The Id of this <see cref="ModDefinition"/>.
@@ -25,6 +25,9 @@ public class ModDefinition
     /// </summary>
     public Version Version { get; }
 
+    /// <summary>
+    /// The content this <see cref="ModDefinition"/> contains.
+    /// </summary>
     public HashSet<IModContent> Content { get; } = [];
 
     static readonly Dictionary<string, ModDefinition> s_guidToMod = [];
@@ -116,4 +119,10 @@ public class ModDefinition
     /// <returns>The registered <typeparamref name="T"/> representation.</returns>
     public RegisteredModContent<T> Register<T>(T content)
         where T : IModContent<T> => content.Register(this);
+
+    /// <summary>
+    /// Returns this <see cref="ModDefinition"/>.
+    /// </summary>
+    /// <returns>This <see cref="ModDefinition"/>.</returns>
+    public ModDefinition Resolve() => this;
 }

@@ -18,6 +18,19 @@ internal static class ThrowHelper
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string ThrowIfFieldNullOrWriteSpace(
+        [NotNull] string? argument,
+        [CallerArgumentExpression(nameof(argument))] string name = ""
+    )
+    {
+        if (string.IsNullOrWhiteSpace(argument))
+            throw new NullReferenceException(
+                $"Field or property '{name}' must not be null or whitespace."
+            );
+        return argument;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string ThrowIfArgumentNullOrWriteSpace(
         [NotNull] string? argument,
         [CallerArgumentExpression(nameof(argument))] string name = ""

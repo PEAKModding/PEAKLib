@@ -7,7 +7,7 @@ namespace PEAKLib.Items.UnityEditor;
 /// <summary>
 /// A <see cref="ScriptableObject"/> representation of <see cref="IModItem"/>.
 /// </summary>
-[CreateAssetMenu(fileName = "UnityModItem", menuName = "PEAKLib/UnityModItem", order = 0)]
+[CreateAssetMenu(fileName = "UnityModItem", menuName = "PEAKLib/UnityModItem", order = 1)]
 public class UnityModItem : ScriptableObject, IModItem
 {
     /// <inheritdoc/>
