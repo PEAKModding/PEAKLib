@@ -7,6 +7,17 @@ namespace PEAKLib.Core;
 internal static class ThrowHelper
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T ThrowIfFieldNull<T>(
+        [NotNull] T? field,
+        [CallerArgumentExpression(nameof(field))] string name = ""
+    )
+    {
+        if (field == null)
+            throw new NullReferenceException($"Field or property '{name}' must not be null.");
+        return field;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string ThrowIfArgumentNullOrWriteSpace(
         [NotNull] string? argument,
         [CallerArgumentExpression(nameof(argument))] string name = ""
