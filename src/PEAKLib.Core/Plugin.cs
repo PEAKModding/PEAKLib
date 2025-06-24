@@ -3,6 +3,9 @@ using BepInEx.Logging;
 
 namespace PEAKLib.Core;
 
+/// <summary>
+/// BepInEx plugin of PEAKLib.Core.
+/// </summary>
 [BepInAutoPlugin]
 public partial class Plugin : BaseUnityPlugin
 {

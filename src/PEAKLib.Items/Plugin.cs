@@ -1,8 +1,12 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
+using MonoDetour;
 
 namespace PEAKLib.Items;
 
+/// <summary>
+/// BepInEx plugin of PEAKLib.Items.
+/// </summary>
 [BepInAutoPlugin]
 public partial class Plugin : BaseUnityPlugin
 {
@@ -11,6 +15,7 @@ public partial class Plugin : BaseUnityPlugin
     private void Awake()
     {
         Log = Logger;
+        MonoDetourManager.InvokeHookInitializers(typeof(Plugin).Assembly);
         Log.LogInfo($"Plugin {Name} is loaded!");
     }
 }
