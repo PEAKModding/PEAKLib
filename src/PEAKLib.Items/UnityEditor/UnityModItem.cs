@@ -21,6 +21,7 @@ public class UnityModItem : ScriptableObject, IModItem
     /// <inheritdoc/>
     public ModItem Resolve()
     {
+        ContentRegistry.ResolveAndRegister(this, null!);
         ThrowHelper.ThrowIfFieldNull(Item);
 
         if (s_UnityToModItem.TryGetValue(this, out var modItem))

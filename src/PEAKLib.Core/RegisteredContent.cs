@@ -20,9 +20,9 @@ public class RegisteredModContent<T> : IRegisteredModContent
         Content = ThrowHelper.ThrowIfArgumentNull(content);
         Mod = ThrowHelper.ThrowIfArgumentNull(mod);
 
-        if (!ContentRegistry.s_RegisteredContent.Add(content))
+        if (!ContentRegistry.s_RegisteredContent.TryAdd(content, this))
         {
-            throw new Exception("This Content has been registered already!");
+            throw new Exception($"This Content has been registered already: '{content}'");
         }
     }
 }
