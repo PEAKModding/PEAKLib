@@ -7,4 +7,15 @@
     <Version>0.1.0</Version>
   </PropertyGroup>
 
+  <!-- NuGet metadata -->
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>PEAKModding.PEAKLib.Core</PackageId>
+    <Description>Core module of the PEAKLib community API for the game PEAK.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="./README.md" Pack="true" PackagePath="/" />
+    <None Include="$(SolutionRoot)icon.png" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
 </Project>

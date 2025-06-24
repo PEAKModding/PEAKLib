@@ -10,6 +10,16 @@
     Condition="Exists('$(SolutionRoot)Config.Build.user.props')"
   />
 
+  <!-- NuGet -->
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <Authors>PEAKModding, Hamunii</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageTags>PEAK;$(PackageTags)</PackageTags>
+  </PropertyGroup>
+
   <!-- Primary configuration for the project -->
   <PropertyGroup>
     <!-- Use latest C# version. -->
