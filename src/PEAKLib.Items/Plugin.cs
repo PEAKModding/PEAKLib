@@ -1,6 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using MonoDetour;
+using PEAKLib.Core;
 
 namespace PEAKLib.Items;
 
@@ -8,14 +9,15 @@ namespace PEAKLib.Items;
 /// BepInEx plugin of PEAKLib.Items.
 /// </summary>
 [BepInAutoPlugin]
-public partial class Plugin : BaseUnityPlugin
+[BepInDependency(CorePlugin.Id)]
+public partial class ItemsPlugin : BaseUnityPlugin
 {
     internal static ManualLogSource Log { get; private set; } = null!;
 
     private void Awake()
     {
         Log = Logger;
-        MonoDetourManager.InvokeHookInitializers(typeof(Plugin).Assembly);
+        MonoDetourManager.InvokeHookInitializers(typeof(ItemsPlugin).Assembly);
         Log.LogInfo($"Plugin {Name} is loaded!");
     }
 }

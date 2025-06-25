@@ -39,7 +39,7 @@ internal class CustomPrefabPool : IPunPrefabPool
 
         if (HasPrefab(prefabId))
         {
-            Plugin.Log.LogError(
+            CorePlugin.Log.LogError(
                 $"CustomPrefabPool: failed to register network prefab \"{prefabId}\". Prefab already exists in Resources with the same prefab id."
             );
             return false;
@@ -47,7 +47,7 @@ internal class CustomPrefabPool : IPunPrefabPool
 
         if (idToGameObject.ContainsKey(prefabId))
         {
-            Plugin.Log.LogError(
+            CorePlugin.Log.LogError(
                 $"CustomPrefabPool: failed to register network prefab \"{prefabId}\". There is already a prefab registered with the same prefab id."
             );
             return false;
@@ -56,7 +56,7 @@ internal class CustomPrefabPool : IPunPrefabPool
         idToGameObject.Add(prefabId, prefab);
         gameObjectToId.Add(prefab, prefabId);
 
-        Plugin.Log.LogDebug($"CustomPrefabPool: registered network prefab \"{prefabId}\"");
+        CorePlugin.Log.LogDebug($"CustomPrefabPool: registered network prefab \"{prefabId}\"");
         return true;
     }
 
@@ -92,7 +92,7 @@ internal class CustomPrefabPool : IPunPrefabPool
 
             if (result == null)
             {
-                Plugin.Log.LogError(
+                CorePlugin.Log.LogError(
                     $"CustomPrefabPool: failed to spawn network prefab \"{prefabId}\". GameObject is null."
                 );
             }
@@ -114,7 +114,7 @@ internal class CustomPrefabPool : IPunPrefabPool
             prefab.SetActive(true);
         }
 
-        Plugin.Log.LogInfo(
+        CorePlugin.Log.LogInfo(
             $"CustomPrefabPool: spawned network prefab \"{prefabId}\" at position {position}, rotation {rotation.eulerAngles}"
         );
 

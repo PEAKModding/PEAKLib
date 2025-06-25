@@ -28,14 +28,14 @@ public static class NetworkPrefabManager
     {
         if (PhotonNetwork.PrefabPool is CustomPrefabPool)
         {
-            Plugin.Log.LogWarning(
+            CorePlugin.Log.LogWarning(
                 "NetworkPrefabs failed to initialize. PhotonNetwork.PrefabPool is already a CustomPrefabPool."
             );
             return;
         }
 
-        Plugin.Log.LogInfo($"Initializing NetworkPrefabs.");
-        Plugin.Log.LogDebug($"PhotonNetwork.PrefabPool = {PhotonNetwork.PrefabPool.GetType()}");
+        CorePlugin.Log.LogInfo($"Initializing NetworkPrefabs.");
+        CorePlugin.Log.LogDebug($"PhotonNetwork.PrefabPool = {PhotonNetwork.PrefabPool.GetType()}");
 
         if (PhotonNetwork.PrefabPool is DefaultPool defaultPool)
         {
@@ -43,16 +43,16 @@ public static class NetworkPrefabManager
         }
         else if (PhotonNetwork.PrefabPool is not CustomPrefabPool)
         {
-            Plugin.Log.LogWarning(
+            CorePlugin.Log.LogWarning(
                 $"PhotonNetwork has an unknown prefab pool assigned. PhotonNetwork.PrefabPool = {PhotonNetwork.PrefabPool.GetType()}"
             );
         }
 
         PhotonNetwork.PrefabPool = s_CustomPrefabPool;
 
-        Plugin.Log.LogInfo("Replaced PhotonNetwork.PrefabPool with CustomPrefabPool.");
-        Plugin.Log.LogDebug($"PhotonNetwork.PrefabPool = {PhotonNetwork.PrefabPool.GetType()}");
-        Plugin.Log.LogInfo($"Finished initializing NetworkPrefabs.");
+        CorePlugin.Log.LogInfo("Replaced PhotonNetwork.PrefabPool with CustomPrefabPool.");
+        CorePlugin.Log.LogDebug($"PhotonNetwork.PrefabPool = {PhotonNetwork.PrefabPool.GetType()}");
+        CorePlugin.Log.LogInfo($"Finished initializing NetworkPrefabs.");
     }
 
     /// <summary>
