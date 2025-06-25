@@ -16,7 +16,7 @@ public class ModItem(Item item) : IModContent<ModItem>, IModItem
     public RegisteredModContent<ModItem> Register(ModDefinition owner)
     {
         var registered = ContentRegistry.Register(this, owner);
-        NetworkPrefabManager.RegisterNetworkPrefab(owner, item.gameObject);
+        NetworkPrefabManager.RegisterNetworkPrefab(owner, "0_Items/", item.gameObject);
         s_RegisteredItems.Add(registered);
         return registered;
     }

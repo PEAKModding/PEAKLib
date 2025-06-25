@@ -62,9 +62,22 @@ public static class NetworkPrefabManager
     /// <param name="prefab">The <see cref="GameObject"/> to register.</param>
     public static void RegisterNetworkPrefab(ModDefinition mod, GameObject prefab)
     {
+        RegisterNetworkPrefab(mod, "", prefab);
+    }
+
+    /// <summary>
+    /// Register a <see cref="GameObject"/> as a network prefab.
+    /// </summary>
+    /// <param name="mod">The mod who owns this content.</param>
+    /// <param name="folder">The folder in Resources that the prefab should be in.</param>
+    /// <param name="prefab">The <see cref="GameObject"/> to register.</param>
+    public static void RegisterNetworkPrefab(ModDefinition mod, string folder, GameObject prefab)
+    {
         ThrowHelper.ThrowIfArgumentNull(mod);
-        string id = $"{mod.Id}:{prefab.name}";
-        RegisterNetworkPrefab(id, prefab);
+        // Rename the prefab to include the mod ID. This is to prevent conflicts with other mods.
+        // We have to do it this way since the finding items using the prefab name is hardcoded.
+        prefab.name = $"{mod.Id}:{prefab.name}";
+        RegisterNetworkPrefab(folder + prefab.name, prefab);
     }
 
     /// <summary>

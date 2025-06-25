@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
+using MonoDetour;
 
 namespace PEAKLib.Core;
 
@@ -14,6 +15,7 @@ public partial class Plugin : BaseUnityPlugin
     private void Awake()
     {
         Log = Logger;
+        MonoDetourManager.InvokeHookInitializers(typeof(Plugin).Assembly);
         Log.LogInfo($"Plugin {Name} is loaded!");
     }
 }
