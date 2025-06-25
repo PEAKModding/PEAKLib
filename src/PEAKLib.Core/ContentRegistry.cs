@@ -40,8 +40,8 @@ public static class ContentRegistry
     /// <typeparamref name="T"/> <paramref name="modContent"/>
     /// if it has been registered.
     /// </summary>
-    /// <inheritdoc cref="TryResolveAndGetRegisteredMod{T}(T, out IRegisteredContent?)"/>
-    public static bool TryGetRegisteredMod<T>(
+    /// <inheritdoc cref="TryResolveAndGetRegisteredContent{T}(T, out IRegisteredContent?)"/>
+    public static bool TryGetRegisteredContent<T>(
         this T modContent,
         [NotNullWhen(true)] out RegisteredContent<T>? registeredContent
     )
@@ -66,7 +66,7 @@ public static class ContentRegistry
     /// <param name="modContent">The mod content.</param>
     /// <param name="registeredContent">The found registered mod content.</param>
     /// <returns>Whether or not <paramref name="modContent"/> was registered.</returns>
-    public static bool TryResolveAndGetRegisteredMod<T>(
+    public static bool TryResolveAndGetRegisteredContent<T>(
         this T modContent,
         [NotNullWhen(true)] out IRegisteredContent? registeredContent
     )
