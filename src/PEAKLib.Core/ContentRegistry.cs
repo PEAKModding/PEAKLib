@@ -73,7 +73,7 @@ public static class ContentRegistry
     /// and is compatible with type <typeparamref name="T"/>.</returns>
     public static bool TryResolveAndGetRegisteredMod<T>(
         this T modContent,
-        [NotNullWhen(true)] out RegisteredModContent<T>? registeredContent
+        [NotNullWhen(true)] out IRegisteredModContent? registeredContent
     )
         where T : IModContent
     {
@@ -83,12 +83,7 @@ public static class ContentRegistry
             return false;
         }
 
-        if (typeof(T).IsAssignableFrom(registered.Content.GetType()))
-        {
-            registeredContent = (RegisteredModContent<T>)registered;
-            return true;
-        }
-
-        return false;
+        registeredContent = registered;
+        return true;
     }
 }
