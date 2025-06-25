@@ -4,8 +4,39 @@ using System.Runtime.CompilerServices;
 
 namespace PEAKLib.Core;
 
-internal static class ThrowHelper
+/// <summary>
+/// A collection of throw helper methods.
+/// </summary>
+public static class ThrowHelper
 {
+    /// <summary>
+    /// Throw if the specified <paramref name="field"/> is null or whitespace.
+    /// </summary>
+    /// <param name="field">The <paramref name="field"/> to check.</param>
+    /// <param name="name">The name of <paramref name="field"/>.</param>
+    /// <returns>A non-null string <paramref name="field"/>.</returns>
+    /// <exception cref="NullReferenceException"></exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string ThrowIfFieldNullOrWriteSpace(
+        [NotNull] string? field,
+        [CallerArgumentExpression(nameof(field))] string name = ""
+    )
+    {
+        if (string.IsNullOrWhiteSpace(field))
+            throw new NullReferenceException(
+                $"Field or property '{name}' must not be null or whitespace."
+            );
+        return field;
+    }
+
+    /// <summary>
+    /// Throw if <paramref name="field"/> is null.
+    /// </summary>
+    /// <typeparam name="T">The type of <paramref name="field"/>.</typeparam>
+    /// <param name="field">The <paramref name="field"/> to check.</param>
+    /// <param name="name">The name of <paramref name="field"/>.</param>
+    /// <returns>A non-null <typeparamref name="T"/> <paramref name="field"/>.</returns>
+    /// <exception cref="NullReferenceException"></exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T ThrowIfFieldNull<T>(
         [NotNull] T? field,
@@ -17,19 +48,13 @@ internal static class ThrowHelper
         return field;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string ThrowIfFieldNullOrWriteSpace(
-        [NotNull] string? argument,
-        [CallerArgumentExpression(nameof(argument))] string name = ""
-    )
-    {
-        if (string.IsNullOrWhiteSpace(argument))
-            throw new NullReferenceException(
-                $"Field or property '{name}' must not be null or whitespace."
-            );
-        return argument;
-    }
-
+    /// <summary>
+    /// Throw if the specified <paramref name="argument"/> is null or whitespace.
+    /// </summary>
+    /// <param name="argument">The <paramref name="argument"/> to check.</param>
+    /// <param name="name">The name of <paramref name="argument"/>.</param>
+    /// <returns>A non-null string <paramref name="argument"/>.</returns>
+    /// <exception cref="NullReferenceException"></exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string ThrowIfArgumentNullOrWriteSpace(
         [NotNull] string? argument,
@@ -41,6 +66,14 @@ internal static class ThrowHelper
         return argument;
     }
 
+    /// <summary>
+    /// Throw if <paramref name="argument"/> is null.
+    /// </summary>
+    /// <typeparam name="T">The type of <paramref name="argument"/>.</typeparam>
+    /// <param name="argument">The <paramref name="argument"/> to check.</param>
+    /// <param name="name">The name of <paramref name="argument"/>.</param>
+    /// <returns>A non-null <typeparamref name="T"/> <paramref name="argument"/>.</returns>
+    /// <exception cref="ArgumentNullException"></exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T ThrowIfArgumentNull<T>(
         [NotNull] T? argument,

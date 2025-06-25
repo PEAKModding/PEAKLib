@@ -2,6 +2,9 @@ using UnityEngine;
 
 namespace PEAKLib.Core;
 
+/// <summary>
+/// A generic interface for a registrable mod content.
+/// </summary>
 public interface IModContent<T> : IModContent
     where T : IModContent<T>
 {
@@ -14,6 +17,9 @@ public interface IModContent<T> : IModContent
     public new RegisteredModContent<T> Register(ModDefinition owner);
 }
 
+/// <summary>
+/// A non-generic interface for a registrable mod content.
+/// </summary>
 public interface IModContent
 {
     /// <summary>

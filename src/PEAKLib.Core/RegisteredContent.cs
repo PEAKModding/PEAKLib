@@ -2,6 +2,11 @@ using System;
 
 namespace PEAKLib.Core;
 
+/// <summary>
+/// Wrapper for a <typeparamref name="T"/> <see cref="IModContent"/>
+/// with a <see cref="ModDefinition"/> attached to it.
+/// </summary>
+/// <typeparam name="T">A <see cref="IModContent"/> type.</typeparam>
 public class RegisteredModContent<T> : IRegisteredModContent
     where T : IModContent
 {
@@ -29,6 +34,10 @@ public class RegisteredModContent<T> : IRegisteredModContent
     }
 }
 
+/// <summary>
+/// A non-generic wrapper interface for a <see cref="IModContent"/>
+/// with a <see cref="ModDefinition"/> attached to it.
+/// </summary>
 public interface IRegisteredModContent
 {
     /// <summary>
