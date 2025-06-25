@@ -38,13 +38,10 @@ public static class ContentRegistry
 
     /// <summary>
     /// Tries to get the <see cref="RegisteredModContent{T}"/> of
-    /// <typeparamref name="T"/> <paramref name="modContent"/> if
-    /// it has been registered.
+    /// <typeparamref name="T"/> <paramref name="modContent"/>
+    /// if it has been registered.
     /// </summary>
-    /// <typeparam name="T">The mod content type.</typeparam>
-    /// <param name="modContent">The mod content.</param>
-    /// <param name="registeredContent">The found registered mod content.</param>
-    /// <returns>Whether or not <paramref name="modContent"/> was registered.</returns>
+    /// <inheritdoc cref="TryResolveAndGetRegisteredMod{T}(T, out IRegisteredModContent?)"/>
     public static bool TryGetRegisteredMod<T>(
         this T modContent,
         [NotNullWhen(true)] out RegisteredModContent<T>? registeredContent
@@ -62,15 +59,14 @@ public static class ContentRegistry
     }
 
     /// <summary>
-    /// Tries to get the <see cref="RegisteredModContent{T}"/> of
-    /// <typeparamref name="T"/> <paramref name="modContent"/> if
-    /// it has been registered and is compatible with type <typeparamref name="T"/>
+    /// Tries to get the <see cref="IRegisteredModContent"/> of
+    /// <typeparamref name="T"/> <paramref name="modContent"/>
+    /// if it has been registered.
     /// </summary>
     /// <typeparam name="T">The mod content type.</typeparam>
     /// <param name="modContent">The mod content.</param>
     /// <param name="registeredContent">The found registered mod content.</param>
-    /// <returns>Whether or not <paramref name="modContent"/> was registered
-    /// and is compatible with type <typeparamref name="T"/>.</returns>
+    /// <returns>Whether or not <paramref name="modContent"/> was registered.</returns>
     public static bool TryResolveAndGetRegisteredMod<T>(
         this T modContent,
         [NotNullWhen(true)] out IRegisteredModContent? registeredContent
