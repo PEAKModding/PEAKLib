@@ -28,7 +28,7 @@ public class ModDefinition : IModDefinitionResolvable
     /// <summary>
     /// The content this <see cref="ModDefinition"/> contains.
     /// </summary>
-    public HashSet<IModContent> Content { get; } = [];
+    public HashSet<IContent> Content { get; } = [];
 
     static readonly Dictionary<string, ModDefinition> s_guidToMod = [];
 
@@ -117,8 +117,8 @@ public class ModDefinition : IModDefinitionResolvable
     /// </summary>
     /// <param name="content">The <typeparamref name="T"/> to register.</param>
     /// <returns>The registered <typeparamref name="T"/> representation.</returns>
-    public RegisteredModContent<T> Register<T>(T content)
-        where T : IModContent<T> => content.Register(this);
+    public RegisteredContent<T> Register<T>(T content)
+        where T : IContent<T> => content.Register(this);
 
     /// <summary>
     /// Returns this <see cref="ModDefinition"/>.

@@ -5,8 +5,8 @@ namespace PEAKLib.Core;
 /// <summary>
 /// A generic interface for a registrable mod content.
 /// </summary>
-public interface IModContent<T> : IModContent
-    where T : IModContent<T>
+public interface IContent<T> : IContent
+    where T : IContent<T>
 {
     /// <summary>
     /// Registers this <typeparamref name="T"/> with the game.
@@ -14,25 +14,25 @@ public interface IModContent<T> : IModContent
     /// <param name="owner">The <see cref="ModDefinition"/>
     /// who owns this <typeparamref name="T"/>.</param>
     /// <returns>The registered <typeparamref name="T"/> representation.</returns>
-    public new RegisteredModContent<T> Register(ModDefinition owner);
+    public new RegisteredContent<T> Register(ModDefinition owner);
 }
 
 /// <summary>
 /// A non-generic interface for a registrable mod content.
 /// </summary>
-public interface IModContent
+public interface IContent
 {
     /// <summary>
     /// Registers this content with the game.
     /// </summary>
     /// <param name="owner">The <see cref="ModDefinition"/> who owns this content.</param>
     /// <returns>The registered content representation.</returns>
-    public IRegisteredModContent Register(ModDefinition owner);
+    public IRegisteredContent Register(ModDefinition owner);
 
     /// <summary>
     /// If this content is a <see cref="ScriptableObject"/>, returns
-    /// the real representation of the <see cref="IModContent"/>.
+    /// the real representation of the <see cref="IContent"/>.
     /// </summary>
-    /// <returns>Returns the real representation of the <see cref="IModContent"/>.</returns>
-    public IModContent Resolve();
+    /// <returns>Returns the real representation of the <see cref="IContent"/>.</returns>
+    public IContent Resolve();
 }

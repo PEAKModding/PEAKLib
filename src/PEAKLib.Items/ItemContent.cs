@@ -4,16 +4,16 @@ using PEAKLib.Core;
 namespace PEAKLib.Items;
 
 /// <summary>
-/// A PEAKLib <see cref="ModItem"/>.
+/// A PEAKLib <see cref="ItemContent"/>.
 /// </summary>
-public class ModItem(Item item) : IModContent<ModItem>, IModItem
+public class ItemContent(Item item) : IContent<ItemContent>, IItemContent
 {
     /// <inheritdoc/>
     public Item Item { get; } = ThrowHelper.ThrowIfArgumentNull(item);
-    internal static List<RegisteredModContent<ModItem>> s_RegisteredItems = [];
+    internal static List<RegisteredContent<ItemContent>> s_RegisteredItems = [];
 
     /// <inheritdoc/>
-    public RegisteredModContent<ModItem> Register(ModDefinition owner)
+    public RegisteredContent<ItemContent> Register(ModDefinition owner)
     {
         var registered = ContentRegistry.Register(this, owner);
         NetworkPrefabManager.RegisterNetworkPrefab(owner, "0_Items/", item.gameObject);
@@ -21,8 +21,8 @@ public class ModItem(Item item) : IModContent<ModItem>, IModItem
         return registered;
     }
 
-    IRegisteredModContent IModContent.Register(ModDefinition owner) => Register(owner);
+    IRegisteredContent IContent.Register(ModDefinition owner) => Register(owner);
 
     /// <inheritdoc/>
-    public IModContent Resolve() => this;
+    public IContent Resolve() => this;
 }

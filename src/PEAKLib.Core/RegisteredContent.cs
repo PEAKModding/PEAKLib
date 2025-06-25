@@ -3,24 +3,24 @@ using System;
 namespace PEAKLib.Core;
 
 /// <summary>
-/// Wrapper for a <typeparamref name="T"/> <see cref="IModContent"/>
+/// Wrapper for a <typeparamref name="T"/> <see cref="IContent"/>
 /// with a <see cref="ModDefinition"/> attached to it.
 /// </summary>
-/// <typeparam name="T">A <see cref="IModContent"/> type.</typeparam>
-public class RegisteredModContent<T> : IRegisteredModContent
-    where T : IModContent
+/// <typeparam name="T">A <see cref="IContent"/> type.</typeparam>
+public class RegisteredContent<T> : IRegisteredContent
+    where T : IContent
 {
     /// <summary>
     /// The <typeparamref name="T"/> content registered.
     /// </summary>
     public T Content { get; }
 
-    IModContent IRegisteredModContent.Content => Content;
+    IContent IRegisteredContent.Content => Content;
 
     /// <inheritdoc/>
     public ModDefinition Mod { get; }
 
-    internal RegisteredModContent(T content, ModDefinition mod)
+    internal RegisteredContent(T content, ModDefinition mod)
     {
         Content = ThrowHelper.ThrowIfArgumentNull(content);
         Mod = ThrowHelper.ThrowIfArgumentNull(mod);
@@ -35,15 +35,15 @@ public class RegisteredModContent<T> : IRegisteredModContent
 }
 
 /// <summary>
-/// A non-generic wrapper interface for a <see cref="IModContent"/>
+/// A non-generic wrapper interface for a <see cref="IContent"/>
 /// with a <see cref="ModDefinition"/> attached to it.
 /// </summary>
-public interface IRegisteredModContent
+public interface IRegisteredContent
 {
     /// <summary>
-    /// The <see cref="IModContent"/> content registered.
+    /// The <see cref="IContent"/> content registered.
     /// </summary>
-    public IModContent Content { get; }
+    public IContent Content { get; }
 
     /// <summary>
     /// The <see cref="ModDefinition"/> who owns this content.

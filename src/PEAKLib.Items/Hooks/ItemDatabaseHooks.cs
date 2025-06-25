@@ -21,7 +21,7 @@ static class ItemDatabaseHooks
     static void Prefix_OnLoaded(ItemDatabase self)
     {
         Shader peakShader = Shader.Find("W/Peak_Standard");
-        foreach (var registeredItem in ModItem.s_RegisteredItems)
+        foreach (var registeredItem in ItemContent.s_RegisteredItems)
         {
             var item = registeredItem.Content.Item;
 

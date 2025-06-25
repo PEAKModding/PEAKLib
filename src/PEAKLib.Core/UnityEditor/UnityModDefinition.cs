@@ -24,7 +24,7 @@ public class UnityModDefinition : ScriptableObject, IModDefinitionResolvable
     private string modVersion = "";
 
     [SerializeField]
-    private List<IModContent> content = [];
+    private List<IContent> content = [];
 
     /// <exception cref="FormatException"></exception>
     /// <inheritdoc/>

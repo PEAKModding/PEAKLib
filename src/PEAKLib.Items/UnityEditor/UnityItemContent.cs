@@ -5,21 +5,21 @@ using UnityEngine;
 namespace PEAKLib.Items.UnityEditor;
 
 /// <summary>
-/// A <see cref="ScriptableObject"/> representation of <see cref="IModItem"/>.
+/// A <see cref="ScriptableObject"/> representation of <see cref="IItemContent"/>.
 /// </summary>
-[CreateAssetMenu(fileName = "UnityModItem", menuName = "PEAKLib/UnityModItem", order = 1)]
-public class UnityModItem : ScriptableObject, IModItem
+[CreateAssetMenu(fileName = "ItemContent", menuName = "PEAKLib/ItemContent", order = 1)]
+public class UnityItemContent : ScriptableObject, IItemContent
 {
     /// <inheritdoc/>
     [field: SerializeField]
     public Item Item { get; } = null!;
-    internal static readonly Dictionary<UnityModItem, ModItem> s_UnityToModItem = [];
+    internal static readonly Dictionary<UnityItemContent, ItemContent> s_UnityToModItem = [];
 
     /// <inheritdoc/>
-    public IRegisteredModContent Register(ModDefinition owner) => Resolve().Register(owner);
+    public IRegisteredContent Register(ModDefinition owner) => Resolve().Register(owner);
 
     /// <inheritdoc/>
-    public ModItem Resolve()
+    public ItemContent Resolve()
     {
         ThrowHelper.ThrowIfFieldNull(Item);
 
@@ -34,5 +34,5 @@ public class UnityModItem : ScriptableObject, IModItem
         return modItem;
     }
 
-    IModContent IModContent.Resolve() => Resolve();
+    IContent IContent.Resolve() => Resolve();
 }
