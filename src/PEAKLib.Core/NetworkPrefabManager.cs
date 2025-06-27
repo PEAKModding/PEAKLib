@@ -59,6 +59,11 @@ public static class NetworkPrefabManager
     public static void RegisterNetworkPrefab(ModDefinition mod, GameObject prefab) =>
         RegisterNetworkPrefab(mod, "", prefab);
 
+    /// <remarks>
+    /// To prevent conflicts, this modifies the prefab's name to include the
+    /// <paramref name="mod"/>'s <see cref="ModDefinition.Id"/> prefixed before
+    /// the previous name of the prefab, separated by <c>:</c>.
+    /// </remarks>
     /// <param name="mod">The mod who owns this content.</param>
     /// <param name="folder">The folder in Resources that the prefab should be in.
     /// This should include the last <c>/</c>.</param>
