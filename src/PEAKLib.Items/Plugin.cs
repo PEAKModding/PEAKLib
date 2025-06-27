@@ -7,6 +7,7 @@ namespace PEAKLib.Items;
 
 /// <summary>
 /// BepInEx plugin of PEAKLib.Items.
+/// Depend on this with <c>[BepInDependency(ItemsPlugin.Id)]</c>.
 /// </summary>
 [BepInAutoPlugin]
 [BepInDependency(CorePlugin.Id)]
