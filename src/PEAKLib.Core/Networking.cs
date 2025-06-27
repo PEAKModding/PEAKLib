@@ -42,7 +42,7 @@ public static class Networking
     /// <param name="pluginGuid">The plugin GUID to query.</param>
     /// <param name="onHasPlugin">A callback for when the host has the specified plugin.</param>
     /// <param name="onNoPlugin">A callback for when the host doesn't have the specified plugin.</param>
-    public static void AddHostHasPluginListers(
+    public static void AddHostHasPluginListeners(
         string pluginGuid,
         Action onHasPlugin,
         Action onNoPlugin
