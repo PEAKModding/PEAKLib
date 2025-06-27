@@ -13,11 +13,10 @@ namespace PEAKLib.Core;
 [BepInAutoPlugin]
 public partial class CorePlugin : BaseUnityPlugin
 {
-    internal static ManualLogSource Log { get; private set; } = null!;
+    internal static ManualLogSource Log { get; } = BepInEx.Logging.Logger.CreateLogSource(Name);
 
     private void Awake()
     {
-        Log = Logger;
         MonoDetourManager.InvokeHookInitializers(typeof(CorePlugin).Assembly);
 
         PlayerHandler.OnCharacterRegistered += (Character character) =>
@@ -26,6 +25,5 @@ public partial class CorePlugin : BaseUnityPlugin
         };
 
         Log.LogInfo($"Plugin {Name} is loaded!");
-
     }
 }

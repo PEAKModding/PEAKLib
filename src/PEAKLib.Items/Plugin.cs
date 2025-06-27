@@ -13,11 +13,10 @@ namespace PEAKLib.Items;
 [BepInDependency(CorePlugin.Id)]
 public partial class ItemsPlugin : BaseUnityPlugin
 {
-    internal static ManualLogSource Log { get; private set; } = null!;
+    internal static ManualLogSource Log { get; } = BepInEx.Logging.Logger.CreateLogSource(Name);
 
     private void Awake()
     {
-        Log = Logger;
         MonoDetourManager.InvokeHookInitializers(typeof(ItemsPlugin).Assembly);
         Log.LogInfo($"Plugin {Name} is loaded!");
     }
