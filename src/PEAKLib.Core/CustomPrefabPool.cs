@@ -33,6 +33,20 @@ internal class CustomPrefabPool : IPunPrefabPool
 
     internal CustomPrefabPool() { }
 
+    /// <summary>
+    /// Registers a prefab with the prefab pool for later use
+    /// </summary>
+    /// <param name="prefabId">A string ID for the prefab</param>
+    /// <param name="prefab">The GameObject used for instantiating</param>
+    /// <returns>
+    /// Returns <b>TRUE</b> if the prefab is successfully registered.
+    /// Returns <b>FALSE</b> if the prefab is already registered or a vanilla prefab exists with the same ID
+    /// </returns>
+    /// <remarks>
+    /// This method utilizes <see cref="CorePlugin.Log"/>. Any registrations must take place
+    /// <b>after</b> the standard <em>BaseUnityPlugin.Awake</em> or PeakLib must be added as a BepInExDependency
+    /// to avoid issues with potential null references 
+    /// </remarks>
     public bool TryRegisterPrefab(string prefabId, GameObject prefab)
     {
         prefabId = ThrowHelper.ThrowIfArgumentNullOrWhiteSpace(prefabId);
