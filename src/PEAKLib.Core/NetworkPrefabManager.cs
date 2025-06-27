@@ -138,7 +138,7 @@ public static class NetworkPrefabManager
         object[]? data = null
     )
     {
-        ThrowHelper.ThrowIfArgumentNullOrWriteSpace(prefabId);
+        ThrowHelper.ThrowIfArgumentNullOrWhiteSpace(prefabId);
 
         if (!HasNetworkPrefab(prefabId))
         {

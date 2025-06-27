@@ -35,7 +35,7 @@ internal class CustomPrefabPool : IPunPrefabPool
 
     public bool TryRegisterPrefab(string prefabId, GameObject prefab)
     {
-        prefabId = ThrowHelper.ThrowIfArgumentNullOrWriteSpace(prefabId);
+        prefabId = ThrowHelper.ThrowIfArgumentNullOrWhiteSpace(prefabId);
 
         if (HasPrefab(prefabId))
         {
@@ -69,7 +69,7 @@ internal class CustomPrefabPool : IPunPrefabPool
 
     public bool TryGetPrefab(string prefabId, [NotNullWhen(true)] out GameObject? prefab)
     {
-        prefabId = ThrowHelper.ThrowIfArgumentNullOrWriteSpace(prefabId);
+        prefabId = ThrowHelper.ThrowIfArgumentNullOrWhiteSpace(prefabId);
 
         if (idToGameObject.TryGetValue(prefabId, out prefab))
         {
@@ -82,7 +82,7 @@ internal class CustomPrefabPool : IPunPrefabPool
 
     public GameObject? Instantiate(string prefabId, Vector3 position, Quaternion rotation)
     {
-        prefabId = ThrowHelper.ThrowIfArgumentNullOrWriteSpace(prefabId);
+        prefabId = ThrowHelper.ThrowIfArgumentNullOrWhiteSpace(prefabId);
 
         GameObject result;
 

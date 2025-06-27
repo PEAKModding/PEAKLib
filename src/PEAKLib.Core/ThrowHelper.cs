@@ -17,7 +17,7 @@ public static class ThrowHelper
     /// <returns>A non-null string <paramref name="field"/>.</returns>
     /// <exception cref="NullReferenceException"></exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string ThrowIfFieldNullOrWriteSpace(
+    public static string ThrowIfFieldNullOrWhiteSpace(
         [NotNull] string? field,
         [CallerArgumentExpression(nameof(field))] string name = ""
     )
@@ -56,7 +56,7 @@ public static class ThrowHelper
     /// <returns>A non-null string <paramref name="argument"/>.</returns>
     /// <exception cref="NullReferenceException"></exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string ThrowIfArgumentNullOrWriteSpace(
+    public static string ThrowIfArgumentNullOrWhiteSpace(
         [NotNull] string? argument,
         [CallerArgumentExpression(nameof(argument))] string name = ""
     )

@@ -30,9 +30,9 @@ public class UnityModDefinition : ScriptableObject, IModDefinitionResolvable
     /// <inheritdoc/>
     public ModDefinition Resolve()
     {
-        ThrowHelper.ThrowIfFieldNullOrWriteSpace(modId);
-        ThrowHelper.ThrowIfFieldNullOrWriteSpace(modName);
-        ThrowHelper.ThrowIfFieldNullOrWriteSpace(modVersion);
+        ThrowHelper.ThrowIfFieldNullOrWhiteSpace(modId);
+        ThrowHelper.ThrowIfFieldNullOrWhiteSpace(modName);
+        ThrowHelper.ThrowIfFieldNullOrWhiteSpace(modVersion);
 
         Version version;
         try
