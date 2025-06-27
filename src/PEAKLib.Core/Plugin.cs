@@ -1,6 +1,8 @@
-﻿using BepInEx;
+﻿using System;
+using BepInEx;
 using BepInEx.Logging;
 using MonoDetour;
+using UnityEngine;
 
 namespace PEAKLib.Core;
 
@@ -16,6 +18,13 @@ public partial class CorePlugin : BaseUnityPlugin
     {
         Log = Logger;
         MonoDetourManager.InvokeHookInitializers(typeof(CorePlugin).Assembly);
+
+        PlayerHandler.OnCharacterRegistered += (Character character) =>
+        {
+            Networking.networkManager = character.gameObject.AddComponent<NetworkManager>();
+        };
+
         Log.LogInfo($"Plugin {Name} is loaded!");
+
     }
 }
