@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using BepInEx;
+using System.Linq;
 using BepInEx.Bootstrap;
 using Photon.Pun;
-using UnityEngine;
 
 namespace PEAKLib.Core;
 
@@ -13,30 +12,90 @@ namespace PEAKLib.Core;
 public static class Networking
 {
     /// <summary>
-    /// The Player's network manager reference.
+    /// List of the host client's installed plugins as GUIDs.
     /// </summary>
-    public static NetworkManager? networkManager;
+    public static IReadOnlyCollection<string> HostPluginGuids => hostPluginGuids;
+    internal static readonly HashSet<string> hostPluginGuids = [];
+    static readonly Dictionary<
+        string,
+        (Action HasPlugin, Action NoPlugin)
+    > s_OnHasPluginCallbacks = [];
 
     /// <summary>
-    /// Check if the host has plugin matching the given guid.
+    /// The Player's network manager reference.
     /// </summary>
-    public static void RequestHostHasPlugin(string pluginGuid, Action onHasPlugin, Action? onNoPlugin = null)
+    internal static NetworkManager? s_NetworkManager;
+
+    /// <summary>
+    /// Add persistent listener callbacks for whenever a new host is set,
+    /// and every time query the host's plugin GUIDs for the specified
+    /// <paramref name="pluginGuid"/> and run the appropriate callback.<br/>
+    /// <br/>
+    /// This is useful for when your plugin can be considered a cheat mod so
+    /// it can still be used but is restricted for when the host doesn't have it
+    /// installed.
+    /// </summary>
+    /// <remarks>
+    /// A new host can be set multiple times in a game, so your mod should
+    /// take this into account and be able to patch/unpatch itself when needed.
+    /// </remarks>
+    /// <param name="pluginGuid">The plugin GUID to query.</param>
+    /// <param name="onHasPlugin">A callback for when the host has the specified plugin.</param>
+    /// <param name="onNoPlugin">A callback for when the host doesn't have the specified plugin.</param>
+    public static void AddHostHasPluginListers(
+        string pluginGuid,
+        Action onHasPlugin,
+        Action onNoPlugin
+    )
     {
-        if (networkManager == null)
+        ThrowHelper.ThrowIfArgumentNull(pluginGuid);
+        ThrowHelper.ThrowIfArgumentNull(onHasPlugin);
+        ThrowHelper.ThrowIfArgumentNull(onNoPlugin);
+
+        if (s_OnHasPluginCallbacks.TryGetValue(pluginGuid, out var callbacks))
         {
-            CorePlugin.Log.LogError("Local Networking Component could not be found!");
+            callbacks.HasPlugin += onHasPlugin;
+            callbacks.NoPlugin += onNoPlugin;
             return;
         }
 
-        if (networkManager.hostGuids.IndexOf(pluginGuid) != -1)
+        s_OnHasPluginCallbacks.Add(pluginGuid, (onHasPlugin, onNoPlugin));
+    }
+
+    internal static void InvokeGuidCallbacks()
+    {
+        foreach (var pluginGuid in s_OnHasPluginCallbacks)
         {
-            CorePlugin.Log.LogInfo($"Host has plugin with guid: {pluginGuid}");
-            onHasPlugin();
-        }
-        else
-        {
-            CorePlugin.Log.LogInfo($"Host does not have plugin with guid: {pluginGuid}");
-            if (onNoPlugin != null) onNoPlugin();
+            if (hostPluginGuids.Contains(pluginGuid.Key))
+            {
+                CorePlugin.Log.LogDebug($"Host has plugin with guid: {pluginGuid}");
+                foreach (var onHasPlugin in pluginGuid.Value.HasPlugin.GetInvocationList())
+                {
+                    try
+                    {
+                        ((Action)onHasPlugin)();
+                    }
+                    catch (Exception ex)
+                    {
+                        CorePlugin.Log.LogError($"Unhandled exception in callback: {ex}");
+                    }
+                }
+            }
+            else
+            {
+                CorePlugin.Log.LogDebug($"Host does not have plugin with guid: {pluginGuid}");
+                foreach (var onNoPlugin in pluginGuid.Value.NoPlugin.GetInvocationList())
+                {
+                    try
+                    {
+                        ((Action)onNoPlugin)();
+                    }
+                    catch (Exception ex)
+                    {
+                        CorePlugin.Log.LogError($"Unhandled exception in callback: {ex}");
+                    }
+                }
+            }
         }
     }
 }
@@ -44,18 +103,13 @@ public static class Networking
 /// <summary>
 /// The Component for Networking added to the character.
 /// </summary>
-public class NetworkManager : MonoBehaviourPunCallbacks
+internal class NetworkManager : MonoBehaviourPunCallbacks
 {
     private Character? character;
 
-    /// <summary>
-    /// List of the host client's installed plugins
-    /// </summary>
-    public List<string> hostGuids = new List<string>();
-
     private void Awake()
     {
-        CorePlugin.Log.LogInfo("Loaded Network Component");
+        CorePlugin.Log.LogDebug("Loaded Network Component");
         character = GetComponent<Character>();
 
         if (character == null)
@@ -64,38 +118,32 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             return;
         }
 
-        CallRPC("RequestHostPlugins_Rpc", RpcTarget.MasterClient);
+        CallRPC(nameof(GetHostPluginsRPC), RpcTarget.MasterClient);
     }
 
     [PunRPC]
-    private void RequestHostPlugins_Rpc()
+    private void GetHostPluginsRPC()
     {
-        if (!PhotonNetwork.IsMasterClient) return;
+        if (!PhotonNetwork.IsMasterClient)
+            return;
 
-        int pluginCount = Chainloader.PluginInfos.Count;
+        string[] guids = [.. Chainloader.PluginInfos.Select(x => x.Value.Metadata.GUID)];
 
-        System.Object[] guids = new System.Object[pluginCount];
-
-        int index = 0;
-        foreach (var plugin in Chainloader.PluginInfos)
-        {
-            guids[index] = plugin.Value.Metadata.GUID;
-            index += 1;
-        }
-
-        CallRPC("HostPlugins_Rpc", RpcTarget.All, guids);
+        CallRPC(nameof(ReceivePluginsFromHostRPC), RpcTarget.All, guids);
     }
 
     [PunRPC]
-    private void HostPlugins_Rpc(System.Object[] guids)
+    private void ReceivePluginsFromHostRPC(string[] guids)
     {
-        hostGuids.Clear();
+        Networking.hostPluginGuids.Clear();
 
-        foreach (String guid in guids)
+        foreach (string guid in guids)
         {
-            CorePlugin.Log.LogInfo($"Recieved Plugin guid from host: {guid}");
-            hostGuids.Add(guid);
+            CorePlugin.Log.LogDebug($"Received Plugin guid from host: {guid}");
+            Networking.hostPluginGuids.Add(guid);
         }
+
+        Networking.InvokeGuidCallbacks();
     }
 
     private void CallRPC(string methodName, RpcTarget target, params object[] parameters)
@@ -115,6 +163,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnMasterClientSwitched(Photon.Realtime.Player newMasterClient)
     {
         CorePlugin.Log.LogInfo($"Master Client Switched to player: {newMasterClient.NickName}");
-        CallRPC("RequestHostPlugins_Rpc", RpcTarget.MasterClient);
+        CallRPC(nameof(GetHostPluginsRPC), RpcTarget.MasterClient);
     }
 }

@@ -21,7 +21,7 @@ public partial class CorePlugin : BaseUnityPlugin
 
         PlayerHandler.OnCharacterRegistered += (Character character) =>
         {
-            Networking.networkManager = character.gameObject.AddComponent<NetworkManager>();
+            Networking.s_NetworkManager = character.gameObject.AddComponent<NetworkManager>();
         };
 
         Log.LogInfo($"Plugin {Name} is loaded!");
