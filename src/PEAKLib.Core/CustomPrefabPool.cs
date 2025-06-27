@@ -43,11 +43,6 @@ internal class CustomPrefabPool : IPunPrefabPool
     /// Returns <see langword="false"/> if the prefab is already registered or
     /// a vanilla prefab exists with the same ID.
     /// </returns>
-    /// <remarks>
-    /// This method utilizes <see cref="CorePlugin.Log"/>. Any registrations must take place
-    /// <b>after</b> the standard <em>BaseUnityPlugin.Awake</em> or PeakLib must be added as a BepInExDependency
-    /// to avoid issues with potential null references.
-    /// </remarks>
     /// <exception cref="System.ArgumentException">
     /// Thrown if the <paramref name="prefabId"/> or <paramref name="prefab"/> is null.
     /// </exception>
