@@ -47,6 +47,7 @@ internal class CustomPrefabPool : IPunPrefabPool
     /// <b>after</b> the standard <em>BaseUnityPlugin.Awake</em> or PeakLib must be added as a BepInExDependency
     /// to avoid issues with potential null references 
     /// </remarks>
+    /// <exception cref="System.ArgumentException">Thrown if the prefabID is null</exception>
     public bool TryRegisterPrefab(string prefabId, GameObject prefab)
     {
         prefabId = ThrowHelper.ThrowIfArgumentNullOrWhiteSpace(prefabId);
