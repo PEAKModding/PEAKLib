@@ -55,22 +55,15 @@ public static class NetworkPrefabManager
         CorePlugin.Log.LogInfo($"Finished initializing NetworkPrefabs.");
     }
 
-    /// <summary>
-    /// Register a <see cref="GameObject"/> as a network prefab.
-    /// </summary>
-    /// <param name="mod">The mod who owns this content.</param>
-    /// <param name="prefab">The <see cref="GameObject"/> to register.</param>
-    public static void RegisterNetworkPrefab(ModDefinition mod, GameObject prefab)
-    {
+    /// <inheritdoc cref="RegisterNetworkPrefab(ModDefinition, string, GameObject)"/>
+    public static void RegisterNetworkPrefab(ModDefinition mod, GameObject prefab) =>
         RegisterNetworkPrefab(mod, "", prefab);
-    }
 
-    /// <summary>
-    /// Register a <see cref="GameObject"/> as a network prefab.
-    /// </summary>
     /// <param name="mod">The mod who owns this content.</param>
-    /// <param name="folder">The folder in Resources that the prefab should be in.</param>
-    /// <param name="prefab">The <see cref="GameObject"/> to register.</param>
+    /// <param name="folder">The folder in Resources that the prefab should be in.
+    /// This should include the last <c>/</c>.</param>
+    /// <inheritdoc cref="RegisterNetworkPrefab(string, GameObject)"/>
+    /// <param name="prefab"></param>
     public static void RegisterNetworkPrefab(ModDefinition mod, string folder, GameObject prefab)
     {
         ThrowHelper.ThrowIfArgumentNull(mod);
@@ -81,10 +74,17 @@ public static class NetworkPrefabManager
     }
 
     /// <summary>
-    /// Register a <see cref="GameObject"/> as a network prefab.
+    /// Register a <see cref="GameObject"/> as a network prefab
+    /// in PEAKLib's custom prefab pool for later use.
     /// </summary>
     /// <param name="prefabId">The ID for this <see cref="GameObject"/>.</param>
     /// <param name="prefab">The <see cref="GameObject"/> to register.</param>
+    /// <exception cref="ArgumentException">
+    /// Thrown if the <paramref name="prefabId"/> or <paramref name="prefab"/> is null.
+    /// </exception>
+    /// <exception cref="Exception">
+    /// Thrown if the prefab is already registered or a vanilla prefab exists with the same ID.
+    /// </exception>
     public static void RegisterNetworkPrefab(string prefabId, GameObject prefab)
     {
         if (s_CustomPrefabPool.TryRegisterPrefab(prefabId, prefab))
