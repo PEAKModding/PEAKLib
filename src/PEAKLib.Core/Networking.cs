@@ -162,7 +162,8 @@ internal class NetworkManager : MonoBehaviourPunCallbacks
     /// </summary>
     public override void OnMasterClientSwitched(Photon.Realtime.Player newMasterClient)
     {
-        CorePlugin.Log.LogInfo($"Master Client Switched to player: {newMasterClient.NickName}");
-        CallRPC(nameof(GetHostPluginsRPC), RpcTarget.MasterClient);
+        CorePlugin.Log.LogDebug($"Master Client Switched to player: {newMasterClient.NickName}");
+        if (!PhotonNetwork.IsMasterClient) return;
+        CallRPC(nameof(ReceivePluginsFromHostRPC), RpcTarget.MasterClient);
     }
 }
