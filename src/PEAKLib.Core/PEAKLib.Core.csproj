@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>com.github.PEAKModding.PEAKLib.Core</AssemblyName>
     <AssemblyTitle>PEAKLib.Core</AssemblyTitle>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
   </PropertyGroup>
 
   <!-- NuGet metadata -->
