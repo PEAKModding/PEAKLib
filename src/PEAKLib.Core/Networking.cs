@@ -135,6 +135,7 @@ internal class NetworkManager : MonoBehaviourPunCallbacks
     [PunRPC]
     private void ReceivePluginsFromHostRPC(string[] guids)
     {
+        CorePlugin.Log.LogDebug("Recieved new Plugin guid list from host");
         Networking.hostPluginGuids.Clear();
 
         foreach (string guid in guids)
