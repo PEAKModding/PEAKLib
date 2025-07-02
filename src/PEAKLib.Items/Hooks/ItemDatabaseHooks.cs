@@ -1,4 +1,7 @@
+using System;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using MonoDetour;
 using MonoDetour.HookGen;
 using On.ItemDatabase;
@@ -35,7 +38,11 @@ static class ItemDatabaseHooks
         foreach (var registeredItem in ItemContent.s_RegisteredItems)
         {
             var item = registeredItem.Content.Item;
-            item.itemID = (ushort)registeredItem.GetHashCode();
+
+            var hash = MD5.Create()
+                .ComputeHash(Encoding.UTF8.GetBytes(registeredItem.Mod.Id + item.name));
+
+            item.itemID = BitConverter.ToUInt16(hash, 0);
 
             if (self.itemLookup.ContainsKey(item.itemID))
             {
