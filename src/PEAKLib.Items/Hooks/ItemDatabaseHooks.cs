@@ -20,7 +20,8 @@ static class ItemDatabaseHooks
 
     static bool TryResolveCollision(ItemDatabase self, ref ushort id)
     {
-        for (ushort i = (ushort)(id + 1); i <= ushort.MaxValue; i++)
+        // This should overflow and loop back to check every entry in the dictionary.
+        for (ushort i = (ushort)(id + 1); i != id; i++)
         {
             if (!self.itemLookup.ContainsKey(i))
             {
