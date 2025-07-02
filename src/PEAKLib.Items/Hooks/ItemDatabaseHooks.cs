@@ -1,43 +1,32 @@
-using System;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using MonoDetour;
 using MonoDetour.HookGen;
 using On.ItemDatabase;
 using UnityEngine;
-using BepInEx.Logging;
 
 namespace PEAKLib.Items.Hooks;
 
 [MonoDetourTargets(typeof(ItemDatabase))]
 static class ItemDatabaseHooks
 {
-    internal static ManualLogSource Log { get; } = BepInEx.Logging.Logger.CreateLogSource("PEAKLib.Items.Hooks.ItemDatabaseHooks");
-
     [MonoDetourHookInitialize]
     static void Init()
     {
         OnLoaded.Prefix(Prefix_OnLoaded);
     }
 
-    static bool Resolve_Collision(ItemDatabase self, ref ushort id)
+    static bool TryResolveCollision(ItemDatabase self, ref ushort id)
     {
-        bool resolved = false;
-        ushort origID = id;
-        for(ushort i = 1; i <= 65535; i += 1)
+        for (ushort i = (ushort)(id + 1); i <= 65535; i++)
         {
-            ushort tempID = (ushort)(origID+i); // intentional overload
-            if(!self.itemLookup.ContainsKey(tempID))
+            if (!self.itemLookup.ContainsKey(i))
             {
-                resolved = true;
-                id = tempID;
-                break;
+                id = i;
+                return true;
             }
         }
 
-        if( !resolved ) id = origID;
-        return resolved;
+        return false;
     }
 
     static void Prefix_OnLoaded(ItemDatabase self)
@@ -46,30 +35,27 @@ static class ItemDatabaseHooks
         foreach (var registeredItem in ItemContent.s_RegisteredItems)
         {
             var item = registeredItem.Content.Item;
+            item.itemID = (ushort)registeredItem.GetHashCode();
 
-            var hash = MD5.Create()
-                .ComputeHash(Encoding.UTF8.GetBytes(registeredItem.Mod.Id + item.name));
-
-            item.itemID = BitConverter.ToUInt16(hash, 0);
-
-            if(self.itemLookup.ContainsKey(item.itemID))
+            if (self.itemLookup.ContainsKey(item.itemID))
             {
-                // Log Collision
-                Log.LogInfo(
-                    $"ItemDatabaseHooks: Prefix_OnLoaded: Collision on hash itemID \"{item.itemID}\" for {registeredItem.Mod.Id}.{item.name}"
+                var itemName = $"{registeredItem.Mod.Id}:{item.name}";
+                ItemsPlugin.Log.LogWarning(
+                    $"{nameof(Prefix_OnLoaded)}: Collision on hash itemID '{item.itemID}' for '{itemName}'"
                 );
 
-                if (Resolve_Collision(self, ref item.itemID))
+                if (TryResolveCollision(self, ref item.itemID))
                 {
-                    Log.LogInfo(
-                        $"ItemDatabaseHooks: Prefix_OnLoaded: itemID changed to \"{item.itemID}\" for {registeredItem.Mod.Id}.{item.name}"
+                    ItemsPlugin.Log.LogWarning(
+                        $"{nameof(Prefix_OnLoaded)}: itemID changed to '{item.itemID}' for '{itemName}'"
                     );
                 }
                 else
                 {
-                    Log.LogError(
-                        $"ItemDatabaseHooks: Prefix_OnLoaded: Could not resolve collision on itemID \"{item.itemID}\" for {registeredItem.Mod.Id}.{item.name}"
+                    ItemsPlugin.Log.LogError(
+                        $"{nameof(Prefix_OnLoaded)}: Could not resolve collision on itemID '{item.itemID}' for '{itemName}'"
                     );
+                    continue;
                 }
             }
 
