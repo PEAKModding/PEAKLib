@@ -50,21 +50,20 @@ static class ItemDatabaseHooks
             var hash = MD5.Create()
                 .ComputeHash(Encoding.UTF8.GetBytes(registeredItem.Mod.Id + item.name));
 
-            ushort id = BitConverter.ToUInt16(hash, 0);
-            item.itemID = id;
+            item.itemID = BitConverter.ToUInt16(hash, 0);
 
-            if(self.itemLookup.ContainsKey(id))
+            if(self.itemLookup.ContainsKey(item.itemID))
             {
                 // Log Collision
                 Log.LogError(
-                    $"ItemDatabaseHooks: Prefix_OnLoaded: Collision on hash itemID \"{id}\" for {registeredItem.Mod.Id}.{item.name}"
+                    $"ItemDatabaseHooks: Prefix_OnLoaded: Collision on hash itemID \"{item.itemID}\" for {registeredItem.Mod.Id}.{item.name}"
                 );
 
-                if (!Resolve_Collision(self,ref id))
+                if (!Resolve_Collision(self,ref item.itemID))
                 {
                     // Log Unresolvable Collision
                     Log.LogError(
-                        $"ItemDatabaseHooks: Prefix_OnLoaded: Could not resolve collision on itemID \"{id}\" for {registeredItem.Mod.Id}.{item.name}"
+                        $"ItemDatabaseHooks: Prefix_OnLoaded: Could not resolve collision on itemID \"{item.itemID}\" for {registeredItem.Mod.Id}.{item.name}"
                     );
                 }
             }
@@ -91,7 +90,7 @@ static class ItemDatabaseHooks
 
             // Add item to database
             self.Objects.Add(item);
-            self.itemLookup.Add(id, item);
+            self.itemLookup.Add(item.itemID, item);
         }
     }
 }
