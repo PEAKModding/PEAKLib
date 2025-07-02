@@ -25,6 +25,15 @@ Feel free to chat in [`#peak-lib`](<https://discord.com/channels/136317962643570
 5. If you're adding a new module, make sure to add tests for it in the test project! *(currently the test project doesn't exist)*
 6. Open a PR
 
+### Contributing Guidelines
+
+1. Never break the public API
+   1. Public members must never be renamed (add the `[Obsolete]` attribute and create a new e.g. method with the new name instead)
+   2. A new optional parameter can not be added to an existing method (create a new overload instead)
+2. Your changes should not bring any warnings to the project. Warnings should be properly resolved, unless if it's a very special case where the warning can be ignored.
+
+Ultimately these will be resolved in code review, so no need to worry about this too much.
+
 ### Thunderstore Packaging
 
 This template comes with Thunderstore packaging built-in, using [TCLI](<https://github.com/thunderstore-io/thunderstore-cli>).
