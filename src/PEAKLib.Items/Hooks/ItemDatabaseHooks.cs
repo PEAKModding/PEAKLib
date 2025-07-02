@@ -17,7 +17,7 @@ static class ItemDatabaseHooks
 
     static bool TryResolveCollision(ItemDatabase self, ref ushort id)
     {
-        for (ushort i = (ushort)(id + 1); i <= 65535; i++)
+        for (ushort i = (ushort)(id + 1); i <= ushort.MaxValue; i++)
         {
             if (!self.itemLookup.ContainsKey(i))
             {
