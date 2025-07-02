@@ -55,13 +55,18 @@ static class ItemDatabaseHooks
             if(self.itemLookup.ContainsKey(item.itemID))
             {
                 // Log Collision
-                Log.LogError(
+                Log.LogInfo(
                     $"ItemDatabaseHooks: Prefix_OnLoaded: Collision on hash itemID \"{item.itemID}\" for {registeredItem.Mod.Id}.{item.name}"
                 );
 
-                if (!Resolve_Collision(self,ref item.itemID))
+                if (Resolve_Collision(self, ref item.itemID))
                 {
-                    // Log Unresolvable Collision
+                    Log.LogInfo(
+                        $"ItemDatabaseHooks: Prefix_OnLoaded: itemID changed to \"{item.itemID}\" for {registeredItem.Mod.Id}.{item.name}"
+                    );
+                }
+                else
+                {
                     Log.LogError(
                         $"ItemDatabaseHooks: Prefix_OnLoaded: Could not resolve collision on itemID \"{item.itemID}\" for {registeredItem.Mod.Id}.{item.name}"
                     );
