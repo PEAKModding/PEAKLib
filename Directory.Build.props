@@ -27,6 +27,7 @@
     <LangVersion>latest</LangVersion>
     <!-- See: https://learn.microsoft.com/en-us/dotnet/csharp/nullable-references -->
     <Nullable>enable</Nullable>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <!-- Build, and other generated files go nicely into artifacts/ directory. -->
     <UseArtifactsOutput>true</UseArtifactsOutput>
     <!-- Enable debug symbols. This will show source code line numbers in stack traces. -->

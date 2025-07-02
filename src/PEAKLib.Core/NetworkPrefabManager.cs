@@ -12,7 +12,7 @@ namespace PEAKLib.Core;
 /// </summary>
 public static class NetworkPrefabManager
 {
-    internal static CustomPrefabPool s_CustomPrefabPool
+    internal static CustomPrefabPool PEAKLibPrefabPool
     {
         get
         {
@@ -39,7 +39,7 @@ public static class NetworkPrefabManager
 
         if (PhotonNetwork.PrefabPool is DefaultPool defaultPool)
         {
-            s_CustomPrefabPool.DefaultPool = defaultPool;
+            PEAKLibPrefabPool.DefaultPool = defaultPool;
         }
         else if (PhotonNetwork.PrefabPool is not CustomPrefabPool)
         {
@@ -48,7 +48,7 @@ public static class NetworkPrefabManager
             );
         }
 
-        PhotonNetwork.PrefabPool = s_CustomPrefabPool;
+        PhotonNetwork.PrefabPool = PEAKLibPrefabPool;
 
         CorePlugin.Log.LogInfo("Replaced PhotonNetwork.PrefabPool with CustomPrefabPool.");
         CorePlugin.Log.LogDebug($"PhotonNetwork.PrefabPool = {PhotonNetwork.PrefabPool.GetType()}");
@@ -92,7 +92,7 @@ public static class NetworkPrefabManager
     /// </exception>
     public static void RegisterNetworkPrefab(string prefabId, GameObject prefab)
     {
-        if (s_CustomPrefabPool.TryRegisterPrefab(prefabId, prefab))
+        if (PEAKLibPrefabPool.TryRegisterPrefab(prefabId, prefab))
         {
             return;
         }
@@ -106,14 +106,14 @@ public static class NetworkPrefabManager
     /// <param name="prefabId">The ID for this <see cref="GameObject"/>.</param>
     /// <param name="prefab">The <see cref="GameObject"/> to register.</param>
     public static bool TryRegisterNetworkPrefab(string prefabId, GameObject prefab) =>
-        s_CustomPrefabPool.TryRegisterPrefab(prefabId, prefab);
+        PEAKLibPrefabPool.TryRegisterPrefab(prefabId, prefab);
 
     /// <summary>
     /// Check if a <see cref="GameObject"/> with the specified ID is a network prefab.
     /// </summary>
     /// <param name="prefabId">The <see cref="GameObject"/> ID to check.</param>
     /// <returns>Whether or not the <see cref="GameObject"/> is a network prefab.</returns>
-    public static bool HasNetworkPrefab(string prefabId) => s_CustomPrefabPool.HasPrefab(prefabId);
+    public static bool HasNetworkPrefab(string prefabId) => PEAKLibPrefabPool.HasPrefab(prefabId);
 
     /// <summary>
     /// Tries to get a network prefab.
@@ -124,7 +124,7 @@ public static class NetworkPrefabManager
     public static bool TryGetNetworkPrefab(
         string prefabId,
         [NotNullWhen(true)] out GameObject? prefab
-    ) => s_CustomPrefabPool.TryGetPrefab(prefabId, out prefab);
+    ) => PEAKLibPrefabPool.TryGetPrefab(prefabId, out prefab);
 
     /// <summary>
     /// Spawns a network prefab.
