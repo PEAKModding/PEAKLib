@@ -3,22 +3,25 @@ using UnityEngine.UI;
 
 namespace PEAKLib.UI.Elements;
 
+/// <summary>
+/// The contents of a tab, needs your own component based on <see cref="SharedSettingsMenu"/>
+/// </summary>
 [RequireComponent(typeof(RectTransform))]
 [RequireComponent(typeof(RectMask2D))]
 [RequireComponent(typeof(ScrollRect))]
 public class PeakTabContent : PeakElement
 {
-    public ScrollRect ScrollRect { get; private set; }
-    public RectTransform Content { get; private set; }
+    public RectTransform Content { get; private set; } = null!;
+
     private void Awake()
     {
         RectTransform = GetComponent<RectTransform>();
-        ScrollRect = GetComponent<ScrollRect>();
-        ScrollRect.scrollSensitivity = 50;
-        ScrollRect.elasticity = 0;
-        ScrollRect.vertical = true;
-        ScrollRect.horizontal = false;
-        ScrollRect.movementType = ScrollRect.MovementType.Clamped;
+        var scrollRect = GetComponent<ScrollRect>();
+        scrollRect.scrollSensitivity = 50;
+        scrollRect.elasticity = 0;
+        scrollRect.vertical = true;
+        scrollRect.horizontal = false;
+        scrollRect.movementType = ScrollRect.MovementType.Clamped;
 
         Utilities.ExpandToParent(RectTransform);
 
@@ -37,6 +40,6 @@ public class PeakTabContent : PeakElement
         var fitter = contentObj.GetComponent<ContentSizeFitter>();
         fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
-        ScrollRect.content = Content;
+        scrollRect.content = Content;
     }
 }

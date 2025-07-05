@@ -19,5 +19,6 @@ static class PauseMenuHooks
 
         if (transform != null)
             MenuAPI.pauseMenuBuilderDelegate?.Invoke(transform);
+        else UIPlugin.Log.LogError("Failed to find \"MainPage/Options\" in PauseMenuHooks.Prefix_Initialize. This should not occur, please report it on PeakLib GitHub.");
     }
 }

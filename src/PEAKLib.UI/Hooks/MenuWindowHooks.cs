@@ -23,6 +23,7 @@ static class MenuWindowHooks
 
         if (sharedSettings != null)
             Templates.SettingsCellPrefab = sharedSettings.m_settingsCellPrefab;
+        else UIPlugin.Log.LogError("Failed to find SharedSettingsMenu in MenuWindowHooks.Prefix_Start. This should not occur, please report it on PeakLib GitHub.");
 
         if (Templates.ButtonTemplate == null)
         {

@@ -12,14 +12,11 @@ namespace PEAKLib.UI.Elements;
 [RequireComponent(typeof(RectMask2D))]
 public class PeakHorizontalTabs : PeakElement
 {
-    public ScrollRect ScrollRect { get; private set; }
-    public RectTransform Content { get; private set; }
-    public HorizontalLayoutGroup LayoutGroup { get; private set; }
+    private RectTransform Content { get; set; } = null!;
 
     private void Awake()
     {
         RectTransform = GetComponent<RectTransform>();
-        ScrollRect = GetComponent<ScrollRect>();
 
         RectTransform.anchoredPosition = new Vector2(0, 0);
         RectTransform.sizeDelta = new Vector2(0, 40);
@@ -27,25 +24,27 @@ public class PeakHorizontalTabs : PeakElement
         RectTransform.anchorMin = new Vector2(0, 1);
         RectTransform.anchorMax = new Vector2(1, 1);
 
+        var scrollRect = GetComponent<ScrollRect>();
+
         var contentObj = new GameObject("Content", typeof(RectTransform), typeof(HorizontalLayoutGroup), typeof(ContentSizeFitter));
         Content = contentObj.GetComponent<RectTransform>();
         Content.SetParent(transform, false);
         Content.pivot = Vector2.zero;
         Utilities.ExpandToParent(Content);
 
-        ScrollRect.content = Content;
-        ScrollRect.scrollSensitivity = 50;
-        ScrollRect.elasticity = 0;
-        ScrollRect.vertical = false;
-        ScrollRect.horizontal = true;
-        ScrollRect.movementType = ScrollRect.MovementType.Clamped;
+        scrollRect.content = Content;
+        scrollRect.scrollSensitivity = 50;
+        scrollRect.elasticity = 0;
+        scrollRect.vertical = false;
+        scrollRect.horizontal = true;
+        scrollRect.movementType = ScrollRect.MovementType.Clamped;
 
-        LayoutGroup = Content.GetComponent<HorizontalLayoutGroup>();
-        LayoutGroup.spacing = 20;
-        LayoutGroup.childControlWidth = true;
-        LayoutGroup.childForceExpandWidth = true;
-        LayoutGroup.childForceExpandHeight = true;
-        LayoutGroup.childControlHeight = true;
+        var layourGroup = Content.GetComponent<HorizontalLayoutGroup>();
+        layourGroup.spacing = 20;
+        layourGroup.childControlWidth = true;
+        layourGroup.childForceExpandWidth = true;
+        layourGroup.childForceExpandHeight = true;
+        layourGroup.childControlHeight = true;
 
         var contentSizeFitter = Content.GetComponent<ContentSizeFitter>();
         contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;

@@ -3,6 +3,8 @@ using UnityEngine.UI;
 
 namespace PEAKLib.UI.Elements;
 
+// TODO: Need to add summary for the booleans
+
 /// <summary>
 /// Use <see cref="MenuAPI.CreatePage(string)"/>
 /// </summary>
@@ -12,18 +14,27 @@ namespace PEAKLib.UI.Elements;
 [RequireComponent(typeof(GraphicRaycaster))]
 public class PeakCustomPage : MenuWindow
 {
-    private Canvas Canvas { get; set; }
-    private CanvasScaler Scaler { get; set; }
+    private Canvas Canvas { get; set; } = null!;
+    private CanvasScaler Scaler { get; set; } = null!;
 
-    private Image Background { get; set; }
+    // Background is optional, so can be null
+    private Image? Background { get; set; }
 
-    public override bool openOnStart => false;
+    public override bool openOnStart => OpenOnStart;
+    public override bool selectOnOpen => SelectOnOpen;
+    public override bool closeOnPause => CloseOnPause;
+    public override bool closeOnUICancel => CloseOnUICancel;
+    public override bool autoHideOnClose => AutoHideOnClose;
+    public override bool blocksPlayerInput => BlocksPlayerInput;
+    public override bool showCursorWhileOpen => ShowCursorWhileOpen;
 
-    public override bool selectOnOpen => true;
-
-    public override bool closeOnPause => true;
-
-    public override bool closeOnUICancel => true;
+    public bool OpenOnStart { get; set; } = false;
+    public bool SelectOnOpen { get; set; } = true;
+    public bool CloseOnPause { get; set; } = true;
+    public bool CloseOnUICancel { get; set; } = true;
+    public bool AutoHideOnClose { get; set; } = true;
+    public bool BlocksPlayerInput { get; set; } = true;
+    public bool ShowCursorWhileOpen { get; set; } = true;
 
     private void Awake()
     {

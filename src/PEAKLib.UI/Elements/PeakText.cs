@@ -26,7 +26,7 @@ public class PeakText : PeakElement
         }
     }
 
-    public TextMeshProUGUI? TextMesh { get; private set; }
+    public TextMeshProUGUI TextMesh { get; private set; } = null!;
 
     private void Awake()
     {
@@ -47,11 +47,8 @@ public class PeakText : PeakElement
     /// <returns></returns>
     public PeakText SetText(string text)
     {
-        if (TextMesh != null && RectTransform != null)
-        {
-            TextMesh.text = text;
-            RectTransform.sizeDelta = TextMesh.GetPreferredValues();
-        }
+        TextMesh.text = text;
+        RectTransform.sizeDelta = TextMesh.GetPreferredValues();
 
         return this;
     }
@@ -63,11 +60,8 @@ public class PeakText : PeakElement
     /// <returns></returns>
     public PeakText SetFontSize(float size)
     {
-        if (TextMesh != null && RectTransform != null)
-        {
-            TextMesh.fontSize = size;
-            RectTransform.sizeDelta = TextMesh.GetPreferredValues();
-        }
+        TextMesh.fontSize = size;
+        RectTransform.sizeDelta = TextMesh.GetPreferredValues();
 
         return this;
     }
@@ -79,10 +73,7 @@ public class PeakText : PeakElement
     /// <returns></returns>
     public PeakText SetColor(Color color)
     {
-        if (TextMesh != null)
-        {
-            TextMesh.color = color;
-        }
+        TextMesh.color = color;
 
         return this;
     }

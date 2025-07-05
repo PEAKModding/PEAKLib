@@ -7,7 +7,7 @@ namespace PEAKLib.UI;
 
 /// <summary>
 /// BepInEx plugin of PEAKLib.UI.
-/// Depend on this with <c>[BepInDependency(ItemsPlugin.Id)]</c>.
+/// Depend on this with <c>[BepInDependency(UIPlugin.Id)]</c>.
 /// </summary>
 [BepInAutoPlugin]
 [BepInDependency(CorePlugin.Id)]

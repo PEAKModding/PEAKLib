@@ -45,15 +45,11 @@ public static class MenuAPI
     /// </summary>
     /// <param name="buttonName">Text for the button</param>
     /// <returns></returns>
-    public static PeakMenuButton? CreateMenuButton(string buttonName)
+    public static PeakMenuButton CreateMenuButton(string buttonName)
     {
         if (Templates.ButtonTemplate == null)
-        {
-            UIPlugin.Log.LogError("You're creating MenuButton too early! Prefab hasn't been loaded yet.");
-
-            return null;
-        }
-
+            throw new System.Exception("You're creating MenuButton too early! Prefab hasn't been loaded yet.");
+        
         var clone = Object.Instantiate(Templates.ButtonTemplate);
         clone.name = $"UI_MainMenuButton_{buttonName}";
 
@@ -98,6 +94,6 @@ public static class MenuAPI
     /// </summary>
     /// <param name="buttonName"></param>
     /// <returns></returns>
-    public static PeakMenuButton? CreatePauseMenuButton(string buttonName) => CreateMenuButton(buttonName)?.SetWidth(OPTIONS_WIDTH);
+    public static PeakMenuButton CreatePauseMenuButton(string buttonName) => CreateMenuButton(buttonName).SetWidth(OPTIONS_WIDTH);
 
 }

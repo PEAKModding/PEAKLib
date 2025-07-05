@@ -22,6 +22,20 @@ public static class ElementExtensions
         return instance;
     }
 
+    public static T SetSiblingIndex<T>(this T instance, int index) where T : PeakElement
+    {
+        instance.transform.SetSiblingIndex(index);
+
+        return instance;
+    }
+
+    public static GameObject SetSiblingIndex(this GameObject instance, int index)
+    {
+        instance.transform.SetSiblingIndex(index);
+
+        return instance;
+    }
+
     public static T SetPosition<T>(this T instance, Vector2 position) where T : PeakElement
     {
         instance.RectTransform.anchoredPosition = position;
@@ -46,6 +60,14 @@ public static class ElementExtensions
     public static T SetAnchorMax<T>(this T instance, Vector2 anchorMax) where T : PeakElement
     {
         instance.RectTransform.anchorMax = anchorMax;
+
+        return instance;
+    }
+
+    public static T SetAnchorMinMax<T>(this T instance, Vector2 anchorValue) where T : PeakElement
+    {
+        instance.RectTransform.anchorMin = anchorValue;
+        instance.RectTransform.anchorMax = anchorValue;
 
         return instance;
     }

@@ -6,17 +6,20 @@ using Zorro.Settings.UI;
 
 namespace PEAKLib.UI.Elements;
 
+// WIP
 public class PeakTextInput : PeakElement
 {
     private static GameObject? _textInput;
-    public static GameObject? TextInput
+    public static GameObject TextInput
     {
         get
         {
             if (_textInput == null)
             {
                 if (SingletonAsset<InputCellMapper>.Instance == null || SingletonAsset<InputCellMapper>.Instance.FloatSettingCell == null)
-                    return null;
+                {
+                    throw new System.Exception("Tried to create a TextInput but prefab was not found. Please wait until the game fully loads to create UI elements.");
+                }
 
                 _textInput = Instantiate(SingletonAsset<InputCellMapper>.Instance.FloatSettingCell);
                 _textInput.name = "PeakTextInput";
@@ -47,4 +50,10 @@ public class PeakTextInput : PeakElement
         }
     }
 
+    internal static PeakTextInput Create() => Instantiate(TextInput).AddComponent<PeakTextInput>();
+
+    private void Awake()
+    {
+
+    }
 }

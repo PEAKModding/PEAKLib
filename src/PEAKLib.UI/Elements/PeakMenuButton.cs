@@ -10,11 +10,30 @@ namespace PEAKLib.UI.Elements;
 /// </summary>
 public class PeakMenuButton : PeakElement
 {
-    public Button Button { get; private set; }
-    public Image Panel { get; private set; }
-    public Image BorderTop { get; private set; }
-    public Image BorderBottom { get; private set; }
-    public TextMeshProUGUI Text { get; private set; }
+    /// <summary>
+    /// The button component
+    /// </summary>
+    public Button Button { get; private set; } = null!;
+
+    /// <summary>
+    /// Button background
+    /// </summary>
+    public Image Panel { get; private set; } = null!;
+
+    /// <summary>
+    /// Button dotted lines (top)
+    /// </summary>
+    public Image BorderTop { get; private set; } = null!;
+
+    /// <summary>
+    /// Button dotted lines (bottom)
+    /// </summary>
+    public Image BorderBottom { get; private set; } = null!;
+
+    /// <summary>
+    /// Button text
+    /// </summary>
+    public TextMeshProUGUI Text { get; private set; } = null!;
 
     private void Awake()
     {
@@ -35,7 +54,7 @@ public class PeakMenuButton : PeakElement
     /// <returns></returns>
     public PeakMenuButton SetText(string text)
     {
-        if (Text != null) Text.text = text;
+        Text.text = text;
 
         return this;
     }
@@ -48,8 +67,10 @@ public class PeakMenuButton : PeakElement
     /// <returns></returns>
     public PeakMenuButton SetColor(Color color, bool automaticBorderColor = true)
     {
-        if (Panel != null) Panel.color = color;
-        if (automaticBorderColor) SetBorderColor(Utilities.GetContrastingColor(color));
+        Panel.color = color;
+
+        if (automaticBorderColor) 
+            SetBorderColor(Utilities.GetContrastingColor(color));
 
         return this;
     }
@@ -61,26 +82,33 @@ public class PeakMenuButton : PeakElement
     /// <returns></returns>
     public PeakMenuButton SetBorderColor(Color color)
     {
-        if (BorderTop != null && BorderBottom != null)
-        {
-            BorderTop.color = color;
-            BorderBottom.color = color;
-        }
+        BorderTop.color = color;
+        BorderBottom.color = color;
 
         return this;
     }
 
+    /// <summary>
+    /// Set a custom width for the button, use <see cref="MenuAPI.OPTIONS_WIDTH"/> to be the same width as pause menu buttons
+    /// </summary>
+    /// <param name="width"></param>
+    /// <returns></returns>
     public PeakMenuButton SetWidth(float width)
     {
-        if (RectTransform != null)
-            RectTransform.sizeDelta = new Vector2(width, RectTransform.sizeDelta.y);
+        RectTransform.sizeDelta = new Vector2(width, RectTransform.sizeDelta.y);
 
         return this;
     }
 
+    /// <summary>
+    /// Same as Button.onClick.AddListener(UnityAction)
+    /// </summary>
+    /// <param name="onClickEvent"></param>
+    /// <returns></returns>
     public PeakMenuButton OnClick(UnityAction onClickEvent)
     {
         Button.onClick.AddListener(onClickEvent);
+
         return this;
     }
 }
