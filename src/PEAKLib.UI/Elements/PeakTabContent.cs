@@ -27,7 +27,12 @@ public class PeakTabContent : PeakElement
 
         RectTransform.offsetMax = new Vector2(0, -60f);
 
-        var contentObj = new GameObject("Content", typeof(RectTransform), typeof(VerticalLayoutGroup), typeof(ContentSizeFitter));
+        var contentObj = new GameObject(
+            "Content",
+            typeof(RectTransform),
+            typeof(VerticalLayoutGroup),
+            typeof(ContentSizeFitter)
+        );
         Content = contentObj.GetComponent<RectTransform>();
         Content.SetParent(transform, false);
         Content.pivot = new Vector2(0.5f, 1);

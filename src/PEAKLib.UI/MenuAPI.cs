@@ -8,7 +8,8 @@ namespace PEAKLib.UI;
 /// </summary>
 public static class MenuAPI
 {
-    internal static BuilderDelegate? pauseMenuBuilderDelegate, mainMenuBuilderDelegate;
+    internal static BuilderDelegate? pauseMenuBuilderDelegate,
+        mainMenuBuilderDelegate;
 
     /// <summary>
     /// Delegate to create elements
@@ -20,13 +21,15 @@ public static class MenuAPI
     /// Add element(s) to Main Menu
     /// </summary>
     /// <param name="builderDelegate"></param>
-    public static void AddToMainMenu(BuilderDelegate builderDelegate) => mainMenuBuilderDelegate += builderDelegate;
+    public static void AddToMainMenu(BuilderDelegate builderDelegate) =>
+        mainMenuBuilderDelegate += builderDelegate;
 
     /// <summary>
     /// Add element(s) to Pause Menu
     /// </summary>
     /// <param name="builderDelegate"></param>
-    public static void AddToPauseMenu(BuilderDelegate builderDelegate) => pauseMenuBuilderDelegate += builderDelegate;
+    public static void AddToPauseMenu(BuilderDelegate builderDelegate) =>
+        pauseMenuBuilderDelegate += builderDelegate;
 
     /// <summary>
     /// Creates a page to store your elements
@@ -48,15 +51,16 @@ public static class MenuAPI
     public static PeakMenuButton CreateMenuButton(string buttonName)
     {
         if (Templates.ButtonTemplate == null)
-            throw new System.Exception("You're creating MenuButton too early! Prefab hasn't been loaded yet.");
-        
+            throw new System.Exception(
+                "You're creating MenuButton too early! Prefab hasn't been loaded yet."
+            );
+
         var clone = Object.Instantiate(Templates.ButtonTemplate);
         clone.name = $"UI_MainMenuButton_{buttonName}";
 
         var newButton = clone.AddComponent<PeakMenuButton>();
 
         return newButton.SetText(buttonName);
-
     }
 
     /// <summary>
@@ -88,12 +92,12 @@ public static class MenuAPI
     /// The width of the buttons in the Pause Menu
     /// </summary>
     public const float OPTIONS_WIDTH = 277f;
-    
+
     /// <summary>
     /// Same as <see cref="CreateMenuButton(string)"/> but automatically set the <b>width</b> to 277 (<see cref="OPTIONS_WIDTH"/>)
     /// </summary>
     /// <param name="buttonName"></param>
     /// <returns></returns>
-    public static PeakMenuButton CreatePauseMenuButton(string buttonName) => CreateMenuButton(buttonName).SetWidth(OPTIONS_WIDTH);
-
+    public static PeakMenuButton CreatePauseMenuButton(string buttonName) =>
+        CreateMenuButton(buttonName).SetWidth(OPTIONS_WIDTH);
 }

@@ -26,7 +26,12 @@ public class PeakHorizontalTabs : PeakElement
 
         var scrollRect = GetComponent<ScrollRect>();
 
-        var contentObj = new GameObject("Content", typeof(RectTransform), typeof(HorizontalLayoutGroup), typeof(ContentSizeFitter));
+        var contentObj = new GameObject(
+            "Content",
+            typeof(RectTransform),
+            typeof(HorizontalLayoutGroup),
+            typeof(ContentSizeFitter)
+        );
         Content = contentObj.GetComponent<RectTransform>();
         Content.SetParent(transform, false);
         Content.pivot = Vector2.zero;
@@ -57,7 +62,12 @@ public class PeakHorizontalTabs : PeakElement
     /// <returns></returns>
     public GameObject AddTab(string tabName)
     {
-        var gameObject = new GameObject(tabName, typeof(RectTransform), typeof(Button), typeof(LayoutElement));
+        var gameObject = new GameObject(
+            tabName,
+            typeof(RectTransform),
+            typeof(Button),
+            typeof(LayoutElement)
+        );
         gameObject.transform.SetParent(Content, false);
 
         var layout = gameObject.GetComponent<LayoutElement>();

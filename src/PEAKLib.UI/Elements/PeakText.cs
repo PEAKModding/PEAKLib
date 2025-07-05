@@ -19,7 +19,9 @@ public class PeakText : PeakElement
             if (_darumaFontAsset == null)
             {
                 var assets = Resources.FindObjectsOfTypeAll<TMP_FontAsset>();
-                _darumaFontAsset = assets.FirstOrDefault(fontAsset => fontAsset.faceInfo.familyName == "Daruma Drop One");
+                _darumaFontAsset = assets.FirstOrDefault(fontAsset =>
+                    fontAsset.faceInfo.familyName == "Daruma Drop One"
+                );
             }
 
             return _darumaFontAsset;

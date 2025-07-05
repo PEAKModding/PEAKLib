@@ -40,7 +40,12 @@ public class PeakCustomPage : MenuWindow
     {
         Canvas = GetComponent<Canvas>();
         Canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        Canvas.additionalShaderChannels = AdditionalCanvasShaderChannels.Normal | AdditionalCanvasShaderChannels.TexCoord1 | AdditionalCanvasShaderChannels.TexCoord2 | AdditionalCanvasShaderChannels.TexCoord3 | AdditionalCanvasShaderChannels.Tangent;
+        Canvas.additionalShaderChannels =
+            AdditionalCanvasShaderChannels.Normal
+            | AdditionalCanvasShaderChannels.TexCoord1
+            | AdditionalCanvasShaderChannels.TexCoord2
+            | AdditionalCanvasShaderChannels.TexCoord3
+            | AdditionalCanvasShaderChannels.Tangent;
 
         Canvas.sortingOrder = 1;
 

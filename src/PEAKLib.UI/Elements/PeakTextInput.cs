@@ -16,9 +16,14 @@ public class PeakTextInput : PeakElement
         {
             if (_textInput == null)
             {
-                if (SingletonAsset<InputCellMapper>.Instance == null || SingletonAsset<InputCellMapper>.Instance.FloatSettingCell == null)
+                if (
+                    SingletonAsset<InputCellMapper>.Instance == null
+                    || SingletonAsset<InputCellMapper>.Instance.FloatSettingCell == null
+                )
                 {
-                    throw new System.Exception("Tried to create a TextInput but prefab was not found. Please wait until the game fully loads to create UI elements.");
+                    throw new System.Exception(
+                        "Tried to create a TextInput but prefab was not found. Please wait until the game fully loads to create UI elements."
+                    );
                 }
 
                 _textInput = Instantiate(SingletonAsset<InputCellMapper>.Instance.FloatSettingCell);
@@ -52,8 +57,5 @@ public class PeakTextInput : PeakElement
 
     internal static PeakTextInput Create() => Instantiate(TextInput).AddComponent<PeakTextInput>();
 
-    private void Awake()
-    {
-
-    }
+    private void Awake() { }
 }

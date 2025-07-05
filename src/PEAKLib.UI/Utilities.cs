@@ -27,7 +27,8 @@ public static class Utilities
 
     public static void ExpandToParent(RectTransform target)
     {
-        if (target == null || target.parent == null) return;
+        if (target == null || target.parent == null)
+            return;
 
         target.anchorMin = Vector2.zero;
         target.anchorMax = Vector2.one;

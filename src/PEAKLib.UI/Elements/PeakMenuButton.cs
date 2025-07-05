@@ -44,7 +44,9 @@ public class PeakMenuButton : PeakElement
 
         // There are two objects named "Border" so we need to do this hack to get the bottom one
         BorderTop = transform.Find("Border").GetComponent<Image>();
-        BorderBottom = transform.GetChild(BorderTop.transform.GetSiblingIndex() + 1).GetComponent<Image>();
+        BorderBottom = transform
+            .GetChild(BorderTop.transform.GetSiblingIndex() + 1)
+            .GetComponent<Image>();
     }
 
     /// <summary>
@@ -69,7 +71,7 @@ public class PeakMenuButton : PeakElement
     {
         Panel.color = color;
 
-        if (automaticBorderColor) 
+        if (automaticBorderColor)
             SetBorderColor(Utilities.GetContrastingColor(color));
 
         return this;
