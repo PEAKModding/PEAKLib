@@ -9,6 +9,13 @@ namespace PEAKLib.UI;
 /// </summary>
 public static class ElementExtensions
 {
+    /// <summary>
+    /// Parent <paramref name="instance"/> inside <paramref name="transform"/>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="instance"></param>
+    /// <param name="transform"></param>
+    /// <returns></returns>
     public static T ParentTo<T>(this T instance, Transform transform)
         where T : PeakElement
     {
@@ -20,6 +27,13 @@ public static class ElementExtensions
         return instance;
     }
 
+    /// <summary>
+    /// Parent <paramref name="instance"/> inside <paramref name="transform"/>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="instance"></param>
+    /// <param name="transform"></param>
+    /// <returns></returns>
     public static GameObject ParentTo(this GameObject instance, Transform transform)
     {
         ThrowHelper.ThrowIfArgumentNull(instance);
@@ -30,6 +44,13 @@ public static class ElementExtensions
         return instance;
     }
 
+    /// <summary>
+    /// Changes the order of <paramref name="instance"/>, useful to make an element goes up or down in a menu
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="instance"></param>
+    /// <param name="index"></param>
+    /// <returns></returns>
     public static T SetSiblingIndex<T>(this T instance, int index)
         where T : PeakElement
     {
@@ -40,6 +61,13 @@ public static class ElementExtensions
         return instance;
     }
 
+    /// <summary>
+    /// Changes the order of <paramref name="instance"/>, useful to make an element goes up or down in a menu
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="instance"></param>
+    /// <param name="index"></param>
+    /// <returns></returns>
     public static GameObject SetSiblingIndex(this GameObject instance, int index)
     {
         ThrowHelper.ThrowIfArgumentNull(instance);
@@ -49,6 +77,13 @@ public static class ElementExtensions
         return instance;
     }
 
+    /// <summary>
+    /// Set the <paramref name="instance"/> anchored <paramref name="position"/>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="instance"></param>
+    /// <param name="position"></param>
+    /// <returns></returns>
     public static T SetPosition<T>(this T instance, Vector2 position)
         where T : PeakElement
     {
@@ -59,6 +94,13 @@ public static class ElementExtensions
         return instance;
     }
 
+    /// <summary>
+    /// Define the <paramref name="size"/> of an <paramref name="instance"/> with Width and Height
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="instance"></param>
+    /// <param name="size"></param>
+    /// <returns></returns>
     public static T SetSize<T>(this T instance, Vector2 size)
         where T : PeakElement
     {
@@ -69,6 +111,13 @@ public static class ElementExtensions
         return instance;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="instance"></param>
+    /// <param name="anchorMin"></param>
+    /// <returns></returns>
     public static T SetAnchorMin<T>(this T instance, Vector2 anchorMin)
         where T : PeakElement
     {
@@ -79,6 +128,13 @@ public static class ElementExtensions
         return instance;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="instance"></param>
+    /// <param name="anchorMax"></param>
+    /// <returns></returns>
     public static T SetAnchorMax<T>(this T instance, Vector2 anchorMax)
         where T : PeakElement
     {
@@ -89,6 +145,13 @@ public static class ElementExtensions
         return instance;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="instance"></param>
+    /// <param name="anchorValue"></param>
+    /// <returns></returns>
     public static T SetAnchorMinMax<T>(this T instance, Vector2 anchorValue)
         where T : PeakElement
     {
@@ -100,6 +163,13 @@ public static class ElementExtensions
         return instance;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="instance"></param>
+    /// <param name="pivot"></param>
+    /// <returns></returns>
     public static T SetPivot<T>(this T instance, Vector2 pivot)
         where T : PeakElement
     {

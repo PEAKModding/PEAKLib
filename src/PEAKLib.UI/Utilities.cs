@@ -27,6 +27,11 @@ public static class Utilities
         return Color.HSVToRGB(h, s, v);
     }
 
+    /// <summary>
+    /// Expand the <paramref name="target"/> to fill the entire parent
+    /// </summary>
+    /// <param name="target"></param>
+    /// <exception cref="NullReferenceException"></exception>
     public static void ExpandToParent(RectTransform target)
     {
         ThrowHelper.ThrowIfArgumentNull(target);

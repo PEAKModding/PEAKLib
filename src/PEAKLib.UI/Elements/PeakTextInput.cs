@@ -7,14 +7,17 @@ using Zorro.Settings.UI;
 namespace PEAKLib.UI.Elements;
 
 // WIP
+/// <summary>
+/// Used to create TextInput
+/// </summary>
 public class PeakTextInput : PeakElement
 {
-    private static GameObject? _textInput;
-    public static GameObject TextInput
+    private static GameObject? _textInputPrefab;
+    internal static GameObject TextInputPrefab
     {
         get
         {
-            if (_textInput == null)
+            if (_textInputPrefab == null)
             {
                 if (
                     SingletonAsset<InputCellMapper>.Instance == null
@@ -26,10 +29,10 @@ public class PeakTextInput : PeakElement
                     );
                 }
 
-                _textInput = Instantiate(SingletonAsset<InputCellMapper>.Instance.FloatSettingCell);
-                _textInput.name = "PeakTextInput";
+                _textInputPrefab = Instantiate(SingletonAsset<InputCellMapper>.Instance.FloatSettingCell);
+                _textInputPrefab.name = "PeakTextInput";
 
-                var oldFloatSetting = _textInput.GetComponent<FloatSettingUI>();
+                var oldFloatSetting = _textInputPrefab.GetComponent<FloatSettingUI>();
                 var inputField = oldFloatSetting.inputField;
 
                 DestroyImmediate(oldFloatSetting.slider.gameObject);
@@ -48,14 +51,23 @@ public class PeakTextInput : PeakElement
                     text.alignment = TextAlignmentOptions.MidlineLeft;
                 }
 
-                DontDestroyOnLoad(_textInput);
+                DontDestroyOnLoad(_textInputPrefab);
             }
 
-            return _textInput;
+            return _textInputPrefab;
         }
     }
 
-    internal static PeakTextInput Create() => Instantiate(TextInput).AddComponent<PeakTextInput>();
+    internal static PeakTextInput Create() => Instantiate(TextInputPrefab).AddComponent<PeakTextInput>();
 
-    private void Awake() { }
+    /// <summary>
+    /// TMP_InputField component
+    /// </summary>
+    public TMP_InputField InputField { get; private set; } = null!;
+
+    private void Awake()
+    {
+        RectTransform = GetComponent<RectTransform>();
+        InputField = GetComponentInChildren<TMP_InputField>();
+    }
 }

@@ -11,6 +11,9 @@ namespace PEAKLib.UI.Elements;
 [RequireComponent(typeof(ScrollRect))]
 public class PeakTabContent : PeakElement
 {
+    /// <summary>
+    /// The content transform, a vertical layout with scrolling
+    /// </summary>
     public RectTransform Content { get; private set; } = null!;
 
     private void Awake()
@@ -22,7 +25,7 @@ public class PeakTabContent : PeakElement
         scrollRect.vertical = true;
         scrollRect.horizontal = false;
         scrollRect.movementType = ScrollRect.MovementType.Clamped;
-
+        
         Utilities.ExpandToParent(RectTransform);
 
         RectTransform.offsetMax = new Vector2(0, -60f);

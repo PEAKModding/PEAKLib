@@ -3,8 +3,6 @@ using UnityEngine.UI;
 
 namespace PEAKLib.UI.Elements;
 
-// TODO: Need to add summary for the booleans
-
 /// <summary>
 /// Use <see cref="MenuAPI.CreatePage(string)"/>
 /// </summary>
@@ -20,20 +18,74 @@ public class PeakCustomPage : MenuWindow
     // Background is optional, so can be null
     private Image? Background { get; set; }
 
+    /// <summary>
+    /// <inheritdoc cref="OpenOnStart"/>
+    /// </summary>
     public override bool openOnStart => OpenOnStart;
+
+    /// <summary>
+    /// <inheritdoc cref="SelectOnOpen"/>
+    /// </summary>
     public override bool selectOnOpen => SelectOnOpen;
+
+    /// <summary>
+    /// <inheritdoc cref="CloseOnPause"/>
+    /// </summary>
     public override bool closeOnPause => CloseOnPause;
+
+    /// <summary>
+    /// <inheritdoc cref="CloseOnUICancel"/>
+    /// </summary>
     public override bool closeOnUICancel => CloseOnUICancel;
+
+    /// <summary>
+    /// <inheritdoc cref="AutoHideOnClose"/>
+    /// </summary>
     public override bool autoHideOnClose => AutoHideOnClose;
+
+    /// <summary>
+    /// <inheritdoc cref="BlocksPlayerInput"/>
+    /// </summary>
     public override bool blocksPlayerInput => BlocksPlayerInput;
+
+    /// <summary>
+    /// <inheritdoc cref="ShowCursorWhileOpen"/>
+    /// </summary>
     public override bool showCursorWhileOpen => ShowCursorWhileOpen;
 
+    /// <summary>
+    /// If true the page will automatically opens once started
+    /// </summary>
     public bool OpenOnStart { get; set; } = false;
+
+    /// <summary>
+    /// If true the page will automatically focus <see cref="MenuWindow.objectToSelectOnOpen"/> when opened
+    /// </summary>
     public bool SelectOnOpen { get; set; } = true;
+
+    /// <summary>
+    /// If true will close when you pause the game
+    /// </summary>
     public bool CloseOnPause { get; set; } = true;
+
+    /// <summary>
+    /// If true will close when you leave the pause
+    /// </summary>
     public bool CloseOnUICancel { get; set; } = true;
+
+    /// <summary>
+    /// If true will automatically hides itself when closed
+    /// </summary>
     public bool AutoHideOnClose { get; set; } = true;
+
+    /// <summary>
+    /// If true will prevent screen from moving and game inputs (movement, interaction, etc)
+    /// </summary>
     public bool BlocksPlayerInput { get; set; } = true;
+
+    /// <summary>
+    /// If true will show the cursor when page is opened
+    /// </summary>
     public bool ShowCursorWhileOpen { get; set; } = true;
 
     private void Awake()

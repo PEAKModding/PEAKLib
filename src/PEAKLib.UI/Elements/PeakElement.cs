@@ -8,6 +8,9 @@ namespace PEAKLib.UI.Elements;
 [RequireComponent(typeof(RectTransform))]
 public class PeakElement : MonoBehaviour
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public RectTransform RectTransform { get; internal set; } = null!;
 
     private void Awake()

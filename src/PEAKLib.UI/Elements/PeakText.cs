@@ -29,6 +29,9 @@ public class PeakText : PeakElement
         }
     }
 
+    /// <summary>
+    /// Controls font, color, font size, style and many other text related properties
+    /// </summary>
     public TextMeshProUGUI TextMesh { get; private set; } = null!;
 
     private void Awake()
