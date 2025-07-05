@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using PEAKLib.Core;
+using UnityEngine;
 
 namespace PEAKLib.UI;
 
@@ -27,8 +29,14 @@ public static class Utilities
 
     public static void ExpandToParent(RectTransform target)
     {
-        if (target == null || target.parent == null)
-            return;
+        ThrowHelper.ThrowIfArgumentNull(target);
+
+        if (target.parent == null)
+        {
+            throw new NullReferenceException(
+                $"field {nameof(target)}.{nameof(target.parent)} is null!"
+            );
+        }
 
         target.anchorMin = Vector2.zero;
         target.anchorMax = Vector2.one;
