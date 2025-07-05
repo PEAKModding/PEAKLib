@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using PEAKLib.Core;
 using TMPro;
 using UnityEngine;
 
@@ -49,8 +50,8 @@ public class PeakText : PeakElement
     /// <returns></returns>
     public PeakText SetText(string text)
     {
-        TextMesh.text = text;
-        RectTransform.sizeDelta = TextMesh.GetPreferredValues();
+        ThrowHelper.ThrowIfFieldNull(TextMesh).text = text;
+        ThrowHelper.ThrowIfFieldNull(RectTransform).sizeDelta = TextMesh.GetPreferredValues();
 
         return this;
     }
@@ -62,8 +63,8 @@ public class PeakText : PeakElement
     /// <returns></returns>
     public PeakText SetFontSize(float size)
     {
-        TextMesh.fontSize = size;
-        RectTransform.sizeDelta = TextMesh.GetPreferredValues();
+        ThrowHelper.ThrowIfFieldNull(TextMesh).fontSize = size;
+        ThrowHelper.ThrowIfFieldNull(RectTransform).sizeDelta = TextMesh.GetPreferredValues();
 
         return this;
     }
@@ -75,7 +76,7 @@ public class PeakText : PeakElement
     /// <returns></returns>
     public PeakText SetColor(Color color)
     {
-        TextMesh.color = color;
+        ThrowHelper.ThrowIfFieldNull(TextMesh).color = color;
 
         return this;
     }

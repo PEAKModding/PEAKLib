@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using PEAKLib.Core;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -69,7 +70,7 @@ public class PeakMenuButton : PeakElement
     /// <returns></returns>
     public PeakMenuButton SetColor(Color color, bool automaticBorderColor = true)
     {
-        Panel.color = color;
+        ThrowHelper.ThrowIfFieldNull(Panel).color = color;
 
         if (automaticBorderColor)
             SetBorderColor(Utilities.GetContrastingColor(color));
@@ -84,8 +85,8 @@ public class PeakMenuButton : PeakElement
     /// <returns></returns>
     public PeakMenuButton SetBorderColor(Color color)
     {
-        BorderTop.color = color;
-        BorderBottom.color = color;
+        ThrowHelper.ThrowIfFieldNull(BorderTop).color = color;
+        ThrowHelper.ThrowIfFieldNull(BorderBottom).color = color;
 
         return this;
     }
@@ -97,6 +98,8 @@ public class PeakMenuButton : PeakElement
     /// <returns></returns>
     public PeakMenuButton SetWidth(float width)
     {
+        ThrowHelper.ThrowIfFieldNull(RectTransform);
+
         RectTransform.sizeDelta = new Vector2(width, RectTransform.sizeDelta.y);
 
         return this;
@@ -109,6 +112,8 @@ public class PeakMenuButton : PeakElement
     /// <returns></returns>
     public PeakMenuButton OnClick(UnityAction onClickEvent)
     {
+        ThrowHelper.ThrowIfArgumentNull(onClickEvent);
+
         Button.onClick.AddListener(onClickEvent);
 
         return this;
