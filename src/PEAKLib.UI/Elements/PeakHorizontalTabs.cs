@@ -44,12 +44,12 @@ public class PeakHorizontalTabs : PeakElement
         scrollRect.horizontal = true;
         scrollRect.movementType = ScrollRect.MovementType.Clamped;
 
-        var layourGroup = Content.GetComponent<HorizontalLayoutGroup>();
-        layourGroup.spacing = 20;
-        layourGroup.childControlWidth = true;
-        layourGroup.childForceExpandWidth = true;
-        layourGroup.childForceExpandHeight = true;
-        layourGroup.childControlHeight = true;
+        var layoutGroup = Content.GetComponent<HorizontalLayoutGroup>();
+        layoutGroup.spacing = 20;
+        layoutGroup.childControlWidth = true;
+        layoutGroup.childForceExpandWidth = true;
+        layoutGroup.childForceExpandHeight = true;
+        layoutGroup.childControlHeight = true;
 
         var contentSizeFitter = Content.GetComponent<ContentSizeFitter>();
         contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
