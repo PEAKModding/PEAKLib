@@ -13,7 +13,7 @@
   <!-- NuGet -->
   <PropertyGroup>
     <IsPackable>false</IsPackable>
-    <Authors>PEAKModding, Hamunii</Authors>
+    <Authors>PEAKModding</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>

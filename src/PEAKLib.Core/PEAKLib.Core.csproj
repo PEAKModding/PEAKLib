@@ -12,6 +12,7 @@
     <IsPackable>true</IsPackable>
     <PackageId>PEAKModding.PEAKLib.Core</PackageId>
     <Description>Core module of the PEAKLib community API for the game PEAK.</Description>
+    <Authors>$(Authors), Hamunii, Boxofbiscuits97</Authors>
   </PropertyGroup>
   <ItemGroup>
     <None Include="./README.md" Pack="true" PackagePath="/" />
