@@ -1,5 +1,7 @@
-﻿using TMPro;
+﻿using PEAKLib.Core;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using Zorro.Core;
 using Zorro.Settings;
 using Zorro.Settings.UI;
@@ -31,6 +33,15 @@ public class PeakTextInput : PeakElement
 
                 _textInputPrefab = Instantiate(SingletonAsset<InputCellMapper>.Instance.FloatSettingCell);
                 _textInputPrefab.name = "PeakTextInput";
+
+                if (_textInputPrefab.transform is RectTransform rectTransform) {
+                    rectTransform.anchorMin = new Vector2(0, 1);
+                    rectTransform.anchorMax = new Vector2(0, 1);
+                    rectTransform.offsetMin = Vector2.zero;
+                    rectTransform.offsetMax = Vector2.zero;
+                    rectTransform.pivot = new Vector2(0.5f, 0.5f);
+                    rectTransform.sizeDelta = new Vector2(200, 80);
+                }
 
                 var oldFloatSetting = _textInputPrefab.GetComponent<FloatSettingUI>();
                 var inputField = oldFloatSetting.inputField;
@@ -65,9 +76,40 @@ public class PeakTextInput : PeakElement
     /// </summary>
     public TMP_InputField InputField { get; private set; } = null!;
 
+
+    private TextMeshProUGUI Placeholder { get; set; } = null!;
+
     private void Awake()
     {
         RectTransform = GetComponent<RectTransform>();
         InputField = GetComponentInChildren<TMP_InputField>();
+
+        Placeholder = InputField.placeholder.GetComponent<TextMeshProUGUI>();
+        Placeholder.text = "";
+    }
+
+    /// <summary>
+    /// Same as InputField.onValueChanged.AddListener()
+    /// </summary>
+    /// <param name="onValueChanged"></param>
+    /// <returns></returns>
+    public PeakTextInput OnValueChanged(UnityAction<string> onValueChanged)
+    {
+        ThrowHelper.ThrowIfArgumentNull(onValueChanged);
+
+        InputField.onValueChanged.AddListener(onValueChanged);
+
+        return this;
+    }
+
+    /// <summary>
+    /// A text for when input is empty
+    /// </summary>
+    /// <param name="placeholder"></param>
+    /// <returns></returns>
+    public PeakTextInput SetPlaceholder(string placeholder) { 
+        Placeholder.text = placeholder;
+
+        return this;
     }
 }
