@@ -103,11 +103,11 @@ public static class MenuAPI
 
 
     /// <summary>
-    /// Create a <see cref="ScrollableContent"/>, parent things to <see cref="ScrollableContent.Content"/> to use
+    /// Create a <see cref="PeakScrollableContent"/>, parent things to <see cref="PeakScrollableContent.Content"/> to use
     /// </summary>
     /// <param name="scrollableName"></param>
     /// <returns></returns>
-    public static ScrollableContent CreateScrollableContent(string scrollableName) =>
-        new GameObject(scrollableName).AddComponent<ScrollableContent>();
+    public static PeakScrollableContent CreateScrollableContent(string scrollableName) =>
+        new GameObject(scrollableName).AddComponent<PeakScrollableContent>();
     
 }

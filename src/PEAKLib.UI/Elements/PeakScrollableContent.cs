@@ -9,7 +9,7 @@ namespace PEAKLib.UI.Elements;
 [RequireComponent(typeof(RectTransform))]
 [RequireComponent(typeof(RectMask2D))]
 [RequireComponent(typeof(ScrollRect))]
-public class ScrollableContent : PeakElement
+public class PeakScrollableContent : PeakElement
 {
     /// <summary>
     /// The content transform, a vertical layout with scrolling
