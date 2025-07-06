@@ -1,3 +1,4 @@
+#if !UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -168,3 +169,4 @@ internal class NetworkManager : MonoBehaviourPunCallbacks
         CallRPC(nameof(ReceivePluginsFromHostRPC), RpcTarget.MasterClient);
     }
 }
+#endif

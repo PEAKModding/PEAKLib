@@ -1,3 +1,4 @@
+#if !UNITY_EDITOR
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Photon.Pun;
@@ -162,3 +163,4 @@ public static class NetworkPrefabManager
         return PhotonNetwork.InstantiateRoomObject(prefabId, position, rotation, group, data);
     }
 }
+#endif

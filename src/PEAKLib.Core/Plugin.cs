@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !UNITY_EDITOR
+using System;
 using BepInEx;
 using BepInEx.Logging;
 using MonoDetour;
@@ -27,3 +28,4 @@ public partial class CorePlugin : BaseUnityPlugin
         Log.LogInfo($"Plugin {Name} is loaded!");
     }
 }
+#endif

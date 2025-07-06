@@ -30,6 +30,11 @@ public class ModDefinition : IModDefinitionResolvable
     /// </summary>
     public HashSet<IContent> Content { get; } = [];
 
+    /// <summary>
+    /// The registered content this <see cref="ModDefinition"/> contains.
+    /// </summary>
+    public HashSet<IRegisteredContent> RegisteredContent { get; } = [];
+
     static readonly Dictionary<string, ModDefinition> s_guidToMod = [];
 
     private ModDefinition(string id, string name, Version version)
@@ -39,6 +44,7 @@ public class ModDefinition : IModDefinitionResolvable
         Version = ThrowHelper.ThrowIfArgumentNull(version);
     }
 
+#if !UNITY_EDITOR
     /// <summary>
     /// Creates a new <see cref="ModDefinition"/> for the <paramref name="pluginInfo"/>
     /// or returns it if it already exists.
@@ -111,6 +117,7 @@ public class ModDefinition : IModDefinitionResolvable
             }
         }
     }
+#endif
 
     /// <summary>
     /// Registers a <typeparamref name="T"/> with the game.

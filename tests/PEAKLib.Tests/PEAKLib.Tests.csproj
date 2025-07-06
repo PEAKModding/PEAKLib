@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>com.github.PEAKModding.PEAKLib.Tests</AssemblyName>
+    <AssemblyTitle>PEAKLib.Tests</AssemblyTitle>
+    <Version>0.1.0</Version>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <ThunderstorePackable>false</ThunderstorePackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="$(SolutionRoot)src/PEAKLib.Core/PEAKLib.Core.csproj" />
+    <ProjectReference Include="$(SolutionRoot)src/PEAKLib.Items/PEAKLib.Items.csproj" />
+  </ItemGroup>
+
+</Project>

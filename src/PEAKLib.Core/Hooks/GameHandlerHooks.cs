@@ -1,3 +1,4 @@
+#if !UNITY_EDITOR
 using MonoDetour;
 using MonoDetour.HookGen;
 using On.GameHandler;
@@ -26,3 +27,4 @@ static class GameHandlerHooks
         NetworkPrefabManager.Initialize();
     }
 }
+#endif

@@ -1,4 +1,5 @@
-﻿using BepInEx;
+﻿#if !UNITY_EDITOR
+using BepInEx;
 using BepInEx.Logging;
 using MonoDetour;
 using PEAKLib.Core;
@@ -21,3 +22,4 @@ public partial class ItemsPlugin : BaseUnityPlugin
         Log.LogInfo($"Plugin {Name} is loaded!");
     }
 }
+#endif

@@ -9,13 +9,11 @@ obj/
 
 # Add source files
 !/src/
+!/tests/
 
 # Test Unity project
-/tests/*
 /tests/UnityTestProject/*
 /tests/UnityTestProject/Assets/*
-!/tests/
-!/tests/UnityTestProject/
 !/tests/UnityTestProject/Assets/
 !/tests/UnityTestProject/Assets/TestProject/
 

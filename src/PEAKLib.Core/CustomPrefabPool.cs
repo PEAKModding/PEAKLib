@@ -1,3 +1,4 @@
+#if !UNITY_EDITOR
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Photon.Pun;
@@ -140,3 +141,4 @@ internal class CustomPrefabPool : IPunPrefabPool
         Object.Destroy(gameObject);
     }
 }
+#endif

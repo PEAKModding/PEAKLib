@@ -11,8 +11,13 @@ namespace PEAKLib.Items.UnityEditor;
 public class UnityItemContent : ScriptableObject, IItemContent
 {
     /// <inheritdoc/>
+    public Item Item => Resolve().Item;
+
+    /// <summary>
+    /// The prefab that contains an <see cref="global::Item"/> component.
+    /// </summary>
     [field: SerializeField]
-    public Item Item { get; } = null!;
+    public GameObject ItemPrefab { get; private set; } = null!;
     internal static readonly Dictionary<UnityItemContent, ItemContent> s_UnityToModItem = [];
 
     /// <inheritdoc/>
@@ -21,14 +26,15 @@ public class UnityItemContent : ScriptableObject, IItemContent
     /// <inheritdoc/>
     public ItemContent Resolve()
     {
-        ThrowHelper.ThrowIfFieldNull(Item);
-
         if (s_UnityToModItem.TryGetValue(this, out var modItem))
         {
             return modItem;
         }
 
-        modItem = new(Item);
+        var item = ThrowHelper.ThrowIfFieldNull(ItemPrefab).GetComponent<Item>();
+        ThrowHelper.ThrowIfFieldNull(item);
+
+        modItem = new(item);
         s_UnityToModItem.Add(this, modItem);
 
         return modItem;
