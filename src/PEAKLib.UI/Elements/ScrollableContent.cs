@@ -4,12 +4,12 @@ using UnityEngine.UI;
 namespace PEAKLib.UI.Elements;
 
 /// <summary>
-/// The contents of a tab, needs your own component based on <see cref="SharedSettingsMenu"/>
+/// An element that contains a ScrollRect, parent elements to <see cref="Content"/> to use
 /// </summary>
 [RequireComponent(typeof(RectTransform))]
 [RequireComponent(typeof(RectMask2D))]
 [RequireComponent(typeof(ScrollRect))]
-public class PeakTabContent : PeakElement
+public class ScrollableContent : PeakElement
 {
     /// <summary>
     /// The content transform, a vertical layout with scrolling
@@ -27,8 +27,6 @@ public class PeakTabContent : PeakElement
         scrollRect.movementType = ScrollRect.MovementType.Clamped;
         
         Utilities.ExpandToParent(RectTransform);
-
-        RectTransform.offsetMax = new Vector2(0, -60f);
 
         var contentObj = new GameObject(
             "Content",

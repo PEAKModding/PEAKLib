@@ -110,6 +110,41 @@ public static class ElementExtensions
     }
 
     /// <summary>
+    /// Sets the <see cref="RectTransform.offsetMin"/> of <paramref name="instance"/>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="instance"></param>
+    /// <param name="offsetMin"></param>
+    /// <returns></returns>
+    public static T SetOffsetMin<T>(this T instance, Vector2 offsetMin)
+      where T : PeakElement
+    {
+        ThrowHelper.ThrowIfArgumentNull(instance);
+
+        instance.RectTransform.offsetMin = offsetMin;
+
+        return instance;
+    }
+
+    /// <summary>
+    /// Sets the <see cref="RectTransform.offsetMax"/> of <paramref name="instance"/>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="instance"></param>
+    /// <param name="offsetMax"></param>
+    /// <returns></returns>
+    public static T SetOffsetMax<T>(this T instance, Vector2 offsetMax)
+      where T : PeakElement
+    {
+        ThrowHelper.ThrowIfArgumentNull(instance);
+
+        instance.RectTransform.offsetMax = offsetMax;
+
+        return instance;
+    }
+
+
+    /// <summary>
     /// 
     /// </summary>
     /// <typeparam name="T"></typeparam>

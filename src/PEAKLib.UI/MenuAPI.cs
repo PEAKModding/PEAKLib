@@ -100,4 +100,14 @@ public static class MenuAPI
     /// <returns></returns>
     public static PeakMenuButton CreatePauseMenuButton(string buttonName) =>
         CreateMenuButton(buttonName).SetWidth(OPTIONS_WIDTH);
+
+
+    /// <summary>
+    /// Create a <see cref="ScrollableContent"/>, parent things to <see cref="ScrollableContent.Content"/> to use
+    /// </summary>
+    /// <param name="scrollableName"></param>
+    /// <returns></returns>
+    public static ScrollableContent CreateScrollableContent(string scrollableName) =>
+        new GameObject(scrollableName).AddComponent<ScrollableContent>();
+    
 }

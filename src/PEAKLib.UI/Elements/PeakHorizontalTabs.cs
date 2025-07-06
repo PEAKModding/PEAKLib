@@ -5,7 +5,7 @@ using Zorro.UI;
 namespace PEAKLib.UI.Elements;
 
 /// <summary>
-/// Horizontal Tabs to use with <see cref="PeakTabContent"/>.<br></br>
+/// Horizontal Tabs to use with <see cref="ScrollableContent"/>.<br></br>
 /// Needs your own implementation of <see cref="TABS{ButtonType}"/>
 /// </summary>
 [RequireComponent(typeof(ScrollRect))]
