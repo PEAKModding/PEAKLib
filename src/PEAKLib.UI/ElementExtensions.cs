@@ -30,7 +30,6 @@ public static class ElementExtensions
     /// <summary>
     /// Parent <paramref name="instance"/> inside <paramref name="transform"/>
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     /// <param name="instance"></param>
     /// <param name="transform"></param>
     /// <returns></returns>
@@ -64,7 +63,6 @@ public static class ElementExtensions
     /// <summary>
     /// Changes the order of <paramref name="instance"/>, useful to make an element goes up or down in a menu
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     /// <param name="instance"></param>
     /// <param name="index"></param>
     /// <returns></returns>
@@ -176,6 +174,45 @@ public static class ElementExtensions
         ThrowHelper.ThrowIfArgumentNull(instance);
 
         instance.RectTransform.pivot = pivot;
+
+        return instance;
+    }
+
+    /// <summary>
+    /// Align an element to the parent based on <paramref name="alignment"/>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="instance"></param>
+    /// <param name="alignment"></param>
+    /// <returns></returns>
+    public static T AlignToParent<T>(this T instance, UIAlignment alignment)
+       where T : PeakElement
+    {
+        ThrowHelper.ThrowIfArgumentNull(instance);
+        ThrowHelper.ThrowIfArgumentNull(alignment);
+
+        Vector2 anchor = alignment switch
+        {
+            UIAlignment.TopLeft => new Vector2(0, 1),
+            UIAlignment.TopCenter => new Vector2(0.5f, 1),
+            UIAlignment.TopRight => new Vector2(1, 1),
+
+            UIAlignment.MiddleLeft => new Vector2(0, 0.5f),
+            UIAlignment.MiddleCenter => new Vector2(0.5f, 0.5f),
+            UIAlignment.MiddleRight => new Vector2(1, 0.5f),
+
+            UIAlignment.BottomLeft => new Vector2(0, 0),
+            UIAlignment.BottomCenter => new Vector2(0.5f, 0),
+            UIAlignment.BottomRight => new Vector2(1, 0),
+
+            _ => Vector2.zero
+        };
+
+        var rect = instance.RectTransform;
+        rect.anchorMin = anchor;
+        rect.anchorMax = anchor;
+        rect.pivot = anchor;
+        rect.anchoredPosition = Vector2.zero;
 
         return instance;
     }
