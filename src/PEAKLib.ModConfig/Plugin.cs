@@ -181,6 +181,21 @@ public partial class ModConfigPlugin : BaseUnityPlugin
 
                         SettingsHandlerUtility.AddKeybindToTab(configEntry.Definition.Key, defaultValue, modName, currentValue, newVal => configEntry.BoxedValue = newVal);
                     }
+                    else if (configEntry.SettingType.IsEnum)
+                    {
+                        var defaultValue = configEntry.DefaultValue is object cValue ? cValue : Enum.ToObject(configEntry.SettingType, 0);
+                        var currentValue = configEntry.BoxedValue is object bValue ? bValue : Enum.ToObject(configEntry.SettingType, 0);
+
+                        var defaultValueName = Enum.GetName(configEntry.SettingType, defaultValue);
+                        var currentValueName = Enum.GetName(configEntry.SettingType, currentValue);
+                        var options = new List<string>(Enum.GetNames(configEntry.SettingType));
+
+                        SettingsHandlerUtility.AddEnumToTab(configEntry.Definition.Key, options, modName, currentValueName, newVal =>
+                        {
+                            if (Enum.TryParse(configEntry.SettingType, newVal, out var value))
+                                configEntry.BoxedValue = value;
+                        });
+                    }
                     else // Warn about missing SettingTypes
                         Log.LogWarning($"Missing SettingType: [Mod: {modName}] {configEntry.Definition.Key} (Type: {configEntry.SettingType})");
                 }

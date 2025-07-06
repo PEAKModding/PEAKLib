@@ -1,5 +1,6 @@
 ﻿using PEAKLib.ModConfig.SettingOptions;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace PEAKLib.ModConfig;
@@ -46,5 +47,13 @@ internal static class SettingsHandlerUtility
             throw new Exception("You're registering options too early! Use the Start() function to create new options!");
 
         SettingsHandler.Instance.AddSetting(new BepInExKeyCode(displayName, tabName, defaultValue, currentValue, saveCallback));
+    }
+
+    internal static void AddEnumToTab(string displayName, List<string> options, string tabName, string currentValue, Action<string>? saveCallback) 
+    {
+        if (SettingsHandler.Instance == null)
+            throw new Exception("You're registering options too early! Use the Start() function to create new options!");
+
+        SettingsHandler.Instance.AddSetting(new BepInExEnum(displayName, options, currentValue, tabName, saveCallback));
     }
 }
