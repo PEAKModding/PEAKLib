@@ -1,0 +1,45 @@
+[config]
+schemaVersion = "0.0.1"
+
+[general]
+repository = "https://thunderstore.io"
+
+[package]
+namespace = "PEAKModding"
+name = "ModConfig"
+description = "Easily configure mods inside your game."
+websiteUrl = "https://github.com/PEAKModding/PEAKLib/"
+containsNsfwContent = false
+
+[package.dependencies]
+BepInEx-BepInExPack_PEAK = "5.4.2403"
+PEAKModding-PEAKLib_Core = "0.1.0"
+
+[build]
+icon = "../../icon.png"
+readme = "./README.md"
+outdir = "../../artifacts/thunderstore/"
+
+[[build.copy]]
+source = "../../artifacts/bin/PEAKLib.ModConfig/release/com.github.PEAKModding.PEAKLib.ModConfig.dll"
+target = "plugins/"
+
+[[build.copy]]
+source = "./CHANGELOG.md"
+target = "/"
+
+[[build.copy]]
+source = "../../LICENSE"
+target = "/"
+
+# The following config options only apply when using TCLI to publish to Thunderstore directly:
+
+[publish]
+# See communities at:
+# https://thunderstore.io/api/experimental/community/
+communities = [ "peak", ]
+
+[publish.categories]
+# See categories at:
+# https://thunderstore.io/api/experimental/community/peak/category/
+peak = [ "mods", ]
