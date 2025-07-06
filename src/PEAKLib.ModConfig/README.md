@@ -1,3 +1,3 @@
-# PEAKLib.Items
+# ModConfig
 
-Items module of the PEAKLib community API.
+Easily configure your Peak mods inside your game!

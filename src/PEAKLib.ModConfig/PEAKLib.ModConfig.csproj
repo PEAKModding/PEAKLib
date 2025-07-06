@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <ProjectReference Include="../PEAKLib.Core/PEAKLib.Core.csproj" />
-    <ProjectReference Include="..\PEAKLib.Items\PEAKLib.Items.csproj" />
     <ProjectReference Include="..\PEAKLib.UI\PEAKLib.UI.csproj" />
   </ItemGroup>
 

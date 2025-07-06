@@ -23,6 +23,7 @@ namespace PEAKLib.ModConfig;
 /// </summary>
 [BepInAutoPlugin]
 [BepInDependency(CorePlugin.Id)]
+[BepInDependency(UIPlugin.Id)]
 public partial class ModConfigPlugin : BaseUnityPlugin
 {
     internal static ManualLogSource Log { get; } = BepInEx.Logging.Logger.CreateLogSource(Name);
