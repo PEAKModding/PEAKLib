@@ -1,4 +1,5 @@
-﻿using PEAKLib.UI.Elements;
+﻿using PEAKLib.Core;
+using PEAKLib.UI.Elements;
 using UnityEngine;
 
 namespace PEAKLib.UI;
@@ -38,10 +39,19 @@ public static class MenuAPI
     /// <returns></returns>
     public static PeakCustomPage CreatePage(string pageName)
     {
-        var page = new GameObject(pageName, typeof(PeakCustomPage));
+        ThrowHelper.ThrowIfArgumentNullOrWhiteSpace(pageName);
 
-        return page.GetComponent<PeakCustomPage>();
+        return new GameObject(pageName).AddComponent<PeakCustomPage>();
     }
+
+    /// <summary>
+    /// Creates a page to store your elements
+    /// </summary>
+    /// <param name="pageName">Name of the GameObject</param>
+    /// <returns></returns>
+    public static PeakCustomPage CreatePageWithBackground(string pageName) =>
+        CreatePage(pageName).CreateBackground();
+    
 
     /// <summary>
     /// Creates a Menu button
@@ -50,6 +60,8 @@ public static class MenuAPI
     /// <returns></returns>
     public static PeakMenuButton CreateMenuButton(string buttonName)
     {
+        ThrowHelper.ThrowIfFieldNull(buttonName);
+
         if (Templates.ButtonTemplate == null)
             throw new System.Exception(
                 "You're creating MenuButton too early! Prefab hasn't been loaded yet."
@@ -62,6 +74,14 @@ public static class MenuAPI
 
         return newButton.SetText(buttonName);
     }
+
+    /// <summary>
+    /// Same as <see cref="CreateMenuButton(string)"/> but automatically set the <b>width</b> to 277 (<see cref="OPTIONS_WIDTH"/>)
+    /// </summary>
+    /// <param name="buttonName"></param>
+    /// <returns></returns>
+    public static PeakMenuButton CreatePauseMenuButton(string buttonName) =>
+        CreateMenuButton(buttonName).SetWidth(OPTIONS_WIDTH);
 
     /// <summary>
     /// Creates a text label
@@ -83,6 +103,9 @@ public static class MenuAPI
     /// <returns></returns>
     public static PeakText CreateText(string displayText, string objectName = "UI_PeakText")
     {
+        ThrowHelper.ThrowIfArgumentNull(displayText);
+        ThrowHelper.ThrowIfArgumentNullOrWhiteSpace(objectName);
+
         var gameObj = new GameObject(objectName, typeof(PeakText));
 
         return gameObj.GetComponent<PeakText>().SetText(displayText);
@@ -94,13 +117,18 @@ public static class MenuAPI
     public const float OPTIONS_WIDTH = 277f;
 
     /// <summary>
-    /// Same as <see cref="CreateMenuButton(string)"/> but automatically set the <b>width</b> to 277 (<see cref="OPTIONS_WIDTH"/>)
+    /// Creates a simple button without styling
     /// </summary>
     /// <param name="buttonName"></param>
     /// <returns></returns>
-    public static PeakMenuButton CreatePauseMenuButton(string buttonName) =>
-        CreateMenuButton(buttonName).SetWidth(OPTIONS_WIDTH);
+    public static PeakButton CreateButton(string buttonName)
+    {
+        ThrowHelper.ThrowIfFieldNullOrWhiteSpace(buttonName);
 
+        var gameObj = new GameObject(buttonName);
+
+        return gameObj.AddComponent<PeakButton>();
+    }
 
     /// <summary>
     /// Create a <see cref="PeakScrollableContent"/>, parent things to <see cref="PeakScrollableContent.Content"/> to use
@@ -109,5 +137,18 @@ public static class MenuAPI
     /// <returns></returns>
     public static PeakScrollableContent CreateScrollableContent(string scrollableName) =>
         new GameObject(scrollableName).AddComponent<PeakScrollableContent>();
+
+    /// <summary>
+    /// <inheritdoc cref="PeakTextInput"/>
+    /// </summary>
+    /// <param name="inputName"></param>
+    /// <returns></returns>
+    public static PeakTextInput CreateTextInput(string inputName)
+    {
+        var textInput = PeakTextInput.Create();
+        textInput.name = inputName;
+
+        return textInput;
+    }
     
 }

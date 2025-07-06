@@ -271,4 +271,24 @@ public static class ElementExtensions
 
         return instance;
     }
+
+    /// <summary>
+    /// Expand the element to fill the entire parent
+    /// </summary>
+    /// <param name="instance"></param>
+    /// <returns></returns>
+    public static GameObject ExpandToParent(this GameObject instance)
+    {
+        ThrowHelper.ThrowIfArgumentNull(instance);
+
+        if (instance.transform is not RectTransform rectTransform)
+            throw new System.Exception($"[{instance.name}] does not contain a RectTransform");
+
+        rectTransform.anchorMin = Vector2.zero;
+        rectTransform.anchorMax = Vector2.one;
+        rectTransform.offsetMin = Vector2.zero;
+        rectTransform.offsetMax = Vector2.zero;
+
+        return instance;
+    }
 }

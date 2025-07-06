@@ -25,8 +25,6 @@ public class PeakScrollableContent : PeakElement
         scrollRect.vertical = true;
         scrollRect.horizontal = false;
         scrollRect.movementType = ScrollRect.MovementType.Clamped;
-        
-        Utilities.ExpandToParent(RectTransform);
 
         var contentObj = new GameObject(
             "Content",
@@ -34,6 +32,7 @@ public class PeakScrollableContent : PeakElement
             typeof(VerticalLayoutGroup),
             typeof(ContentSizeFitter)
         );
+
         Content = contentObj.GetComponent<RectTransform>();
         Content.SetParent(transform, false);
         Content.pivot = new Vector2(0.5f, 1);
