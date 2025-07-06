@@ -13,5 +13,5 @@ internal class BepInExOffOn(string displayName, bool defaultValue = false, strin
     protected override OffOnMode GetDefaultValue() => defaultValue == true ? OffOnMode.ON : OffOnMode.OFF;
     public string GetDisplayName() => displayName;
     public string GetCategory() => category;
-    public override List<LocalizedString> GetLocalizedChoices() => null;
+    public override List<LocalizedString>? GetLocalizedChoices() => null;
 }

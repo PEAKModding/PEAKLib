@@ -43,4 +43,4 @@ communities = [ "peak", ]
 [publish.categories]
 # See categories at:
 # https://thunderstore.io/api/experimental/community/peak/category/
-peak = [ "mods", ]
+peak = [ "mods", "client", "qol", ]
