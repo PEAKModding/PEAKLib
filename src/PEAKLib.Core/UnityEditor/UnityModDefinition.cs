@@ -7,7 +7,7 @@ namespace PEAKLib.Core.UnityEditor;
 /// <summary>
 /// A <see cref="ScriptableObject"/> representation of a <see cref="ModDefinition"/>.
 /// </summary>
-[CreateAssetMenu(fileName = "UnityModDefinition", menuName = "PEAKLib/ModDefinition", order = 0)]
+[CreateAssetMenu(fileName = "ModDefinition", menuName = "PEAKLib/ModDefinition", order = 0)]
 public class UnityModDefinition : ScriptableObject, IModDefinitionResolvable
 {
     [SerializeField]

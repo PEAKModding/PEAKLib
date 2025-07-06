@@ -25,6 +25,8 @@ static class GameHandlerHooks
 
         patchedAwake = true;
         NetworkPrefabManager.Initialize();
+
+        BundleLoader.FinishLoadOperations(self);
     }
 }
 #endif

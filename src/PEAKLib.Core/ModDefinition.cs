@@ -128,6 +128,13 @@ public class ModDefinition : IModDefinitionResolvable
         where T : IContent<T> => content.Register(this);
 
     /// <summary>
+    /// Registers an <see cref="IContent"/> with the game.
+    /// </summary>
+    /// <param name="content">The <see cref="IContent"/> to register.</param>
+    /// <returns>The registered <see cref="IContent"/> representation.</returns>
+    public IRegisteredContent Register(IContent content) => content.Register(this);
+
+    /// <summary>
     /// Returns this <see cref="ModDefinition"/>.
     /// </summary>
     /// <returns>This <see cref="ModDefinition"/>.</returns>

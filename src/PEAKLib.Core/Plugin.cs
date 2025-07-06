@@ -25,6 +25,8 @@ public partial class CorePlugin : BaseUnityPlugin
             Networking.s_NetworkManager = character.gameObject.AddComponent<NetworkManager>();
         };
 
+        BundleLoader.LoadAllBundles(Paths.PluginPath, ".peakbundle.autoload");
+
         Log.LogInfo($"Plugin {Name} is loaded!");
     }
 }

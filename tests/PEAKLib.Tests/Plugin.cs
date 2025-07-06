@@ -1,10 +1,6 @@
-﻿using System.IO;
-using System.Linq;
-using BepInEx;
+﻿using BepInEx;
 using BepInEx.Logging;
-using MonoDetour;
 using PEAKLib.Core;
-using UnityEngine;
 
 namespace PEAKLib.Items;
 
@@ -17,23 +13,32 @@ public partial class TestsPlugin : BaseUnityPlugin
 
     private void Awake()
     {
-        string AssetBundlePath = Path.Combine(
-            Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location),
-            "peaklibtest.peakbundle"
-        );
-        var bundle = AssetBundle.LoadFromFile(AssetBundlePath);
+        // this.LoadBundleWithName(
+        //     "peaklibtest.peakbundl",
+        //     (ass, mod) =>
+        //     {
+        //         Log.LogInfo("loaded:" + mod.Id);
+        //         mod.RegisterContent();
+        //     }
+        // );
 
-        var modDefinition = ModDefinition.GetOrCreate(Info);
-        var scriptableObjects = bundle.LoadAllAssets<ScriptableObject>();
-        var contents = scriptableObjects.OfType<IContent>();
+        // string AssetBundlePath = Path.Combine(
+        //     Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location),
+        //     "peaklibtest.peakbundle"
+        // );
+        // var bundle = AssetBundle.LoadFromFile(AssetBundlePath);
 
-        foreach (var content in contents)
-        {
-            Log.LogInfo("Adding Content: " + content);
-            modDefinition.Content.Add(content);
-        }
+        // var modDefinition = ModDefinition.GetOrCreate(Info);
+        // var scriptableObjects = bundle.LoadAllAssets<ScriptableObject>();
+        // var contents = scriptableObjects.OfType<IContent>();
 
-        modDefinition.RegisterContent();
+        // foreach (var content in contents)
+        // {
+        //     Log.LogInfo("Adding Content: " + content);
+        //     modDefinition.Content.Add(content);
+        // }
+
+        // modDefinition.RegisterContent();
 
         Log.LogInfo($"Plugin {Name} is loaded!");
     }
