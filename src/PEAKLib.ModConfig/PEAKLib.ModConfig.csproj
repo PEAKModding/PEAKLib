@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>com.github.PEAKModding.PEAKLib.ModConfig</AssemblyName>
     <AssemblyTitle>PEAKLib.ModConfig</AssemblyTitle>
-    <Version>0.1.1</Version>
+    <Version>0.1.2</Version>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
 
