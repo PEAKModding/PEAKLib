@@ -19,9 +19,6 @@ public class UnityModDefinition : ScriptableObject, IModDefinitionResolvable
     [SerializeField]
     private string modVersion = "";
 
-    [SerializeField]
-    private List<IContent> content = [];
-
     /// <exception cref="FormatException"></exception>
     /// <inheritdoc/>
     public ModDefinition Resolve()
@@ -43,13 +40,6 @@ public class UnityModDefinition : ScriptableObject, IModDefinitionResolvable
             );
         }
 
-        ModDefinition modDefinition = ModDefinition.GetOrCreate(modId, modName, version);
-
-        foreach (var modContent in content)
-        {
-            modDefinition.Content.Add(modContent);
-        }
-
-        return modDefinition;
+        return ModDefinition.GetOrCreate(modId, modName, version);
     }
 }
