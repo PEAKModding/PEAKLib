@@ -30,7 +30,7 @@ public class RegisteredContent<T> : IRegisteredContent
             throw new Exception($"This Content has been registered already: '{content}'");
         }
 
-        mod.RegisteredContent.Add(this);
+        mod.registeredContent.Add(this);
     }
 }
 

@@ -33,7 +33,9 @@ public class ModDefinition : IModDefinitionResolvable
     /// <summary>
     /// The registered content this <see cref="ModDefinition"/> contains.
     /// </summary>
-    public HashSet<IRegisteredContent> RegisteredContent { get; } = [];
+    public IEnumerable<IRegisteredContent> RegisteredContent => registeredContent;
+
+    internal HashSet<IRegisteredContent> registeredContent = [];
 
     static readonly Dictionary<string, ModDefinition> s_guidToMod = [];
 
