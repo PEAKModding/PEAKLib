@@ -273,9 +273,16 @@ public static class BundleLoader
 
         var mod = mods[0];
 
+        var contents = assets.OfType<IContent>();
+
+        foreach (var content in contents)
+        {
+            mod.Content.Add(content);
+        }
+
         if (operation.LoadContents)
         {
-            foreach (var content in assets.OfType<IContent>())
+            foreach (var content in contents)
             {
                 try
                 {
@@ -289,15 +296,15 @@ public static class BundleLoader
                 }
             }
         }
-        else
-        {
-            foreach (var content in assets.OfType<IContent>())
-            {
-                mod.Content.Add(content);
-            }
-        }
 
-        operation.OnBundleLoaded?.Invoke(new PeakBundle(bundle, mod));
+        try
+        {
+            operation.OnBundleLoaded?.Invoke(new PeakBundle(bundle, mod));
+        }
+        catch (Exception ex)
+        {
+            CorePlugin.Log.LogError($"Unhandled exception in callback: {ex}");
+        }
 
         // if (ConfigManager.ExtendedLogging.Value)
         // {
