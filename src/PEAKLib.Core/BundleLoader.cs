@@ -33,20 +33,46 @@ public static class BundleLoader
 
         foreach (string path in files)
         {
-            LoadBundleAndContents(path);
+            LoadBundleAndContentsFromPath(path);
         }
     }
 
+    /// <summary>
+    /// Load an AssetBundle async and get a callback for when it's loaded.
+    /// Does not register its contents automatically.
+    /// </summary>
+    /// <inheritdoc cref="LoadBundleWithNameInternal(BaseUnityPlugin, string, Action{PeakBundle}, bool)"/>
+    public static void LoadBundleWithName(
+        this BaseUnityPlugin baseUnityPlugin,
+        string fileName,
+        Action<PeakBundle> onLoaded
+    ) => LoadBundleWithNameInternal(baseUnityPlugin, fileName, onLoaded, loadContents: false);
+
+    /// <summary>
+    /// Load an AssetBundle async and get a callback for when it's loaded.
+    /// Also registers its contents automatically.
+    /// </summary>
+    /// <inheritdoc cref="LoadBundleWithNameInternal(BaseUnityPlugin, string, Action{PeakBundle}, bool)"/>
+    public static void LoadBundleAndContentsWithName(
+        this BaseUnityPlugin baseUnityPlugin,
+        string fileName,
+        Action<PeakBundle> onLoaded
+    ) => LoadBundleWithNameInternal(baseUnityPlugin, fileName, onLoaded, loadContents: true);
+
+    /// <summary></summary>
+    /// <remarks></remarks>
     /// <param name="baseUnityPlugin">An instance of a <see cref="BaseUnityPlugin"/> type
     /// whose <see cref="ModDefinition"/> to use.</param>
     /// <param name="fileName">The full file name without path. This is searched for recursively
     /// from the directory of the <see cref="BaseUnityPlugin"/> assembly.</param>
-    /// <inheritdoc cref="LoadBundleFromPath(string, Action{AssetBundle, ModDefinition})"/>
+    /// <inheritdoc cref="LoadBundleFromPath(string, Action{PeakBundle}, ModDefinition?)"/>
     /// <param name="onLoaded"></param>
-    public static void LoadBundleWithName(
+    /// <param name="loadContents"></param>
+    private static void LoadBundleWithNameInternal(
         this BaseUnityPlugin baseUnityPlugin,
         string fileName,
-        Action<AssetBundle, ModDefinition> onLoaded
+        Action<PeakBundle> onLoaded,
+        bool loadContents
     )
     {
         ThrowHelper.ThrowIfArgumentNull(baseUnityPlugin);
@@ -61,7 +87,7 @@ public static class BundleLoader
         foreach (string path in files)
         {
             CorePlugin.Log.LogInfo($"Loading bundle at {path}...");
-            _operations.Add(new LoadOperation(path, onLoaded, loadContents: false, modDefinition));
+            _operations.Add(new LoadOperation(path, onLoaded, loadContents, modDefinition));
         }
     }
 
@@ -69,32 +95,47 @@ public static class BundleLoader
     /// Load an AssetBundle async and get a callback for when it's loaded.
     /// Does not register its contents automatically.
     /// </summary>
-    /// <param name="path">The absolute path to the AssetBundle.</param>
-    /// <param name="onLoaded">Callback for when the AssetBundle is loaded.</param>
-    public static void LoadBundleFromPath(string path, Action<AssetBundle, ModDefinition> onLoaded)
+    /// <remarks>
+    /// Prefer <see cref="LoadBundleWithName(BaseUnityPlugin, string, Action{PeakBundle})"/>
+    /// over this method.
+    /// </remarks>
+    /// <inheritdoc cref="LoadBundleAndContentsFromPath(string, Action{PeakBundle}?, ModDefinition?)"/>
+    public static void LoadBundleFromPath(
+        string path,
+        Action<PeakBundle> onLoaded,
+        ModDefinition? mod = null
+    )
     {
         ThrowHelper.ThrowIfArgumentNullOrWhiteSpace(path);
         ThrowHelper.ThrowIfArgumentNull(onLoaded);
 
         CorePlugin.Log.LogInfo($"Loading bundle at {path}...");
-        _operations.Add(new LoadOperation(path, onLoaded, loadContents: false));
+        _operations.Add(new LoadOperation(path, onLoaded, loadContents: false, mod));
     }
 
     /// <summary>
     /// Load an AssetBundle async and get a callback for when it's loaded.
     /// Also registers its contents automatically.
     /// </summary>
+    /// <remarks>
+    /// Prefer <see cref="LoadBundleAndContentsWithName(BaseUnityPlugin, string, Action{PeakBundle})"/>
+    /// over this method.
+    /// </remarks>
     /// <param name="path">The absolute path to the AssetBundle.</param>
-    /// <param name="onLoaded">Callback for when the AssetBundle is loaded. Supports waiting as an IEnumerator coroutine.</param>
-    public static void LoadBundleAndContents(
+    /// <param name="onLoaded">Callback for when the AssetBundle is loaded.</param>
+    /// <param name="mod">The <see cref="ModDefinition"/> that owns this <see cref="PeakBundle"/>.
+    /// If this is set, the target asset bundle must not contain a <see cref="UnityModDefinition"/>
+    /// <see cref="ScriptableObject"/>.</param>
+    public static void LoadBundleAndContentsFromPath(
         string path,
-        Action<AssetBundle, ModDefinition>? onLoaded = null
+        Action<PeakBundle>? onLoaded = null,
+        ModDefinition? mod = null
     )
     {
         ThrowHelper.ThrowIfArgumentNullOrWhiteSpace(path);
 
         CorePlugin.Log.LogInfo($"Loading bundle at {path}...");
-        _operations.Add(new LoadOperation(path, onLoaded, loadContents: true));
+        _operations.Add(new LoadOperation(path, onLoaded, loadContents: true, mod));
     }
 
     internal static void FinishLoadOperations(MonoBehaviour behaviour)
@@ -262,7 +303,7 @@ public static class BundleLoader
             }
         }
 
-        operation.OnBundleLoaded?.Invoke(bundle, mod);
+        operation.OnBundleLoaded?.Invoke(new PeakBundle(bundle, mod));
 
         // if (ConfigManager.ExtendedLogging.Value)
         // {
@@ -282,7 +323,7 @@ public static class BundleLoader
 
     private class LoadOperation(
         string path,
-        Action<AssetBundle, ModDefinition>? onBundleLoaded = null,
+        Action<PeakBundle>? onBundleLoaded = null,
         bool loadContents = true,
         ModDefinition? modDefinition = null
     )
@@ -292,7 +333,7 @@ public static class BundleLoader
         public State CurrentState { get; set; } = State.LoadingBundle;
         public bool LoadContents { get; } = loadContents;
         public ModDefinition? ModDefinition { get; } = modDefinition;
-        public Action<AssetBundle, ModDefinition>? OnBundleLoaded { get; } = onBundleLoaded;
+        public Action<PeakBundle>? OnBundleLoaded { get; } = onBundleLoaded;
 
         public AssetBundleCreateRequest BundleRequest { get; } =
             AssetBundle.LoadFromFileAsync(path);
