@@ -9,6 +9,9 @@ namespace PEAKLib.Items;
 public class ItemContent(Item item) : IContent<ItemContent>, IItemContent
 {
     /// <inheritdoc/>
+    public string Name => Item.name;
+
+    /// <inheritdoc/>
     public Item Item { get; } = ThrowHelper.ThrowIfArgumentNull(item);
     internal static List<RegisteredContent<ItemContent>> s_RegisteredItems = [];
 

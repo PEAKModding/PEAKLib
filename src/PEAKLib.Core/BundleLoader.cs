@@ -283,7 +283,7 @@ public static class BundleLoader
                 catch (Exception e)
                 {
                     CorePlugin.Log.LogError(
-                        $"Failed to register {mod.Id}:{content} ({content.GetType().Name}) from bundle {operation.FileName}: {e}"
+                        $"Failed to register '{mod.Id}:{content.Name}' ({content.GetType().Name}) from bundle '{operation.FileName}': {e}"
                     );
                 }
             }

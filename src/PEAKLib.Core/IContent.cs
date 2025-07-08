@@ -23,6 +23,11 @@ public interface IContent<T> : IContent
 public interface IContent
 {
     /// <summary>
+    /// Gets the name of this content.
+    /// </summary>
+    public string Name { get; }
+
+    /// <summary>
     /// Registers this content with the game.
     /// </summary>
     /// <param name="owner">The <see cref="ModDefinition"/> who owns this content.</param>

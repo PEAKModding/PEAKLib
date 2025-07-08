@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using PEAKLib.Core;
 using UnityEngine;
 
@@ -11,6 +12,9 @@ namespace PEAKLib.Items.UnityEditor;
 public class UnityItemContent : ScriptableObject, IItemContent
 {
     /// <inheritdoc/>
+    public string Name => Item.name;
+
+    /// <inheritdoc/>
     public Item Item => Resolve().Item;
 
     /// <summary>
@@ -18,6 +22,7 @@ public class UnityItemContent : ScriptableObject, IItemContent
     /// </summary>
     [field: SerializeField]
     public GameObject ItemPrefab { get; private set; } = null!;
+
     internal static readonly Dictionary<UnityItemContent, ItemContent> s_UnityToModItem = [];
 
     /// <inheritdoc/>
@@ -31,8 +36,11 @@ public class UnityItemContent : ScriptableObject, IItemContent
             return modItem;
         }
 
-        var item = ThrowHelper.ThrowIfFieldNull(ItemPrefab).GetComponent<Item>();
-        ThrowHelper.ThrowIfFieldNull(item);
+        var item =
+            ThrowHelper.ThrowIfFieldNull(ItemPrefab).GetComponent<Item>()
+            ?? throw new NullReferenceException(
+                $"{nameof(Item)} component on {nameof(ItemPrefab)} is null!"
+            );
 
         modItem = new(item);
         s_UnityToModItem.Add(this, modItem);
