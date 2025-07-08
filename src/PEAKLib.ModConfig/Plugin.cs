@@ -105,7 +105,7 @@ public partial class ModConfigPlugin : BaseUnityPlugin
             var isTitleScreen = SceneManager.GetActiveScene().name == "Title";
 
             var pauseOptionsMenu = FindAnyObjectByType<PauseOptionsMenu>();
-            var modSettingsButton = MenuAPI.CreatePauseMenuButton("Mod Settings")?
+            var modSettingsButton = MenuAPI.CreatePauseMenuButton("MOD SETTINGS")?
                 .SetColor(new Color(0.15f, 0.75f, 0.85f))
                 .ParentTo(parent)
                 .OnClick(() =>
@@ -116,7 +116,7 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                 });
 
             if (modSettingsButton != null && isTitleScreen)
-                modSettingsButton.SetPosition(new Vector2(-140, -210)).SetWidth(200);
+                modSettingsButton.SetPosition(new Vector2(-130, -210)).SetWidth(220);
             else if (modSettingsButton != null && !isTitleScreen)
                 modSettingsButton.transform.SetSiblingIndex(4);
         }

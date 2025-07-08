@@ -17,7 +17,7 @@ PEAKModding-PEAKLib_Core = "0.1.0"
 PEAKModding-PEAKLib_UI = "0.1.5"
 
 [build]
-icon = "../../icon.png"
+icon = "./icon.png"
 readme = "./README.md"
 outdir = "../../artifacts/thunderstore/"
 
