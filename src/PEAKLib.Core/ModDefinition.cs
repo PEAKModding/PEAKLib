@@ -64,6 +64,7 @@ public class ModDefinition : IModDefinitionResolvable
     /// <inheritdoc cref="GetOrCreate(string, string, System.Version)"/>
     public static ModDefinition GetOrCreate(BepInPlugin bepInPlugin) =>
         GetOrCreate(bepInPlugin.GUID, bepInPlugin.Name, bepInPlugin.Version);
+#endif
 
     /// <summary>
     /// Creates a new <see cref="ModDefinition"/> for the <paramref name="id"/>
@@ -95,6 +96,7 @@ public class ModDefinition : IModDefinitionResolvable
     public static bool TryGetMod(string id, [NotNullWhen(true)] out ModDefinition? modDefinition) =>
         s_guidToMod.TryGetValue(id, out modDefinition);
 
+#if !UNITY_EDITOR
     /// <summary>
     /// Registers all unregistered content belonging to this <see cref="ModDefinition"/>.
     /// </summary>

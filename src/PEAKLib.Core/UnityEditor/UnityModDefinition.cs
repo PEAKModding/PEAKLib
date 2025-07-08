@@ -43,11 +43,7 @@ public class UnityModDefinition : ScriptableObject, IModDefinitionResolvable
             );
         }
 
-        ModDefinition modDefinition = null!;
-
-#if !UNITY_EDITOR
-        modDefinition = ModDefinition.GetOrCreate(modId, modName, version);
-#endif
+        ModDefinition modDefinition = ModDefinition.GetOrCreate(modId, modName, version);
 
         foreach (var modContent in content)
         {
