@@ -251,7 +251,18 @@ public static class BundleLoader
 
         Object[] assets = assetRequest.allAssets;
 
-        var mods = assets.OfType<UnityModDefinition>().Select(x => x.Resolve()).ToList();
+        List<ModDefinition> mods;
+        try
+        {
+            mods = [.. assets.OfType<UnityModDefinition>().Select(x => x.Resolve())];
+        }
+        catch (Exception ex)
+        {
+            CorePlugin.Log.LogError($"Failed to Resolve ModDefinition: {ex}");
+            Finish();
+            yield break;
+        }
+
         if (operation.ModDefinition is { } modDefinition)
         {
             mods.Add(modDefinition);
