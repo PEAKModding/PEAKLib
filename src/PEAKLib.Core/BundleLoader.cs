@@ -8,6 +8,7 @@ using BepInEx;
 using PEAKLib.Core.UnityEditor;
 using TMPro;
 using UnityEngine;
+using Zorro.Core;
 using Object = UnityEngine.Object;
 
 namespace PEAKLib.Core;
@@ -156,7 +157,7 @@ public static class BundleLoader
                 lastUpdate = Time.time;
 
                 string bundlesWord = _operations.Count == 1 ? "bundle" : "bundles";
-                // text.text = $"PEAKLib: Waiting for {_operations.Count} {bundlesWord} to load...";
+                text.text = $"PEAKLib: Waiting for {_operations.Count} {bundlesWord} to load...";
 
                 // if (!ConfigManager.ExtendedLogging.Value)
                 //     continue;
@@ -204,31 +205,25 @@ public static class BundleLoader
 
     private static (TMP_Text, Action) SetupLoadingUI()
     {
-        // TODO: UI
+        
+        Canvas canvas = GameObject.Find("LoadingScreenSimple(Clone)").GetComponent<Canvas>();
+        GameObject vanillaTextObj = canvas.transform.FindChildRecursive("LoadingText").gameObject;
 
-        // var hudCanvas = GameObject.Find("HUD Canvas");
-        // var hud = hudCanvas.transform.Find("HUD");
-        // hud.gameObject.SetActive(false);
+        GameObject textObj = Object.Instantiate(vanillaTextObj, vanillaTextObj.transform.parent, true);
+        textObj.name = "PEAKLib Loading Text";
 
-        // var buttonText = Object.FindObjectOfType<TMP_Text>();
-        // var text = Object.Instantiate(buttonText, hudCanvas.transform);
-        // text.gameObject.name = "PEAKLibText";
-        // text.gameObject.SetActive(true);
-        // text.text = "PEAKLib is loading bundles... Hang tight!";
-        // text.color = Color.white;
-        // text.alignment = TextAlignmentOptions.Center;
+        TextMeshProUGUI text = textObj.GetComponent<TextMeshProUGUI>();
+        text.text = "";
 
-        // var rectTransform = text.GetComponent<RectTransform>();
-        // rectTransform.anchoredPosition = Vector2.zero;
-        // rectTransform.anchorMin = Vector2.zero;
-        // rectTransform.anchorMax = Vector2.one;
-        // rectTransform.sizeDelta = Vector2.zero;
+        RectTransform rect = textObj.GetComponent<RectTransform>();
+        rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 300f);
+
 
         return (
-            null!, // text,
-            () => {
-                // text.gameObject.SetActive(false);
-                // hud.gameObject.SetActive(true);
+            text,
+            () =>
+            {
+                textObj.SetActive(false);
             }
         );
     }
