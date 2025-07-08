@@ -86,7 +86,7 @@ public static class BundleLoader
 
         foreach (string path in files)
         {
-            CorePlugin.Log.LogInfo($"Loading bundle at {path}...");
+            CorePlugin.Log.LogInfo($"Loading bundle at '{path}'...");
             _operations.Add(new LoadOperation(path, onLoaded, loadContents, modDefinition));
         }
     }
@@ -109,7 +109,7 @@ public static class BundleLoader
         ThrowHelper.ThrowIfArgumentNullOrWhiteSpace(path);
         ThrowHelper.ThrowIfArgumentNull(onLoaded);
 
-        CorePlugin.Log.LogInfo($"Loading bundle at {path}...");
+        CorePlugin.Log.LogInfo($"Loading bundle at '{path}'...");
         _operations.Add(new LoadOperation(path, onLoaded, loadContents: false, mod));
     }
 
@@ -134,19 +134,12 @@ public static class BundleLoader
     {
         ThrowHelper.ThrowIfArgumentNullOrWhiteSpace(path);
 
-        CorePlugin.Log.LogInfo($"Loading bundle at {path}...");
+        CorePlugin.Log.LogInfo($"Loading bundle at '{path}'...");
         _operations.Add(new LoadOperation(path, onLoaded, loadContents: true, mod));
     }
 
-    internal static void FinishLoadOperations(MonoBehaviour behaviour)
+    internal static IEnumerator FinishLoadOperationsRoutine(MonoBehaviour behaviour)
     {
-        behaviour.StartCoroutine(FinishLoadOperationsRoutine(behaviour));
-    }
-
-    private static IEnumerator FinishLoadOperationsRoutine(MonoBehaviour behaviour)
-    {
-        yield return null;
-
         foreach (var loadOperation in _operations.ToArray()) // collection might change
         {
             behaviour.StartCoroutine(FinishLoadOperation(loadOperation));
