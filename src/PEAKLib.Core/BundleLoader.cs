@@ -45,6 +45,8 @@ public static class BundleLoader
 
     private static void AddOperation(LoadOperation operation)
     {
+        CorePlugin.Log.LogInfo($"Loading bundle at '{operation.Path}'...");
+
         if (bundleLoadingWindowClosed)
         {
             CorePlugin.Log.LogWarning(
@@ -120,8 +122,7 @@ public static class BundleLoader
 
         foreach (string path in files)
         {
-            CorePlugin.Log.LogInfo($"Loading bundle at '{path}'...");
-            _operations.Add(new LoadOperation(path, onLoaded, loadContents, modDefinition));
+            AddOperation(new LoadOperation(path, onLoaded, loadContents, modDefinition));
         }
     }
 
@@ -143,8 +144,7 @@ public static class BundleLoader
         ThrowHelper.ThrowIfArgumentNullOrWhiteSpace(path);
         ThrowHelper.ThrowIfArgumentNull(onLoaded);
 
-        CorePlugin.Log.LogInfo($"Loading bundle at '{path}'...");
-        _operations.Add(new LoadOperation(path, onLoaded, loadContents: false, mod));
+        AddOperation(new LoadOperation(path, onLoaded, loadContents: false, mod));
     }
 
     /// <summary>
@@ -168,8 +168,7 @@ public static class BundleLoader
     {
         ThrowHelper.ThrowIfArgumentNullOrWhiteSpace(path);
 
-        CorePlugin.Log.LogInfo($"Loading bundle at '{path}'...");
-        _operations.Add(new LoadOperation(path, onLoaded, loadContents: true, mod));
+        AddOperation(new LoadOperation(path, onLoaded, loadContents: true, mod));
     }
 
     internal static IEnumerator LoadOperationsDeadlineWait(MonoBehaviour behaviour)
