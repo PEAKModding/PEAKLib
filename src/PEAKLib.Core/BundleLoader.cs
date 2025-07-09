@@ -29,7 +29,9 @@ public static class BundleLoader
     /// It's possible an AssetBundle is loaded after this event,
     /// but it should be assumed that those bundles are reloaded in-game
     /// for development purposes to avoid having to reload the whole game again.
-    /// You can support this scenario by by using the <see cref="OnBundleLoaded"/> event.
+    /// You can support this scenario by by using the <see cref="OnBundleLoaded"/> event.<br/>
+    /// <br/>
+    /// This event will always run, even if there are no bundles to load.
     /// </remarks>
     public static event Action? OnAllBundlesLoaded;
 
@@ -39,9 +41,23 @@ public static class BundleLoader
     public static event Action<PeakBundle>? OnBundleLoaded;
 
     private static bool calledOnBundleLoaded;
-    internal static bool bundleLoadingWindowClosed;
-
+    private static bool bundleLoadingWindowClosed;
     private static readonly List<LoadOperation> _operations = [];
+
+    private static void InvokeOnAllBundlesLoadedIfShould()
+    {
+        if (_operations.Count == 0 && bundleLoadingWindowClosed && !calledOnBundleLoaded)
+        {
+            calledOnBundleLoaded = true;
+            OnAllBundlesLoaded?.SafeInvoke();
+        }
+    }
+
+    internal static void CloseBundleLoadingWindow()
+    {
+        bundleLoadingWindowClosed = true;
+        InvokeOnAllBundlesLoadedIfShould();
+    }
 
     private static void AddOperation(LoadOperation operation)
     {
@@ -414,11 +430,7 @@ public static class BundleLoader
 
             Finish();
 
-            if (_operations.Count == 0 && bundleLoadingWindowClosed && !calledOnBundleLoaded)
-            {
-                calledOnBundleLoaded = true;
-                OnAllBundlesLoaded?.SafeInvoke();
-            }
+            InvokeOnAllBundlesLoadedIfShould();
 
             void Finish()
             {

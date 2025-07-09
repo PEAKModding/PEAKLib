@@ -41,7 +41,7 @@ public partial class CorePlugin : BaseUnityPlugin
 
     private void Start()
     {
-        BundleLoader.bundleLoadingWindowClosed = true;
+        BundleLoader.CloseBundleLoadingWindow();
     }
 }
 #endif
