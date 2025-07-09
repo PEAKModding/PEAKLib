@@ -147,13 +147,23 @@ public static class BundleLoader
             behaviour.StartCoroutine(FinishLoadOperation(loadOperation));
         }
 
-        var (text, disableLoadingUI) = SetupLoadingUI();
-
-        float lastUpdate = Time.time;
-        while (_operations.Count > 0)
+        var maybeUI = SetupLoadingUI();
+        if (maybeUI is not { } ui)
         {
-            if (Time.time - lastUpdate > 1)
+            CorePlugin.Log.LogError("Loading UI failed!");
+        }
+        else
+        {
+            var (text, disableLoadingUI) = ui;
+
+            float lastUpdate = Time.time;
+            while (_operations.Count > 0)
             {
+                if (Time.time - lastUpdate <= 1)
+                {
+                    yield return null;
+                }
+
                 lastUpdate = Time.time;
 
                 string bundlesWord = _operations.Count == 1 ? "bundle" : "bundles";
@@ -176,14 +186,14 @@ public static class BundleLoader
 
                     CorePlugin.Log.LogDebug(msg);
                 }
+
+                yield return null;
             }
 
-            yield return null;
+            disableLoadingUI();
         }
 
         CorePlugin.Log.LogInfo("Finished loading bundles.");
-
-        disableLoadingUI();
 
         if (OnAllBundlesLoaded is null)
         {
@@ -203,13 +213,29 @@ public static class BundleLoader
         }
     }
 
-    private static (TMP_Text, Action) SetupLoadingUI()
+    private static (TMP_Text, Action)? SetupLoadingUI()
     {
-        
-        Canvas canvas = GameObject.Find("LoadingScreenSimple(Clone)").GetComponent<Canvas>();
-        GameObject vanillaTextObj = canvas.transform.FindChildRecursive("LoadingText").gameObject;
+        Canvas? canvas = GameObject.Find("LoadingScreenSimple(Clone)")?.GetComponent<Canvas>();
+        if (canvas == null)
+        {
+            CorePlugin.Log.LogError("Loading UI Canvas not found!");
+            return null;
+        }
 
-        GameObject textObj = Object.Instantiate(vanillaTextObj, vanillaTextObj.transform.parent, true);
+        Transform loadingTextTransform = canvas.transform.FindChildRecursive("LoadingText");
+        if (loadingTextTransform == null)
+        {
+            CorePlugin.Log.LogError("Loading UI 'LoadingText' transform not found!");
+            return null;
+        }
+
+        GameObject vanillaTextObj = loadingTextTransform.gameObject;
+
+        GameObject textObj = Object.Instantiate(
+            vanillaTextObj,
+            vanillaTextObj.transform.parent,
+            true
+        );
         textObj.name = "PEAKLib Loading Text";
 
         TextMeshProUGUI text = textObj.GetComponent<TextMeshProUGUI>();
@@ -217,7 +243,6 @@ public static class BundleLoader
 
         RectTransform rect = textObj.GetComponent<RectTransform>();
         rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 300f);
-
 
         return (
             text,
