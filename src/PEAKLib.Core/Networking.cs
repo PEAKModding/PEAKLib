@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using BepInEx.Bootstrap;
+using PEAKLib.Core.Extensions;
 using Photon.Pun;
 
 namespace PEAKLib.Core;
@@ -70,32 +71,12 @@ public static class Networking
             if (hostPluginGuids.Contains(pluginGuid.Key))
             {
                 CorePlugin.Log.LogDebug($"Host has plugin with guid: {pluginGuid}");
-                foreach (var onHasPlugin in pluginGuid.Value.HasPlugin.GetInvocationList())
-                {
-                    try
-                    {
-                        ((Action)onHasPlugin)();
-                    }
-                    catch (Exception ex)
-                    {
-                        CorePlugin.Log.LogError($"Unhandled exception in callback: {ex}");
-                    }
-                }
+                pluginGuid.Value.HasPlugin.SafeInvoke();
             }
             else
             {
                 CorePlugin.Log.LogDebug($"Host does not have plugin with guid: {pluginGuid}");
-                foreach (var onNoPlugin in pluginGuid.Value.NoPlugin.GetInvocationList())
-                {
-                    try
-                    {
-                        ((Action)onNoPlugin)();
-                    }
-                    catch (Exception ex)
-                    {
-                        CorePlugin.Log.LogError($"Unhandled exception in callback: {ex}");
-                    }
-                }
+                pluginGuid.Value.NoPlugin.SafeInvoke();
             }
         }
     }
@@ -165,7 +146,8 @@ internal class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnMasterClientSwitched(Photon.Realtime.Player newMasterClient)
     {
         CorePlugin.Log.LogDebug($"Master Client Switched to player: {newMasterClient.NickName}");
-        if (!PhotonNetwork.IsMasterClient) return;
+        if (!PhotonNetwork.IsMasterClient)
+            return;
         CallRPC(nameof(ReceivePluginsFromHostRPC), RpcTarget.MasterClient);
     }
 }
