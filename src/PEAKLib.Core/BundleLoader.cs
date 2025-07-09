@@ -156,12 +156,20 @@ public static class BundleLoader
         {
             var (text, disableLoadingUI) = ui;
 
+            float startTime = Time.time;
             float lastUpdate = Time.time;
             while (_operations.Count > 0)
             {
                 if (Time.time - lastUpdate <= 1)
                 {
                     yield return null;
+                }
+
+                // Only make the UI show up if it's taking a while.
+                // This should make PEAKLib mostly invisible with light mods installed.
+                if (Time.time - startTime > 3f)
+                {
+                    text.gameObject.SetActive(true);
                 }
 
                 lastUpdate = Time.time;
@@ -222,7 +230,7 @@ public static class BundleLoader
             return null;
         }
 
-        Transform loadingTextTransform = canvas.transform.FindChildRecursive("LoadingText");
+        Transform? loadingTextTransform = canvas.transform.FindChildRecursive("LoadingText");
         if (loadingTextTransform == null)
         {
             CorePlugin.Log.LogError("Loading UI 'LoadingText' transform not found!");
@@ -244,13 +252,28 @@ public static class BundleLoader
         RectTransform rect = textObj.GetComponent<RectTransform>();
         rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, 300f);
 
-        return (
-            text,
-            () =>
-            {
-                textObj.SetActive(false);
-            }
+        textObj.SetActive(false);
+
+        return new (TextMeshProUGUI, Action)?(
+            (
+                text,
+                () =>
+                {
+                    text.text = "PEAKLib: All bundles loaded!";
+                    CorePlugin.Instance.StartCoroutine(WaitAndDisableText(textObj));
+                }
+            )
         );
+    }
+
+    static IEnumerator WaitAndDisableText(GameObject textObj)
+    {
+        yield return new WaitForSeconds(1f);
+
+        if (textObj == null)
+            yield break;
+
+        textObj.SetActive(false);
     }
 
     private static IEnumerator FinishLoadOperation(LoadOperation operation)

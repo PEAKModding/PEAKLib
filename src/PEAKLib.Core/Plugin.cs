@@ -15,9 +15,11 @@ namespace PEAKLib.Core;
 public partial class CorePlugin : BaseUnityPlugin
 {
     internal static ManualLogSource Log { get; } = BepInEx.Logging.Logger.CreateLogSource(Name);
+    internal static CorePlugin Instance { get; private set; } = null!;
 
     private void Awake()
     {
+        Instance = this;
         MonoDetourManager.InvokeHookInitializers(typeof(CorePlugin).Assembly);
 
         PlayerHandler.OnCharacterRegistered += (Character character) =>
