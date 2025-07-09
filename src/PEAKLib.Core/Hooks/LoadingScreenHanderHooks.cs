@@ -12,7 +12,7 @@ namespace PEAKLib.Core.Hooks;
 [MonoDetourTargets(typeof(LoadingScreenHandler), GenerateControlFlowVariants = true)]
 static class LoadingScreenHandlerHooks
 {
-    static bool loadedBundles;
+    static bool loadBundlesStepInjected;
 
     static readonly EnumeratorFieldReferenceGetter<string> sceneName = LoadSceneProcess
         .StateMachineTarget()
@@ -32,14 +32,14 @@ static class LoadingScreenHandlerHooks
         if (self.State is not 0)
             return ReturnFlow.None;
 
-        if (loadedBundles is true)
+        if (loadBundlesStepInjected is true)
             return ReturnFlow.None;
 
         if (sceneName(self.Enumerator) is not "Airport")
             return ReturnFlow.None;
 
-        self.Current = BundleLoader.FinishLoadOperationsRoutine(self.This);
-        loadedBundles = true;
+        self.Current = BundleLoader.LoadOperationsDeadlineWait(self.This);
+        loadBundlesStepInjected = true;
         continueEnumeration = true;
         return ReturnFlow.HardReturn;
     }

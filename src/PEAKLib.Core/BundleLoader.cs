@@ -19,9 +19,19 @@ namespace PEAKLib.Core;
 public static class BundleLoader
 {
     /// <summary>
-    /// An event that runs when all AssetBundles are loaded by PEAKLib.
+    /// An event that is fired when all AssetBundles are loaded by PEAKLib.
     /// </summary>
+    /// <remarks>
+    /// It's possible an AssetBundle is loaded after this event,
+    /// but it should be assumed that those bundles are reloaded in-game
+    /// for development purposes to avoid having to reload the whole game again.
+    /// </remarks>
     public static event Action? OnAllBundlesLoaded;
+
+    /// <summary>
+    /// And even that is fired for every AssetBundle loaded by PEAKLib.
+    /// </summary>
+    public static event Action<PeakBundle>? OnBundleLoaded;
 
     private static readonly List<LoadOperation> _operations = [];
 
@@ -140,13 +150,8 @@ public static class BundleLoader
         _operations.Add(new LoadOperation(path, onLoaded, loadContents: true, mod));
     }
 
-    internal static IEnumerator FinishLoadOperationsRoutine(MonoBehaviour behaviour)
+    internal static IEnumerator LoadOperationsDeadlineWait(MonoBehaviour behaviour)
     {
-        foreach (var loadOperation in _operations.ToArray()) // collection might change
-        {
-            behaviour.StartCoroutine(FinishLoadOperation(loadOperation));
-        }
-
         var maybeUI = SetupLoadingUI();
         if (maybeUI is not { } ui)
         {
@@ -276,122 +281,16 @@ public static class BundleLoader
         textObj.SetActive(false);
     }
 
-    private static IEnumerator FinishLoadOperation(LoadOperation operation)
+    private class LoadOperation
     {
-        yield return operation.BundleRequest;
-        var bundle = operation.BundleRequest.assetBundle;
-
-        if (bundle == null)
-        {
-            CorePlugin.Log.LogError($"Failed to load bundle {operation.FileName}!");
-            Finish();
-            yield break;
-        }
-
-        operation.CurrentState = LoadOperation.State.LoadingContent;
-        var assetRequest = bundle.LoadAllAssetsAsync<ScriptableObject>();
-        yield return assetRequest;
-
-        Object[] assets = assetRequest.allAssets;
-
-        List<ModDefinition> mods;
-        try
-        {
-            mods = [.. assets.OfType<UnityModDefinition>().Select(x => x.Resolve())];
-        }
-        catch (Exception ex)
-        {
-            CorePlugin.Log.LogError($"Failed to Resolve ModDefinition: {ex}");
-            Finish();
-            yield break;
-        }
-
-        if (operation.ModDefinition is { } modDefinition)
-        {
-            mods.Add(modDefinition);
-        }
-
-        switch (mods.Count)
-        {
-            case 0:
-                CorePlugin.Log.LogError($"Bundle {operation.FileName} contains no mods!");
-                Finish();
-                yield break;
-            case > 1:
-                CorePlugin.Log.LogError($"Bundle {operation.FileName} contains more than one mod!");
-                Finish();
-                yield break;
-            default:
-                break;
-        }
-
-        var mod = mods[0];
-
-        var contents = assets.OfType<IContent>();
-
-        foreach (var content in contents)
-        {
-            mod.Content.Add(content);
-        }
-
-        if (operation.LoadContents)
-        {
-            foreach (var content in contents)
-            {
-                try
-                {
-                    mod.Register(content);
-                }
-                catch (Exception e)
-                {
-                    CorePlugin.Log.LogError(
-                        $"Failed to register '{mod.Id}:{content.Name}' ({content.GetType().Name}) from bundle '{operation.FileName}': {e}"
-                    );
-                }
-            }
-        }
-
-        try
-        {
-            operation.OnBundleLoaded?.Invoke(new PeakBundle(bundle, mod));
-        }
-        catch (Exception ex)
-        {
-            CorePlugin.Log.LogError($"Unhandled exception in callback: {ex}");
-        }
-
-        // if (ConfigManager.ExtendedLogging.Value)
-        // {
-        CorePlugin.Log.LogInfo(
-            $"Loaded bundle {operation.FileName} in {operation.ElapsedTime.TotalSeconds:N1}s"
-        );
-        // }
-
-        Finish();
-        yield break;
-
-        void Finish()
-        {
-            _operations.Remove(operation);
-        }
-    }
-
-    private class LoadOperation(
-        string path,
-        Action<PeakBundle>? onBundleLoaded = null,
-        bool loadContents = true,
-        ModDefinition? modDefinition = null
-    )
-    {
-        public string Path { get; } = path;
+        public string Path { get; }
         public DateTime StartTime { get; } = DateTime.Now;
         public State CurrentState { get; set; } = State.LoadingBundle;
-        public bool LoadContents { get; } = loadContents;
-        public ModDefinition? ModDefinition { get; } = modDefinition;
-        public Action<PeakBundle>? OnBundleLoaded { get; } = onBundleLoaded;
+        public bool LoadContents { get; }
+        public ModDefinition? ModDefinition { get; }
+        public Action<PeakBundle>? OnBundleLoaded { get; }
 
-        public AssetBundleCreateRequest BundleRequest { get; } =
-            AssetBundle.LoadFromFileAsync(path);
+        public AssetBundleCreateRequest BundleRequest { get; }
 
         public TimeSpan ElapsedTime => DateTime.Now - StartTime;
         public string FileName => System.IO.Path.GetFileNameWithoutExtension(Path);
@@ -400,6 +299,142 @@ public static class BundleLoader
         {
             LoadingBundle,
             LoadingContent,
+        }
+
+        internal LoadOperation(
+            string path,
+            Action<PeakBundle>? onBundleLoaded = null,
+            bool loadContents = true,
+            ModDefinition? modDefinition = null
+        )
+        {
+            Path = path;
+            OnBundleLoaded = onBundleLoaded;
+            LoadContents = loadContents;
+            ModDefinition = modDefinition;
+            BundleRequest = AssetBundle.LoadFromFileAsync(path);
+            BundleRequest.completed += OnLoaded;
+        }
+
+        private void OnLoaded(AsyncOperation operation) =>
+            CorePlugin.Instance.StartCoroutine(FinishLoadOperation(this));
+
+        private static IEnumerator FinishLoadOperation(LoadOperation operation)
+        {
+            var bundle = operation.BundleRequest.assetBundle;
+
+            if (bundle == null)
+            {
+                CorePlugin.Log.LogError($"Failed to load bundle {operation.FileName}!");
+                Finish();
+                yield break;
+            }
+
+            operation.CurrentState = State.LoadingContent;
+            var assetRequest = bundle.LoadAllAssetsAsync<ScriptableObject>();
+            yield return assetRequest;
+
+            Object[] assets = assetRequest.allAssets;
+
+            List<ModDefinition> mods;
+            try
+            {
+                mods = [.. assets.OfType<UnityModDefinition>().Select(x => x.Resolve())];
+            }
+            catch (Exception ex)
+            {
+                CorePlugin.Log.LogError($"Failed to Resolve ModDefinition: {ex}");
+                Finish();
+                yield break;
+            }
+
+            if (operation.ModDefinition is { } modDefinition)
+            {
+                mods.Add(modDefinition);
+            }
+
+            switch (mods.Count)
+            {
+                case 0:
+                    CorePlugin.Log.LogError($"Bundle {operation.FileName} contains no mods!");
+                    Finish();
+                    yield break;
+                case > 1:
+                    CorePlugin.Log.LogError(
+                        $"Bundle {operation.FileName} contains more than one mod!"
+                    );
+                    Finish();
+                    yield break;
+                default:
+                    break;
+            }
+
+            var mod = mods[0];
+
+            var contents = assets.OfType<IContent>();
+
+            foreach (var content in contents)
+            {
+                mod.Content.Add(content);
+            }
+
+            if (operation.LoadContents)
+            {
+                foreach (var content in contents)
+                {
+                    try
+                    {
+                        mod.Register(content);
+                    }
+                    catch (Exception e)
+                    {
+                        CorePlugin.Log.LogError(
+                            $"Failed to register '{mod.Id}:{content.Name}' ({content.GetType().Name}) from bundle '{operation.FileName}': {e}"
+                        );
+                    }
+                }
+            }
+
+            var peakBundle = new PeakBundle(bundle, mod);
+
+            try
+            {
+                operation.OnBundleLoaded?.Invoke(peakBundle);
+            }
+            catch (Exception ex)
+            {
+                CorePlugin.Log.LogError($"Unhandled exception in callback: {ex}");
+            }
+
+            if (BundleLoader.OnBundleLoaded is not null)
+            {
+                foreach (var callback in BundleLoader.OnBundleLoaded.GetInvocationList())
+                {
+                    try
+                    {
+                        ((Action<PeakBundle>)callback)(peakBundle);
+                    }
+                    catch (Exception ex)
+                    {
+                        CorePlugin.Log.LogError($"Unhandled exception in callback: {ex}");
+                    }
+                }
+            }
+
+            // if (ConfigManager.ExtendedLogging.Value)
+            // {
+            CorePlugin.Log.LogInfo(
+                $"Loaded bundle {operation.FileName} in {operation.ElapsedTime.TotalSeconds:N1}s"
+            );
+            // }
+
+            Finish();
+            yield break;
+
+            void Finish()
+            {
+                _operations.Remove(operation);
+            }
         }
     }
 }

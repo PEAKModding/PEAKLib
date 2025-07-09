@@ -21,6 +21,8 @@ public sealed class PeakBundle
     }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+    public bool Contains(string name) => bundle.Contains(name);
+
     public Object LoadAsset(string name) => bundle.LoadAsset(name);
 
     public T LoadAsset<T>(string name)

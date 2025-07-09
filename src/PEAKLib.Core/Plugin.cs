@@ -15,11 +15,18 @@ namespace PEAKLib.Core;
 public partial class CorePlugin : BaseUnityPlugin
 {
     internal static ManualLogSource Log { get; } = BepInEx.Logging.Logger.CreateLogSource(Name);
-    internal static CorePlugin Instance { get; private set; } = null!;
+    internal static CorePlugin Instance =>
+        _instance
+        ?? throw new NullReferenceException(
+            "PEAKLib.Core hasn't been initialized yet! "
+                + "Please depend on it with [BepInDependency(CorePlugin.Id)]"
+        );
+
+    private static CorePlugin? _instance = null;
 
     private void Awake()
     {
-        Instance = this;
+        _instance = this;
         MonoDetourManager.InvokeHookInitializers(typeof(CorePlugin).Assembly);
 
         PlayerHandler.OnCharacterRegistered += (Character character) =>
