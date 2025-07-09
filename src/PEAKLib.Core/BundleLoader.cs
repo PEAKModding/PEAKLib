@@ -430,11 +430,10 @@ public static class BundleLoader
 
             Finish();
 
-            InvokeOnAllBundlesLoadedIfShould();
-
             void Finish()
             {
                 _operations.Remove(operation);
+                InvokeOnAllBundlesLoadedIfShould();
             }
         }
     }
