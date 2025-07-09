@@ -38,5 +38,10 @@ public partial class CorePlugin : BaseUnityPlugin
 
         Log.LogInfo($"Plugin {Name} is loaded!");
     }
+
+    private void Start()
+    {
+        BundleLoader.bundleLoadingWindowClosed = true;
+    }
 }
 #endif

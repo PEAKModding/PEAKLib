@@ -2,9 +2,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using BepInEx;
+using PEAKLib.Core.Extensions;
 using PEAKLib.Core.UnityEditor;
 using TMPro;
 using UnityEngine;
@@ -20,11 +22,14 @@ public static class BundleLoader
 {
     /// <summary>
     /// An event that is fired when all AssetBundles are loaded by PEAKLib.
+    /// This may happen during the main menu or earlier,
+    /// but the deadline is on the airport loading screen.
     /// </summary>
     /// <remarks>
     /// It's possible an AssetBundle is loaded after this event,
     /// but it should be assumed that those bundles are reloaded in-game
     /// for development purposes to avoid having to reload the whole game again.
+    /// You can support this scenario by by using the <see cref="OnBundleLoaded"/> event.
     /// </remarks>
     public static event Action? OnAllBundlesLoaded;
 
@@ -33,7 +38,24 @@ public static class BundleLoader
     /// </summary>
     public static event Action<PeakBundle>? OnBundleLoaded;
 
+    private static bool calledOnBundleLoaded;
+    internal static bool bundleLoadingWindowClosed;
+
     private static readonly List<LoadOperation> _operations = [];
+
+    private static void AddOperation(LoadOperation operation)
+    {
+        if (bundleLoadingWindowClosed)
+        {
+            CorePlugin.Log.LogWarning(
+                "The bundle loading window has passed. "
+                    + "Set your asset bundle to load in your plugin's Awake method "
+                    + $"for the best chances of everything working properly.\n{new StackTrace()}"
+            );
+        }
+
+        _operations.Add(operation);
+    }
 
     internal static void LoadAllBundles(string root, string withExtension)
     {
@@ -156,74 +178,60 @@ public static class BundleLoader
         if (maybeUI is not { } ui)
         {
             CorePlugin.Log.LogError("Loading UI failed!");
-        }
-        else
-        {
-            var (text, disableLoadingUI) = ui;
-
-            float startTime = Time.time;
-            float lastUpdate = Time.time;
             while (_operations.Count > 0)
             {
-                if (Time.time - lastUpdate <= 1)
-                {
-                    yield return null;
-                }
-
-                // Only make the UI show up if it's taking a while.
-                // This should make PEAKLib mostly invisible with light mods installed.
-                if (Time.time - startTime > 3f)
-                {
-                    text.gameObject.SetActive(true);
-                }
-
-                lastUpdate = Time.time;
-
-                string bundlesWord = _operations.Count == 1 ? "bundle" : "bundles";
-                text.text = $"PEAKLib: Waiting for {_operations.Count} {bundlesWord} to load...";
-
-                // if (!ConfigManager.ExtendedLogging.Value)
-                //     continue;
-
-                foreach (var operation in _operations)
-                {
-                    string msg = $"Loading {operation.FileName}: {operation.CurrentState}";
-                    float? progress = operation.CurrentState switch
-                    {
-                        LoadOperation.State.LoadingBundle => operation.BundleRequest.progress,
-                        _ => null,
-                    };
-
-                    if (progress.HasValue)
-                        msg += $" {progress.Value:P0}";
-
-                    CorePlugin.Log.LogDebug(msg);
-                }
-
                 yield return null;
             }
-
-            disableLoadingUI();
-        }
-
-        CorePlugin.Log.LogInfo("Finished loading bundles.");
-
-        if (OnAllBundlesLoaded is null)
-        {
             yield break;
         }
 
-        foreach (var callback in OnAllBundlesLoaded.GetInvocationList())
+        var (text, disableLoadingUI) = ui;
+
+        float startTime = Time.time;
+        float lastUpdate = Time.time;
+        while (_operations.Count > 0)
         {
-            try
+            if (Time.time - lastUpdate <= 1)
             {
-                ((Action)callback)();
+                yield return null;
             }
-            catch (Exception ex)
+
+            // Only make the UI show up if it's taking a while.
+            // This should make PEAKLib mostly invisible with light mods installed.
+            if (Time.time - startTime > 3f)
             {
-                CorePlugin.Log.LogError($"Unhandled exception in callback: {ex}");
+                text.gameObject.SetActive(true);
             }
+
+            lastUpdate = Time.time;
+
+            string bundlesWord = _operations.Count == 1 ? "bundle" : "bundles";
+            text.text = $"PEAKLib: Waiting for {_operations.Count} {bundlesWord} to load...";
+
+            // if (!ConfigManager.ExtendedLogging.Value)
+            //     continue;
+
+            foreach (var operation in _operations)
+            {
+                string msg = $"Loading {operation.FileName}: {operation.CurrentState}";
+                float? progress = operation.CurrentState switch
+                {
+                    LoadOperation.State.LoadingBundle => operation.BundleRequest.progress,
+                    _ => null,
+                };
+
+                if (progress.HasValue)
+                    msg += $" {progress.Value:P0}";
+
+                CorePlugin.Log.LogDebug(msg);
+            }
+
+            yield return null;
         }
+
+        disableLoadingUI();
+
+        CorePlugin.Log.LogInfo("Bundle loading screen finished.");
     }
 
     private static (TMP_Text, Action)? SetupLoadingUI()
@@ -289,9 +297,7 @@ public static class BundleLoader
         public bool LoadContents { get; }
         public ModDefinition? ModDefinition { get; }
         public Action<PeakBundle>? OnBundleLoaded { get; }
-
         public AssetBundleCreateRequest BundleRequest { get; }
-
         public TimeSpan ElapsedTime => DateTime.Now - StartTime;
         public string FileName => System.IO.Path.GetFileNameWithoutExtension(Path);
 
@@ -397,29 +403,8 @@ public static class BundleLoader
 
             var peakBundle = new PeakBundle(bundle, mod);
 
-            try
-            {
-                operation.OnBundleLoaded?.Invoke(peakBundle);
-            }
-            catch (Exception ex)
-            {
-                CorePlugin.Log.LogError($"Unhandled exception in callback: {ex}");
-            }
-
-            if (BundleLoader.OnBundleLoaded is not null)
-            {
-                foreach (var callback in BundleLoader.OnBundleLoaded.GetInvocationList())
-                {
-                    try
-                    {
-                        ((Action<PeakBundle>)callback)(peakBundle);
-                    }
-                    catch (Exception ex)
-                    {
-                        CorePlugin.Log.LogError($"Unhandled exception in callback: {ex}");
-                    }
-                }
-            }
+            operation.OnBundleLoaded?.SafeInvoke(peakBundle);
+            BundleLoader.OnBundleLoaded?.SafeInvoke(peakBundle);
 
             // if (ConfigManager.ExtendedLogging.Value)
             // {
@@ -429,7 +414,12 @@ public static class BundleLoader
             // }
 
             Finish();
-            yield break;
+
+            if (_operations.Count == 0 && bundleLoadingWindowClosed && !calledOnBundleLoaded)
+            {
+                calledOnBundleLoaded = true;
+                OnAllBundlesLoaded?.SafeInvoke();
+            }
 
             void Finish()
             {
