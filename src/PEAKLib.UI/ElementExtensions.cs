@@ -1,5 +1,7 @@
 ﻿using PEAKLib.Core;
 using PEAKLib.UI.Elements;
+using System.Collections.Generic;
+using System.Xml.Linq;
 using UnityEngine;
 
 namespace PEAKLib.UI;
@@ -289,6 +291,50 @@ public static class ElementExtensions
         rectTransform.offsetMin = Vector2.zero;
         rectTransform.offsetMax = Vector2.zero;
 
+        return instance;
+    }
+
+    /// <summary>
+    /// Add a localized text for the selected language
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="instance"></param>
+    /// <param name="text"></param>
+    /// <param name="language"></param>
+    /// <returns></returns>
+    public static T AddLocalization<T>(this T instance, string text, LocalizedText.Language language)
+        where T : PeakLocalizableElement
+    {
+        ThrowHelper.ThrowIfArgumentNull(instance);
+        ThrowHelper.ThrowIfFieldNull(instance.Text);
+
+        var localizedText = instance.localizedText;
+        if (localizedText == null)
+        {
+            localizedText = instance.Text.gameObject.AddComponent<LocalizedText>();
+            localizedText.index = instance.name.ToUpperInvariant();
+            localizedText.tmp = instance.Text;
+        }
+
+        if (string.IsNullOrEmpty(instance.unlocalizedText))
+            instance.unlocalizedText = text;
+
+        var index = localizedText.index;
+        if (!LocalizedText.MAIN_TABLE.TryGetValue(index, out List<string>? currentList))
+        {
+            var newTranslationList = new List<string>();
+
+            foreach (var _ in System.Enum.GetValues(typeof(LocalizedText.Language)))
+                newTranslationList.Add(instance.unlocalizedText);
+
+            LocalizedText.MAIN_TABLE.Add(index, newTranslationList);
+        }
+        else
+        {
+            currentList[(int)language] = text;
+        }
+
+        instance.Text.text = localizedText.GetText();
         return instance;
     }
 }

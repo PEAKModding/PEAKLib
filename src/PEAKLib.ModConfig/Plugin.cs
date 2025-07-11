@@ -105,7 +105,20 @@ public partial class ModConfigPlugin : BaseUnityPlugin
             var isTitleScreen = SceneManager.GetActiveScene().name == "Title";
 
             var pauseOptionsMenu = FindAnyObjectByType<PauseOptionsMenu>();
-            var modSettingsButton = MenuAPI.CreatePauseMenuButton("MOD SETTINGS")?
+            var modSettingsButton = MenuAPI.CreatePauseMenuButton("MOD SETTINGS")
+                .AddLocalization("MOD SETTINGS", LocalizedText.Language.English)
+                .AddLocalization("PARAMÈTRES DU MOD", LocalizedText.Language.French)
+                .AddLocalization("IMPOSTAZIONI MOD", LocalizedText.Language.Italian)
+                .AddLocalization("MOD-EINSTELLUNGEN", LocalizedText.Language.German)
+                .AddLocalization("AJUSTES DEL MOD", LocalizedText.Language.SpanishSpain)
+                .AddLocalization("CONFIGURACIONES DEL MOD", LocalizedText.Language.SpanishLatam)
+                .AddLocalization("CONFIGURAÇÕES DE MOD", LocalizedText.Language.BRPortuguese)
+                .AddLocalization("НАСТРОЙКИ МОДА", LocalizedText.Language.Russian)
+                .AddLocalization("НАЛАШТУВАННЯ МОДА", LocalizedText.Language.Ukrainian)
+                .AddLocalization("模组设置", LocalizedText.Language.SimplifiedChinese)
+                .AddLocalization("模組設定", LocalizedText.Language.TraditionalChinese)
+                .AddLocalization("MOD設定", LocalizedText.Language.Japanese)
+                .AddLocalization("모드 설정", LocalizedText.Language.Korean)
                 .SetColor(new Color(0.15f, 0.75f, 0.85f))
                 .ParentTo(parent)
                 .OnClick(() =>
