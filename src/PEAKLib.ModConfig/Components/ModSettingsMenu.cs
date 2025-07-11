@@ -68,9 +68,25 @@ internal class ModdedSettingsMenu : MonoBehaviour
                 return;
             }
 
+            if (item is not Setting setting)
+            {
+                ModConfigPlugin.Log.LogError("Invalid IExposedSetting");
+                return;
+            }
+
             SettingsUICell component = Instantiate(MenuWindowHooks.SettingsCellPrefab, Content).GetComponent<SettingsUICell>();
             m_spawnedCells.Add(component);
-            component.Setup(item as Setting);
+            // component.Setup(item as Setting);
+
+            // temporary fix - uncomment component.Setup and remove the region when they set printDebug default to false in LocalizedText.GetText(string id, bool printDebug = true)
+
+            #region temporary fix
+            component.m_text.text = item.GetDisplayName();
+            component.m_canvasGroup = component.GetComponent<CanvasGroup>();
+            component.m_canvasGroup.alpha = 0f;
+
+            Instantiate(setting.GetSettingUICell(), component.m_settingsContentParent).GetComponent<SettingInputUICell>().Setup(setting, GameHandler.Instance.SettingsHandler);
+            #endregion
         }
 
         m_fadeInCoroutine = StartCoroutine(FadeInCells());
