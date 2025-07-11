@@ -305,27 +305,34 @@ public static class ElementExtensions
     public static T AddLocalization<T>(this T instance, string text, LocalizedText.Language language)
         where T : PeakLocalizableElement
     {
+        if (instance.name == "UI_PeakText")
+            throw new System.Exception("You need to use a unique name to use localization. E.g. MenuAPI.CreateText(\"my cool text\", \"mymod_my_unique_name\")");
+
         ThrowHelper.ThrowIfArgumentNull(instance);
-        ThrowHelper.ThrowIfFieldNull(instance.Text);
+        var textComponent = ThrowHelper.ThrowIfFieldNull(instance.Text);
+
+        var index = instance.name.ToUpperInvariant();
 
         var localizedText = instance.localizedText;
         if (localizedText == null)
         {
-            localizedText = instance.Text.gameObject.AddComponent<LocalizedText>();
-            localizedText.index = instance.name.ToUpperInvariant();
+            localizedText = textComponent.gameObject.AddComponent<LocalizedText>();
+            localizedText.index = index;
             localizedText.tmp = instance.Text;
         }
 
         if (string.IsNullOrEmpty(instance.unlocalizedText))
             instance.unlocalizedText = text;
 
-        var index = localizedText.index;
+        
         if (!LocalizedText.MAIN_TABLE.TryGetValue(index, out List<string>? currentList))
         {
             var newTranslationList = new List<string>();
 
             foreach (var _ in System.Enum.GetValues(typeof(LocalizedText.Language)))
                 newTranslationList.Add(instance.unlocalizedText);
+
+            newTranslationList[(int)language] = text;
 
             LocalizedText.MAIN_TABLE.Add(index, newTranslationList);
         }
@@ -334,7 +341,9 @@ public static class ElementExtensions
             currentList[(int)language] = text;
         }
 
-        instance.Text.text = localizedText.GetText();
+        // Refresh text with user current language
+        textComponent.text = localizedText.GetText();
+
         return instance;
     }
 }

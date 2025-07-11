@@ -42,11 +42,14 @@ public partial class ModConfigPlugin : BaseUnityPlugin
         {
             var modSettingsPage = MenuAPI.CreatePage("ModSettings").CreateBackground();
 
-            var newText = MenuAPI.CreateText("Mod Settings", "Header")
+            var newText = MenuAPI.CreateText("Mod Settings", "ModSettings_Header")
                 .SetFontSize(48)
                 .ParentTo(modSettingsPage.transform)
                 .AlignToParent(UIAlignment.TopLeft)
-                .SetPosition(new Vector2(100f, -60f));
+                .SetPosition(new Vector2(100f, -60f))
+                .AddLocalization("CONFIGURAÇÕES DE MOD", LocalizedText.Language.BRPortuguese);
+
+            newText.Text.enableAutoSizing = true;
 
             MenuAPI.CreateMenuButton("Back")?
                 .SetColor(new Color(1, 0.5f, 0.2f))
