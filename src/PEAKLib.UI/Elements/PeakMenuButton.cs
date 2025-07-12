@@ -3,13 +3,15 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using System.Collections.Generic;
+using System;
 
 namespace PEAKLib.UI.Elements;
 
 /// <summary>
 /// Use <see cref="MenuAPI.CreateMenuButton(string)"/>
 /// </summary>
-public class PeakMenuButton : PeakElement
+public class PeakMenuButton : PeakLocalizableElement
 {
     /// <summary>
     /// The button component
@@ -31,11 +33,6 @@ public class PeakMenuButton : PeakElement
     /// </summary>
     public Image BorderBottom { get; private set; } = null!;
 
-    /// <summary>
-    /// Button text
-    /// </summary>
-    public TextMeshProUGUI Text { get; private set; } = null!;
-
     private void Awake()
     {
         RectTransform = GetComponent<RectTransform>();
@@ -48,6 +45,7 @@ public class PeakMenuButton : PeakElement
         BorderBottom = transform
             .GetChild(BorderTop.transform.GetSiblingIndex() + 1)
             .GetComponent<Image>();
+
     }
 
     /// <summary>
@@ -57,7 +55,7 @@ public class PeakMenuButton : PeakElement
     /// <returns></returns>
     public PeakMenuButton SetText(string text)
     {
-        Text.text = text;
+        SetTextInternal(text);
 
         return this;
     }

@@ -1,5 +1,7 @@
 ﻿using PEAKLib.Core;
 using PEAKLib.UI.Elements;
+using System.Collections.Generic;
+using System.Xml.Linq;
 using UnityEngine;
 
 namespace PEAKLib.UI;
@@ -288,6 +290,59 @@ public static class ElementExtensions
         rectTransform.anchorMax = Vector2.one;
         rectTransform.offsetMin = Vector2.zero;
         rectTransform.offsetMax = Vector2.zero;
+
+        return instance;
+    }
+
+    /// <summary>
+    /// Add a localized text for the selected language
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="instance"></param>
+    /// <param name="text"></param>
+    /// <param name="language"></param>
+    /// <returns></returns>
+    public static T AddLocalization<T>(this T instance, string text, LocalizedText.Language language)
+        where T : PeakLocalizableElement
+    {
+        if (instance.name == "UI_PeakText")
+            throw new System.Exception("You need to use a unique name to use localization. E.g. MenuAPI.CreateText(\"my cool text\", \"mymod_my_unique_name\")");
+
+        ThrowHelper.ThrowIfArgumentNull(instance);
+        var textComponent = ThrowHelper.ThrowIfFieldNull(instance.Text);
+
+        var index = instance.name.ToUpperInvariant();
+
+        var localizedText = instance.localizedText;
+        if (localizedText == null)
+        {
+            localizedText = textComponent.gameObject.AddComponent<LocalizedText>();
+            localizedText.index = index;
+            localizedText.tmp = instance.Text;
+        }
+
+        if (string.IsNullOrEmpty(instance.unlocalizedText))
+            instance.unlocalizedText = text;
+
+        
+        if (!LocalizedText.MAIN_TABLE.TryGetValue(index, out List<string>? currentList))
+        {
+            var newTranslationList = new List<string>();
+
+            foreach (var _ in System.Enum.GetValues(typeof(LocalizedText.Language)))
+                newTranslationList.Add(instance.unlocalizedText);
+
+            newTranslationList[(int)language] = text;
+
+            LocalizedText.MAIN_TABLE.Add(index, newTranslationList);
+        }
+        else
+        {
+            currentList[(int)language] = text;
+        }
+
+        // Refresh text with user current language
+        textComponent.text = localizedText.GetText();
 
         return instance;
     }
