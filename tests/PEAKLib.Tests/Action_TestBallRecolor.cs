@@ -10,6 +10,22 @@ public class Action_TestBallRecolor : ItemAction
         if (testBall != null)
         {
             testBall.RandomRecolor();
+            if (!photonView.AmController)
+            {
+                return;
+            }
+            photonView.RPC("FinishRecolor", RpcTarget.All);
         }
     }
+
+    [PunRPC]
+    private void FinishRecolor()
+    {
+        var testBall = item.GetComponent<TestBall>();
+        if (testBall != null)
+        {
+            testBall.OnInstanceDataSet();
+        }
+    }
+
 }

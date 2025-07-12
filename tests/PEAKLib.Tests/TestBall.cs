@@ -28,6 +28,7 @@ public class TestBall : ItemComponent
         if (data.timesUsed < 0)
         {
             Recolor(Color.red);
+            OnInstanceDataSet();
         }
     }
 
@@ -56,7 +57,6 @@ public class TestBall : ItemComponent
             timesUsed = data.timesUsed + 1,
         }));
         TestsPlugin.Log.LogInfo($"TestBall has been used {data.timesUsed + 1} times.");
-        OnInstanceDataSet();
     }
 
     private Data GetData()
