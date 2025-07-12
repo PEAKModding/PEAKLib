@@ -116,7 +116,10 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                 });
 
             if (modSettingsButton != null && isTitleScreen)
-                modSettingsButton.SetPosition(new Vector2(-130, -210)).SetWidth(220);
+                modSettingsButton
+                .SetPosition(new Vector2(171, -230))
+                .SetWidth(220)
+                .ParentTo(FindAnyObjectByType<SharedSettingsMenu>(FindObjectsInactive.Include).transform);
             else if (modSettingsButton != null && !isTitleScreen)
                 modSettingsButton.transform.SetSiblingIndex(4);
         }
