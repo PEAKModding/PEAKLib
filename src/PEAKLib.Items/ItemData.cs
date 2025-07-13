@@ -13,7 +13,7 @@ public static class ItemData
     /// <summary>
     /// Gets PeakLib Mod ItemData for a given ID.
     /// </summary>
-    /// <param name="item"><see cref="global::ItemComponent"> attached to <see cref="UnityEngine.GameObject"> with an <see cref="global::Item"></param>
+    /// <param name="item"><see cref="global::ItemComponent"/> attached to <see cref="UnityEngine.GameObject"/> with an <see cref="global::Item"/></param>
     /// <param name="ID">Unique int ID used by the mod. Easy way to get one is just to hash the mod ID.</param>
     /// <param name="default">Default value to set and return if no entry exists.</param>
     /// <returns></returns>
@@ -30,9 +30,9 @@ public static class ItemData
     /// <summary>
     /// Sets PeakLib Mod ItemData for a given ID.
     /// </summary>
-    /// <param name="item"><see cref="global::ItemComponent"> attached to <see cref="UnityEngine.GameObject"> with an <see cref="global::Item"></param>
+    /// <param name="item"><see cref="global::ItemComponent"/> attached to <see cref="UnityEngine.GameObject"/> with an <see cref="global::Item"/></param>
     /// <param name="ID">Unique int ID used by the mod. Easy way to get one is just to hash the mod ID.</param>
-    /// <param name="default">Value to set.</param>
+    /// <param name="value">Value to set.</param>
     /// <returns></returns>
     public static void SetModItemData(this ItemComponent item, int ID, byte[] value)
     {
