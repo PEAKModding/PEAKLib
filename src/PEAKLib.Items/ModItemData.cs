@@ -1,6 +1,4 @@
-﻿using Sirenix.Serialization;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using Zorro.Core.Serizalization;
 
@@ -14,7 +12,7 @@ internal class ModItemData : DataEntryValue
     /// <summary>
     /// Value for input to serialization and output from deserialization
     /// </summary>
-    public Dictionary<int, byte[]> Value = new Dictionary<int, byte[]>();
+    public Dictionary<int, byte[]> Value = [];
 
     /// <inheritdoc/>
     public override void SerializeValue(BinarySerializer serializer)
@@ -47,7 +45,7 @@ internal class ModItemData : DataEntryValue
     /// <inheritdoc/>
     public override string ToString()
     {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new();
         // output as hexadecimal
         sb.Append($"ModItemData({Value.Count}) {{ ");
         foreach (var pair in Value)

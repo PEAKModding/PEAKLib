@@ -20,11 +20,12 @@ public static class ItemData
     public static byte[] GetModItemData(this ItemComponent item, int ID, byte[] @default)
     {
         var modData = item.GetData<ModItemData>(PeakLibModDataKey);
-        if (!modData.Value.ContainsKey(ID))
+        if (!modData.Value.TryGetValue(ID, out byte[]? value))
         {
-            modData.Value[ID] = @default;
+            value = @default;
+            modData.Value[ID] = value;
         }
-        return modData.Value[ID];
+        return value;
     }
 
     /// <summary>
@@ -43,7 +44,7 @@ public static class ItemData
     /// <summary>
     /// Converts byte array to hex.
     /// </summary>
-    /// <param name="value"></param>
+    /// <param name="value">A byte array.</param>
     /// <returns></returns>
     public static string BytesToHex(byte[] value)
     {
