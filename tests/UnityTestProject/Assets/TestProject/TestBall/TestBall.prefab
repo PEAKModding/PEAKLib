@@ -2856,8 +2856,8 @@ MonoBehaviour:
   useAnimation: 
   sfxUsed: {fileID: 0}
   equip:
-  - {fileID: 11400000, guid: fb236f2e42091aa48a4b04b7788af04e, type: 2}
-  - {fileID: 11400000, guid: b0ffcdc352b0382459f3636cb31524b9, type: 2}
+  - {fileID: 11400000, guid: 1bae9019e11a40943b16619d8b34336d, type: 2}
+  - {fileID: 11400000, guid: aa26bb164708c75469334ae725244bac, type: 2}
 --- !u!114 &363210464772108895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2872,9 +2872,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   vel: 0
   impact:
-  - {fileID: 11400000, guid: b0ffcdc352b0382459f3636cb31524b9, type: 2}
-  - {fileID: 11400000, guid: 50fd48a28708ce945bef65df78c68691, type: 2}
-  - {fileID: 11400000, guid: 252f6ff1f455d724d85146195c76858b, type: 2}
+  - {fileID: 11400000, guid: 1606b23197347994ebaa9e862309295a, type: 2}
+  - {fileID: 11400000, guid: d5a1aa8c4b23dc04798e53d227c33479, type: 2}
+  - {fileID: 11400000, guid: cf8fbf578a84a2e4a8f5788437336aa0, type: 2}
 --- !u!1 &7069989269817362765
 GameObject:
   m_ObjectHideFlags: 0
