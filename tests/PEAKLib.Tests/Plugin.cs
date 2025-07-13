@@ -1,6 +1,10 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using PEAKLib.Core;
+using PEAKLib.Tests;
+using System.IO;
+using System.Reflection;
+using UnityEngine;
 
 namespace PEAKLib.Items;
 
@@ -9,37 +13,27 @@ namespace PEAKLib.Items;
 [BepInDependency(ItemsPlugin.Id)]
 public partial class TestsPlugin : BaseUnityPlugin
 {
+    public static TestsPlugin Instance { get; private set; } = null!;
     internal static ManualLogSource Log { get; } = BepInEx.Logging.Logger.CreateLogSource(Name);
 
     private void Awake()
     {
-        // this.LoadBundleWithName(
-        //     "peaklibtest.peakbundl",
-        //     (ass, mod) =>
-        //     {
-        //         Log.LogInfo("loaded:" + mod.Id);
-        //         mod.RegisterContent();
-        //     }
-        // );
+        Instance = this;
 
-        // string AssetBundlePath = Path.Combine(
-        //     Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location),
-        //     "peaklibtest.peakbundle"
-        // );
-        // var bundle = AssetBundle.LoadFromFile(AssetBundlePath);
+        this.LoadBundleWithName(
+            "testball.peakbundle",
+            bundle =>
+            {
+                var testBallPrefab = bundle.LoadAsset<GameObject>("TestBall.prefab");
+                // attach behavior
+                testBallPrefab.AddComponent<TestBall>();
+                var action = testBallPrefab.AddComponent<Action_TestBallRecolor>();
+                action.OnCastFinished = true;
+                bundle.Mod.RegisterContent();
+            }
+        );
 
-        // var modDefinition = ModDefinition.GetOrCreate(Info);
-        // var scriptableObjects = bundle.LoadAllAssets<ScriptableObject>();
-        // var contents = scriptableObjects.OfType<IContent>();
-
-        // foreach (var content in contents)
-        // {
-        //     Log.LogInfo("Adding Content: " + content);
-        //     modDefinition.Content.Add(content);
-        // }
-
-        // modDefinition.RegisterContent();
-
+        // Log our awake here so we can see it in LogOutput.log file
         Log.LogInfo($"Plugin {Name} is loaded!");
     }
 }
