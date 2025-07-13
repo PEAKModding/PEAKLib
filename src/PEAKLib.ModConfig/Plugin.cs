@@ -115,13 +115,9 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                 {
                     UIInputHandler.SetSelectedObject(null);
                     settingMenu?.Close();
-                    if (!isTitleScreen)
-                    {
-                        if (settingMenu is PauseSettingsMenu pauseSettingsMenu)
-                        {
-                            pauseSettingsMenu.optionsMenu?.Close();
-                        }
-                    }
+
+                    if (!isTitleScreen && settingMenu is PauseSettingsMenu pauseSettingsMenu)
+                        pauseSettingsMenu.optionsMenu?.Close();
                     
                     modSettingsPage.Open();
                 });
