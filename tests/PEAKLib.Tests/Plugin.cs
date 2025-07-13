@@ -21,7 +21,7 @@ public partial class TestsPlugin : BaseUnityPlugin
         Instance = this;
 
         this.LoadBundleWithName(
-            "peaklibtest.peakbundle.testball",
+            "testball.peakbundle",
             bundle =>
             {
                 var testBallPrefab = bundle.LoadAsset<GameObject>("TestBall.prefab");
