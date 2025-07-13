@@ -78,14 +78,4 @@ public static class CustomItemData
         var modData = item.GetData<ModItemData>(PeakLibModDataKey);
         modData.Value[mod.GetHashCode()] = rawData;
     }
-
-    /// <summary>
-    /// Converts byte array to hex.
-    /// </summary>
-    /// <param name="value">A byte array.</param>
-    /// <returns></returns>
-    public static string BytesToHex(byte[] value)
-    {
-        return BitConverter.ToString(value).Replace("-", " ").ToLower();
-    }
 }
