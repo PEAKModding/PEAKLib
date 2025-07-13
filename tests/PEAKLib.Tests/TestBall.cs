@@ -1,6 +1,6 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Text;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace PEAKLib.Items;
@@ -15,11 +15,10 @@ public class TestBall : ModItemComponent
             public float g = 0;
             public float b = 0;
         }
+
         public Color color = new Color();
         public int timesUsed = -1;
     }
-
-    byte[] DataDefault => Serialize(new Data());
 
     public void Start()
     {
@@ -31,11 +30,6 @@ public class TestBall : ModItemComponent
         }
     }
 
-    public void Update()
-    {
-
-    }
-
     public void RandomRecolor()
     {
         // random hue, max saturation and value
@@ -45,42 +39,28 @@ public class TestBall : ModItemComponent
     private void Recolor(Color color)
     {
         Data data = GetData();
-        SetRawModItemData(Serialize(new Data()
-        {
-            color = new Data.Color()
+        SetModItemDataFromJson(
+            new Data()
             {
-                r = color.r,
-                g = color.g,
-                b = color.b,
-            },
-            timesUsed = data.timesUsed + 1,
-        }));
+                color = new Data.Color()
+                {
+                    r = color.r,
+                    g = color.g,
+                    b = color.b,
+                },
+                timesUsed = data.timesUsed + 1,
+            }
+        );
+
         TestsPlugin.Log.LogInfo($"TestBall has been used {data.timesUsed + 1} times.");
     }
 
     private Data GetData()
     {
-        if (!TryGetRawModItemData(out var rawData))
-            rawData = DataDefault;
+        if (!TryGetModItemDataFromJson<Data>(out var data))
+            data = new();
 
-        Data? data = Deserialize(rawData);
-        if (data == null)
-        {
-            throw new NullReferenceException("Failed to read Data.\n" +
-                $"Bytes: {BitConverter.ToString(rawData)}\n" +
-                $"String: {Encoding.UTF8.GetString(rawData)}.");
-        }
         return data;
-    }
-
-    byte[] Serialize(Data data)
-    {
-        return Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data));
-    }
-
-    Data? Deserialize(byte[] data)
-    {
-        return JsonConvert.DeserializeObject<Data>(Encoding.UTF8.GetString(data));
     }
 
     // This can be called before Start(), so be careful.

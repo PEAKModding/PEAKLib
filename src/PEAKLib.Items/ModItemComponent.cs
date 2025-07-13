@@ -32,12 +32,26 @@ public abstract class ModItemComponent : ItemComponent
     }
 
     /// <summary>
+    /// Tries to get mod item data for this item.
+    /// </summary>
+    /// <inheritdoc cref="CustomItemData.TryGetModItemDataFromJson{T}(ItemComponent, ModDefinition, out T)"/>
+    public bool TryGetModItemDataFromJson<T>([MaybeNullWhen(false)] out T data) =>
+        CustomItemData.TryGetModItemDataFromJson(this, Mod, out data);
+
+    /// <summary>
     /// Tries to get raw mod item data for this item.
     /// </summary>
     /// <param name="rawData">The data as a byte array or null.</param>
     /// <returns>Whether or not data was found.</returns>
     public bool TryGetRawModItemData([NotNullWhen(true)] out byte[]? rawData) =>
         CustomItemData.TryGetRawModItemData(this, Mod, out rawData);
+
+    /// <summary>
+    /// Sets mod item data for this item.
+    /// </summary>
+    /// <inheritdoc cref="CustomItemData.SetModItemDataFromJson(ItemComponent, ModDefinition, object?)"/>
+    public void SetModItemDataFromJson(object? data) =>
+        CustomItemData.SetModItemDataFromJson(this, Mod, data);
 
     /// <summary>
     /// Sets raw mod item data for this item.

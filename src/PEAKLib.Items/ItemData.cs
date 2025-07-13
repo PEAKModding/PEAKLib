@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
+using Newtonsoft.Json;
 using PEAKLib.Core;
 
 namespace PEAKLib.Items;
@@ -10,6 +12,25 @@ namespace PEAKLib.Items;
 public static class CustomItemData
 {
     internal const DataEntryKey PeakLibModDataKey = (DataEntryKey)42;
+
+    /// <param name="data">Object serialized from Json.</param>
+    /// <inheritdoc cref="SetRawModItemData(ItemComponent, ModDefinition, byte[])"/>
+    /// <param name="item"></param>
+    /// <param name="mod"></param>
+    public static bool TryGetModItemDataFromJson<T>(
+        this ItemComponent item,
+        ModDefinition mod,
+        [MaybeNullWhen(false)] out T data
+    )
+    {
+        data = default;
+
+        if (!TryGetRawModItemData(item, mod, out var rawData))
+            return false;
+
+        data = JsonConvert.DeserializeObject<T>(Encoding.UTF8.GetString(rawData));
+        return data is not null;
+    }
 
     /// <summary>
     /// Gets PeakLib Mod ItemData for a given <see cref="ModDefinition"/>.
@@ -31,6 +52,16 @@ public static class CustomItemData
         var modData = item.GetData<ModItemData>(PeakLibModDataKey);
         return modData.Value.TryGetValue(mod.GetHashCode(), out rawData);
     }
+
+    /// <param name="data">Object to serialize as Json.</param>
+    /// <inheritdoc cref="SetRawModItemData(ItemComponent, ModDefinition, byte[])"/>
+    /// <param name="item"></param>
+    /// <param name="mod"></param>
+    public static void SetModItemDataFromJson(
+        this ItemComponent item,
+        ModDefinition mod,
+        object? data
+    ) => SetRawModItemData(item, mod, Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data)));
 
     /// <summary>
     /// Sets PeakLib Mod ItemData for a given <see cref="ModDefinition"/>.
