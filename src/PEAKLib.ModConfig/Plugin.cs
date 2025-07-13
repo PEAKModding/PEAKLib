@@ -105,8 +105,8 @@ public partial class ModConfigPlugin : BaseUnityPlugin
             var isTitleScreen = SceneManager.GetActiveScene().name == "Title";
 
             MenuWindow settingMenu = isTitleScreen
-                ? parent.parent.parent.parent.GetComponent<PauseMainMenu>()
-                : parent.parent.parent.GetComponent<PauseSettingsMenu>();
+                ? parent.GetComponentInParent<PauseMainMenu>()
+                : parent.GetComponentInParent<PauseSettingsMenu>();
             
             var modSettingsButton = MenuAPI.CreatePauseMenuButton("MOD SETTINGS")?
                 .SetColor(new Color(0.15f, 0.75f, 0.85f))
