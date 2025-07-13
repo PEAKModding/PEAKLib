@@ -7,14 +7,14 @@ public class TestBall : ModItemComponent
 {
     public class Data
     {
-        public class Color
+        public class CustomColor
         {
             public float r = 0;
             public float g = 0;
             public float b = 0;
         }
 
-        public Color color = new Color();
+        public CustomColor color = new();
         public int timesUsed = -1;
     }
 
@@ -40,7 +40,7 @@ public class TestBall : ModItemComponent
         SetModItemDataFromJson(
             new Data()
             {
-                color = new Data.Color()
+                color = new Data.CustomColor()
                 {
                     r = color.r,
                     g = color.g,
@@ -66,7 +66,7 @@ public class TestBall : ModItemComponent
     public override void OnInstanceDataSet()
     {
         Data data = GetData();
-        Color color = new Color(data.color.r, data.color.g, data.color.b);
+        Color color = new(data.color.r, data.color.g, data.color.b);
         var meshRenderer = transform.Find("Sphere")?.GetComponent<MeshRenderer>();
         if (meshRenderer != null)
         {
