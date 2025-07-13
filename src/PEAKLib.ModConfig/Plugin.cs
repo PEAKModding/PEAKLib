@@ -104,28 +104,35 @@ public partial class ModConfigPlugin : BaseUnityPlugin
 
             var isTitleScreen = SceneManager.GetActiveScene().name == "Title";
 
-            var pauseOptionsMenu = FindAnyObjectByType<PauseOptionsMenu>();
+            MenuWindow settingMenu = isTitleScreen
+                ? parent.parent.parent.parent.GetComponent<PauseMainMenu>()
+                : parent.parent.parent.GetComponent<PauseSettingsMenu>();
+            
             var modSettingsButton = MenuAPI.CreatePauseMenuButton("MOD SETTINGS")?
                 .SetColor(new Color(0.15f, 0.75f, 0.85f))
                 .ParentTo(parent)
                 .OnClick(() =>
                 {
                     UIInputHandler.SetSelectedObject(null);
-                    if (!isTitleScreen) pauseOptionsMenu?.Close();
+                    settingMenu?.Close();
+                    if (!isTitleScreen)
+                    {
+                        if (settingMenu is PauseSettingsMenu pauseSettingsMenu)
+                        {
+                            pauseSettingsMenu.optionsMenu?.Close();
+                        }
+                    }
+                    
                     modSettingsPage.Open();
                 });
 
-            if (modSettingsButton != null && isTitleScreen)
+            if (modSettingsButton != null)
                 modSettingsButton
                 .SetPosition(new Vector2(171, -230))
-                .SetWidth(220)
-                .ParentTo(FindAnyObjectByType<SharedSettingsMenu>(FindObjectsInactive.Include).transform);
-            else if (modSettingsButton != null && !isTitleScreen)
-                modSettingsButton.transform.SetSiblingIndex(4);
+                .SetWidth(220);
         }
 
-        MenuAPI.AddToPauseMenu(builderDelegate);
-        MenuAPI.AddToMainMenu(builderDelegate);
+        MenuAPI.AddToSettingsMenu(builderDelegate);
     }
 
     private static bool modSettingsLoaded = false;
