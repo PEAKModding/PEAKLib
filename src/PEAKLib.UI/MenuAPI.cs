@@ -10,7 +10,8 @@ namespace PEAKLib.UI;
 public static class MenuAPI
 {
     internal static BuilderDelegate? pauseMenuBuilderDelegate,
-        mainMenuBuilderDelegate;
+        mainMenuBuilderDelegate,
+        settingsMenuBuilderDelegate;
 
     /// <summary>
     /// Delegate to create elements
@@ -31,6 +32,13 @@ public static class MenuAPI
     /// <param name="builderDelegate"></param>
     public static void AddToPauseMenu(BuilderDelegate builderDelegate) =>
         pauseMenuBuilderDelegate += builderDelegate;
+
+    /// <summary>
+    /// Add element(s) to Setting Menu
+    /// </summary>
+    /// <param name="builderDelegate"></param>
+    public static void AddToSettingsMenu(BuilderDelegate builderDelegate) =>
+        settingsMenuBuilderDelegate += builderDelegate;
 
     /// <summary>
     /// Creates a page to store your elements
