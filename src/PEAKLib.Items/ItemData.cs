@@ -20,7 +20,7 @@ public static class ItemData
     public static byte[] GetModItemData(this ItemComponent item, int ID, byte[] @default)
     {
         var modData = item.GetData<ModItemData>(PeakLibModDataKey);
-        if (!modData.Value.ContainsKey(ID) || modData.Value[ID].Length == 0)
+        if (!modData.Value.ContainsKey(ID))
         {
             modData.Value[ID] = @default;
         }

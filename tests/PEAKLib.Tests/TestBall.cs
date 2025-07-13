@@ -82,7 +82,8 @@ public class TestBall : ItemComponent
         return JsonConvert.DeserializeObject<Data>(Encoding.UTF8.GetString(data));
     }
 
-    // this can be called before Start(), so be careful
+    // This can be called before Start(), so be careful.
+    // Use Awake() if you need to initialize things before this is called.
     public override void OnInstanceDataSet()
     {
         Data data = GetData();
