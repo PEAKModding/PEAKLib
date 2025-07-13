@@ -19,6 +19,11 @@ public class ItemContent(Item item) : IContent<ItemContent>, IItemContent
     public RegisteredContent<ItemContent> Register(ModDefinition owner)
     {
         var registered = ContentRegistry.Register(this, owner);
+
+        var modItemComponent = item.GetComponent<ModItemComponent>();
+        if (modItemComponent != null)
+            modItemComponent.InitializeModItem(owner);
+
 #if !UNITY_EDITOR
         NetworkPrefabManager.RegisterNetworkPrefab(owner, "0_Items/", item.gameObject);
         s_RegisteredItems.Add(registered);

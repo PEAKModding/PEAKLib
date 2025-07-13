@@ -1,44 +1,51 @@
 ﻿using System;
-using UnityEngine;
+using System.Diagnostics.CodeAnalysis;
+using PEAKLib.Core;
 
 namespace PEAKLib.Items;
 
 /// <summary>
 /// Utility and extension methods for reading/writing networked item data.
 /// </summary>
-public static class ItemData
+public static class CustomItemData
 {
-    const DataEntryKey PeakLibModDataKey = (DataEntryKey)42;
+    internal const DataEntryKey PeakLibModDataKey = (DataEntryKey)42;
 
     /// <summary>
-    /// Gets PeakLib Mod ItemData for a given ID.
+    /// Gets PeakLib Mod ItemData for a given <see cref="ModDefinition"/>.
     /// </summary>
-    /// <param name="item"><see cref="global::ItemComponent"/> attached to <see cref="UnityEngine.GameObject"/> with an <see cref="global::Item"/></param>
-    /// <param name="ID">Unique int ID used by the mod. Easy way to get one is just to hash the mod ID.</param>
-    /// <param name="default">Default value to set and return if no entry exists.</param>
+    /// <param name="rawData">The data as a byte array or null.</param>
+    /// <inheritdoc cref="SetRawModItemData(ItemComponent, ModDefinition, byte[])"/>
+    /// <param name="item"></param>
+    /// <param name="mod"></param>
     /// <returns></returns>
-    public static byte[] GetModItemData(this ItemComponent item, int ID, byte[] @default)
+    public static bool TryGetRawModItemData(
+        this ItemComponent item,
+        ModDefinition mod,
+        [NotNullWhen(true)] out byte[]? rawData
+    )
     {
+        ThrowHelper.ThrowIfArgumentNull(item);
+        ThrowHelper.ThrowIfArgumentNull(mod);
+
         var modData = item.GetData<ModItemData>(PeakLibModDataKey);
-        if (!modData.Value.TryGetValue(ID, out byte[]? value))
-        {
-            value = @default;
-            modData.Value[ID] = value;
-        }
-        return value;
+        return modData.Value.TryGetValue(mod.GetHashCode(), out rawData);
     }
 
     /// <summary>
-    /// Sets PeakLib Mod ItemData for a given ID.
+    /// Sets PeakLib Mod ItemData for a given <see cref="ModDefinition"/>.
     /// </summary>
     /// <param name="item"><see cref="global::ItemComponent"/> attached to <see cref="UnityEngine.GameObject"/> with an <see cref="global::Item"/></param>
-    /// <param name="ID">Unique int ID used by the mod. Easy way to get one is just to hash the mod ID.</param>
-    /// <param name="value">Value to set.</param>
+    /// <param name="mod">The <see cref="ModDefinition"/> this data belongs to.</param>
+    /// <param name="rawData">The data to set as a byte array.</param>
     /// <returns></returns>
-    public static void SetModItemData(this ItemComponent item, int ID, byte[] value)
+    public static void SetRawModItemData(this ItemComponent item, ModDefinition mod, byte[] rawData)
     {
+        ThrowHelper.ThrowIfArgumentNull(item);
+        ThrowHelper.ThrowIfArgumentNull(mod);
+
         var modData = item.GetData<ModItemData>(PeakLibModDataKey);
-        modData.Value[ID] = value;
+        modData.Value[mod.GetHashCode()] = rawData;
     }
 
     /// <summary>

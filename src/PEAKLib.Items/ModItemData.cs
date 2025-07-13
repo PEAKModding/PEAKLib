@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using Zorro.Core.Serizalization;
 
@@ -50,7 +51,7 @@ internal class ModItemData : DataEntryValue
         sb.Append($"ModItemData({Value.Count}) {{ ");
         foreach (var pair in Value)
         {
-            string hex = ItemData.BytesToHex(pair.Value);
+            string hex = BitConverter.ToString(pair.Value);
             sb.Append($"{pair.Key}=[{hex}], ");
         }
         sb.Append("}");

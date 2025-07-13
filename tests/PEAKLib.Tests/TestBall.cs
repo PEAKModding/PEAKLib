@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace PEAKLib.Items;
 
-public class TestBall : ItemComponent
+public class TestBall : ModItemComponent
 {
     public class Data
     {
@@ -19,7 +19,6 @@ public class TestBall : ItemComponent
         public int timesUsed = -1;
     }
 
-    int DataID =>  TestsPlugin.Definition.Name.GetHashCode();
     byte[] DataDefault => Serialize(new Data());
 
     public void Start()
@@ -46,7 +45,7 @@ public class TestBall : ItemComponent
     private void Recolor(Color color)
     {
         Data data = GetData();
-        this.SetModItemData(DataID, Serialize(new Data()
+        SetRawModItemData(Serialize(new Data()
         {
             color = new Data.Color()
             {
@@ -61,12 +60,14 @@ public class TestBall : ItemComponent
 
     private Data GetData()
     {
-        byte[] rawData = this.GetModItemData(DataID, DataDefault);
+        if (!TryGetRawModItemData(out var rawData))
+            rawData = DataDefault;
+
         Data? data = Deserialize(rawData);
         if (data == null)
         {
             throw new NullReferenceException("Failed to read Data.\n" +
-                $"Bytes: {ItemData.BytesToHex(rawData)}\n" +
+                $"Bytes: {BitConverter.ToString(rawData)}\n" +
                 $"String: {Encoding.UTF8.GetString(rawData)}.");
         }
         return data;
