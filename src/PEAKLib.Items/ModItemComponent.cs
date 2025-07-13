@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using PEAKLib.Core;
+using UnityEngine;
 
 namespace PEAKLib.Items;
 
@@ -12,14 +13,29 @@ public abstract class ModItemComponent : ItemComponent
     /// <summary>
     /// The <see cref="ModDefinition"/> which owns this item.
     /// </summary>
-    public ModDefinition Mod =>
-        _mod
-        ?? throw new NullReferenceException(
-            $"{nameof(ModItemComponent)}'s {nameof(Mod)} property was null"
-                + " meaning it wasn't initialized by PEAKLib!"
-        );
+    public ModDefinition Mod
+    {
+        get
+        {
+            if (_mod is not null)
+                return _mod;
+
+            if (!ModDefinition.TryGetMod(_modId, out _mod))
+            {
+                throw new NullReferenceException(
+                    $"{nameof(ModItemComponent)}'s {nameof(Mod)} property was null"
+                        + " meaning it wasn't initialized by PEAKLib!"
+                );
+            }
+
+            return _mod;
+        }
+    }
 
     private ModDefinition? _mod;
+
+    [HideInInspector, SerializeField]
+    private string _modId = null!;
 
     /// <summary>
     /// Used by PEAKLib to initialize this <see cref="ModItemComponent"/>
@@ -28,7 +44,7 @@ public abstract class ModItemComponent : ItemComponent
     /// <param name="mod">The <see cref="ModDefinition"/> who registered this item.</param>
     internal void InitializeModItem(ModDefinition mod)
     {
-        _mod = ThrowHelper.ThrowIfArgumentNull(mod);
+        _modId = ThrowHelper.ThrowIfArgumentNull(mod).Id;
     }
 
     /// <summary>
