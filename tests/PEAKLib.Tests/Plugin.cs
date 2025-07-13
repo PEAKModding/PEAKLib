@@ -1,6 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using PEAKLib.Core;
+using PEAKLib.Tests;
 using System.IO;
 using System.Reflection;
 using UnityEngine;

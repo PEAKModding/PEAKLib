@@ -1,9 +1,7 @@
-﻿using System;
-using System.Text;
-using Newtonsoft.Json;
+﻿using PEAKLib.Items;
 using UnityEngine;
 
-namespace PEAKLib.Items;
+namespace PEAKLib.Tests;
 
 public class TestBall : ModItemComponent
 {
