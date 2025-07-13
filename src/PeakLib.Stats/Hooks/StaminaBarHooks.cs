@@ -1,12 +1,13 @@
 ﻿#if !UNITY_EDITOR
 using MonoDetour;
 using MonoDetour.HookGen;
-using PEAKLib.Items;
 using On.StaminaBar;
 using static CharacterAfflictions;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+
+namespace PEAKLib.Stats.Hooks;
 
 [MonoDetourTargets(typeof(StaminaBar))]
 static class StaminaBarHooks

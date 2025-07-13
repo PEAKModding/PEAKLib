@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using PEAKLib.Core;
 
-namespace PEAKLib.Items;
+namespace PEAKLib.Stats;
 
 /// <summary>
 /// A PEAKLib <see cref="StatusContent"/>.

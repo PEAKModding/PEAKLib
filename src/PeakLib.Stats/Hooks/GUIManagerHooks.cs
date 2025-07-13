@@ -2,8 +2,9 @@
 using MonoDetour.DetourTypes;
 using MonoDetour;
 using MonoDetour.HookGen;
-using PEAKLib.Items;
 using On.GUIManager;
+
+namespace PEAKLib.Stats.Hooks;
 
 [MonoDetourTargets(typeof(GUIManager), GenerateControlFlowVariants = true, Members = ["AddStatusFX"])]
 static class GUIManagerHooks

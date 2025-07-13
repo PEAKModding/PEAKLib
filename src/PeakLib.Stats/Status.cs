@@ -4,7 +4,7 @@ using PEAKLib.Core;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace PEAKLib.Items;
+namespace PEAKLib.Stats;
 
 /// <summary>
 /// A PEAKLib status effect (the type that decreases your stamina).

@@ -5,7 +5,7 @@ using MonoDetour.HookGen;
 using On.CharacterAfflictions;
 using UnityEngine;
 
-namespace PEAKLib.Items.Hooks;
+namespace PEAKLib.Stats.Hooks;
 
 [MonoDetourTargets(typeof(CharacterAfflictions))]
 static class CharacterAfflictionsHooks

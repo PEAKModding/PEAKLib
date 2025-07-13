@@ -5,7 +5,7 @@ using PEAKLib.Core;
 using static CharacterAfflictions;
 using UnityEngine;
 
-namespace PEAKLib.Items;
+namespace PEAKLib.Stats;
 
 /// <summary>
 /// Stores and indexes custom statuses.
