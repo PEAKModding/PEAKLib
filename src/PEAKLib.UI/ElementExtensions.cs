@@ -357,6 +357,7 @@ public static class ElementExtensions
             localizedText = textComponent.gameObject.AddComponent<LocalizedText>();
             localizedText.index = index;
             localizedText.tmp = instance.Text;
+            instance.localizedText = localizedText;
         }
 
         if (string.IsNullOrEmpty(instance.unlocalizedText))
@@ -388,6 +389,7 @@ public static class ElementExtensions
         {
             localizedText = textComponent.gameObject.AddComponent<LocalizedText>();
             localizedText.tmp = instance.Text;
+            instance.localizedText = localizedText;
         }
 
         localizedText.index = index;
