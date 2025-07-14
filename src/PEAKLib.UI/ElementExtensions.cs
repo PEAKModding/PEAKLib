@@ -1,5 +1,8 @@
 ﻿using PEAKLib.Core;
 using PEAKLib.UI.Elements;
+using System;
+using System.Collections.Generic;
+using System.Xml.Linq;
 using UnityEngine;
 
 namespace PEAKLib.UI;
@@ -28,6 +31,25 @@ public static class ElementExtensions
     }
 
     /// <summary>
+    /// Parent <paramref name="instance"/> inside <paramref name="component"/>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="instance"></param>
+    /// <param name="component"></param>
+    /// <returns></returns>
+    public static T ParentTo<T>(this T instance, Component component)
+        where T : PeakElement
+    {
+        ThrowHelper.ThrowIfArgumentNull(instance);
+        ThrowHelper.ThrowIfArgumentNull(component);
+        var transform = ThrowHelper.ThrowIfFieldNull(component.transform);
+
+        instance.transform.SetParent(transform, false);
+
+        return instance;
+    }
+
+    /// <summary>
     /// Parent <paramref name="instance"/> inside <paramref name="transform"/>
     /// </summary>
     /// <param name="instance"></param>
@@ -37,6 +59,23 @@ public static class ElementExtensions
     {
         ThrowHelper.ThrowIfArgumentNull(instance);
         ThrowHelper.ThrowIfArgumentNull(transform);
+
+        instance.transform.SetParent(transform, false);
+
+        return instance;
+    }
+
+    /// <summary>
+    /// Parent <paramref name="instance"/> inside <paramref name="component"/>
+    /// </summary>
+    /// <param name="instance"></param>
+    /// <param name="component"></param>
+    /// <returns></returns>
+    public static GameObject ParentTo(this GameObject instance, Component component)
+    {
+        ThrowHelper.ThrowIfArgumentNull(instance);
+        ThrowHelper.ThrowIfArgumentNull(component);
+        var transform = ThrowHelper.ThrowIfFieldNull(component.transform);
 
         instance.transform.SetParent(transform, false);
 
@@ -288,6 +327,91 @@ public static class ElementExtensions
         rectTransform.anchorMax = Vector2.one;
         rectTransform.offsetMin = Vector2.zero;
         rectTransform.offsetMax = Vector2.zero;
+
+        return instance;
+    }
+
+    /// <summary>
+    /// Add a localized text for the selected language
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="instance"></param>
+    /// <param name="text"></param>
+    /// <param name="language"></param>
+    /// <returns></returns>
+    public static T AddLocalization<T>(this T instance, string text, LocalizedText.Language language)
+        where T : PeakLocalizableElement
+    {
+        ThrowHelper.ThrowIfArgumentNull(instance);
+
+        if (instance.name == "UI_PeakText")
+            throw new Exception("You need to use a unique name to use localization. E.g. MenuAPI.CreateText(\"my cool text\", \"mymod_my_unique_name\")");
+
+        var textComponent = ThrowHelper.ThrowIfFieldNull(instance.Text);
+
+        var index = instance.name.ToUpperInvariant();
+
+        var localizedText = instance.localizedText;
+        if (localizedText == null)
+        {
+            localizedText = textComponent.gameObject.AddComponent<LocalizedText>();
+            localizedText.index = index;
+            localizedText.tmp = instance.Text;
+            instance.localizedText = localizedText;
+        }
+
+        if (string.IsNullOrEmpty(instance.unlocalizedText))
+            instance.unlocalizedText = text;
+
+        MenuAPI.CreateLocalizationInternal(index, text, language);
+
+        // Refresh text with user current language
+        textComponent.text = localizedText.GetText();
+
+        return instance;
+    }
+
+    /// <summary>
+    /// Set the <see cref="LocalizedText.index"/> to a specific value (useful for using translations from the game)
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="instance"></param>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    public static T SetLocalizationIndex<T>(this T instance, string index)
+        where T : PeakLocalizableElement
+    {
+        ThrowHelper.ThrowIfArgumentNull(instance);
+        var textComponent = ThrowHelper.ThrowIfFieldNull(instance.Text);
+
+        var localizedText = instance.localizedText;
+        if (localizedText == null)
+        {
+            localizedText = textComponent.gameObject.AddComponent<LocalizedText>();
+            localizedText.tmp = instance.Text;
+            instance.localizedText = localizedText;
+        }
+
+        localizedText.index = index;
+        textComponent.text = localizedText.GetText();
+
+        return instance;
+    }
+
+    /// <summary>
+    /// <inheritdoc cref="SetLocalizationIndex{T}(T, string)"/>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="instance"></param>
+    /// <param name="translationKey"></param>
+    /// <returns></returns>
+    public static T SetLocalizationIndex<T>(this T instance, TranslationKey translationKey)
+        where T : PeakLocalizableElement
+    {
+        ThrowHelper.ThrowIfArgumentNull(instance);
+        ThrowHelper.ThrowIfArgumentNull(translationKey);
+
+        instance.SetLocalizationIndex(translationKey.Index);
 
         return instance;
     }

@@ -48,13 +48,11 @@ static class MenuWindowHooks
             Templates.ButtonTemplate = Object.Instantiate(settingsMenu.backButton.gameObject);
             Templates.ButtonTemplate.name = "PeakUIButton";
 
-            // Fix for the Mod Config button saying "Back"
-            // I don't really know why this works, but it works
             LocalizedText? locText =
                 Templates.ButtonTemplate.GetComponentInChildren<LocalizedText>();
 
             if (locText != null)
-                locText.enabled = false;
+                Object.DestroyImmediate(locText);
 
             Object.DontDestroyOnLoad(Templates.ButtonTemplate);
         }

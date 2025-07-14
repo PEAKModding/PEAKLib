@@ -10,7 +10,7 @@ namespace PEAKLib.UI.Elements;
 /// </summary>
 [RequireComponent(typeof(CanvasRenderer))]
 [RequireComponent(typeof(TextMeshProUGUI))]
-public class PeakText : PeakElement
+public class PeakText : PeakLocalizableElement
 {
     private static TMP_FontAsset? _darumaFontAsset;
     private static TMP_FontAsset DarumaDropOne
@@ -32,12 +32,12 @@ public class PeakText : PeakElement
     /// <summary>
     /// Controls font, color, font size, style and many other text related properties
     /// </summary>
-    public TextMeshProUGUI TextMesh { get; private set; } = null!;
+    public TextMeshProUGUI TextMesh => (TextMeshProUGUI) Text;
 
     private void Awake()
     {
         RectTransform = GetComponent<RectTransform>();
-        TextMesh = GetComponent<TextMeshProUGUI>();
+        Text = GetComponent<TextMeshProUGUI>();
         RectTransform.anchorMin = RectTransform.anchorMax = new Vector2(0, 1);
         RectTransform.pivot = new Vector2(0, 1);
 
@@ -53,7 +53,8 @@ public class PeakText : PeakElement
     /// <returns></returns>
     public PeakText SetText(string text)
     {
-        ThrowHelper.ThrowIfFieldNull(TextMesh).text = text;
+        SetTextInternal(text);
+       
         ThrowHelper.ThrowIfFieldNull(RectTransform).sizeDelta = TextMesh.GetPreferredValues();
 
         return this;

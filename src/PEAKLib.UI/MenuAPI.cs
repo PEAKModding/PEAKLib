@@ -1,6 +1,10 @@
 ﻿using PEAKLib.Core;
 using PEAKLib.UI.Elements;
+using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
+using System.Linq;
+using System;
 
 namespace PEAKLib.UI;
 
@@ -158,5 +162,35 @@ public static class MenuAPI
 
         return textInput;
     }
-    
+
+    internal static void CreateLocalizationInternal(string index, string translation, LocalizedText.Language language)
+    {
+        index = index.ToUpperInvariant();
+
+        if (!LocalizedText.MAIN_TABLE.TryGetValue(index, out List<string>? currentList))
+        {
+            currentList = [];
+            currentList.AddRange(from LocalizedText.Language _ in Enum.GetValues(typeof(LocalizedText.Language)) select translation);
+            LocalizedText.MAIN_TABLE.Add(index, currentList);
+        }
+        else
+        {
+            currentList[(int)language] = translation;
+        }
+    }
+
+    /// <summary>
+    /// Create a localization to be used with <see cref="TranslationKey.AddLocalization(string, LocalizedText.Language)"/> and <see cref="ElementExtensions.SetLocalizationIndex{T}(T, TranslationKey)"/>
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static TranslationKey CreateLocalization(string index)
+    {
+        if (string.IsNullOrEmpty(index))
+            throw new ArgumentNullException(nameof(index));
+
+
+        return new TranslationKey(index);
+    }
 }
