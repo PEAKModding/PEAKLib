@@ -1,4 +1,5 @@
 ﻿using System;
+using PEAKLib.Items;
 using Photon.Pun;
 
 namespace PEAKLib.Tests;
@@ -12,6 +13,9 @@ public class Action_TestBallRecolor : ItemAction
             throw new NullReferenceException("Component is null!");
 
         testBall.RandomRecolor();
+        // test triggered status
+        character.refs.afflictions.AddStatus(TestsPlugin.SpikyStatus, 0.1f);
+
         if (!photonView.AmController)
         {
             return;
