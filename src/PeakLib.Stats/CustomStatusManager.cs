@@ -11,7 +11,7 @@ namespace PEAKLib.Stats;
 /// Stores and indexes custom statuses.
 /// This is needed because currentStatuses is an array, so indexes need to be compacted.
 /// </summary>
-public class CustomStatusManager
+public static class CustomStatusManager
 {
     static SortedList<string, Status> registered = new();
     /// <summary>

@@ -4,8 +4,8 @@ using PEAKLib.Core;
 using PEAKLib.Tests;
 using System.IO;
 using System.Reflection;
-using UnityEngine;
 using PEAKLib.Stats;
+using UnityEngine;
 using Zorro.Core;
 
 namespace PEAKLib.Items;
@@ -20,28 +20,70 @@ public partial class TestsPlugin : BaseUnityPlugin
     public static TestsPlugin Instance { get; private set; } = null!;
     internal static ManualLogSource Log { get; } = BepInEx.Logging.Logger.CreateLogSource(Name);
 
+    internal static CharacterAfflictions.STATUSTYPE SpikyStatus;
+
     private void Awake()
     {
         Instance = this;
         Definition = ModDefinition.GetOrCreate(Info.Metadata);
 
-        this.LoadBundleWithName(
-            "testball.peakbundle",
-            bundle =>
-            {
-                var testBallPrefab = bundle.LoadAsset<GameObject>("TestBall.prefab");
-                // attach behavior
-                testBallPrefab.AddComponent<TestBall>();
-                var action = testBallPrefab.AddComponent<Action_TestBallRecolor>();
-                action.OnCastFinished = true;
-                bundle.Mod.RegisterContent();
-            }
-        );
+        // Not using LoadBundleWithName because there is an issue where items are
+        // loaded after "Finished initializing NetworkPrefabs" so they don't actually get loaded
+        string bundlePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        AssetBundle ballBundle = AssetBundle.LoadFromFile(Path.Join(bundlePath, "testball.peakbundle"));
+        InitTestBall(ballBundle);
+        AssetBundle statusBundle = AssetBundle.LoadFromFile(Path.Join(bundlePath, "teststatus.peakbundle"));
+        InitSpikyStatus(statusBundle);
+        InitSunStatus(statusBundle);
 
-        // status effect test: sun during daytime
-        string sunBundlePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "peaklibtest.peakbundle.sunstatus");
-        var sunBundle = AssetBundle.LoadFromFile(sunBundlePath);
-        var sunTex = sunBundle.LoadAsset<Texture2D>("IC_Heat");
+        // Log our awake here so we can see it in LogOutput.log file
+        Log.LogInfo($"Plugin {Name} is loaded!");
+    }
+
+    // test ball for multiplayer item data
+    private void InitTestBall(AssetBundle bundle)
+    {
+        var testBallPrefab = bundle.LoadAsset<GameObject>("TestBall.prefab");
+        // attach behavior
+        testBallPrefab.AddComponent<TestBall>();
+        var action = testBallPrefab.AddComponent<Action_TestBallRecolor>();
+        action.OnCastFinished = true;
+        new ItemContent(testBallPrefab.GetComponent<Item>()).Register(Definition);
+    }
+
+    // basic triggered status effect test: spiky
+    // triggered when we recolor the test ball
+    private void InitSpikyStatus(AssetBundle bundle)
+    {
+        var spikyTex = bundle.LoadAsset<Texture2D>("IC_Spiky");
+        var statusSFX = bundle.LoadAsset<AudioClip>("status");
+        Status spikyStatus = new Status()
+        {
+            Name = "Spiky",
+            Color = Color.Lerp(Color.black, Color.white, 0.5f),
+            MaxAmount = 2f,
+            AllowClear = true,
+
+            ReductionCooldown = 1.5f,
+            ReductionPerSecond = 0.01f,
+
+            Icon = Sprite.Create(spikyTex, new Rect(0, 0, spikyTex.width, spikyTex.height), new Vector2(0.5f, 0.5f)),
+
+            SFX = new SFX_Instance
+            {
+                clips = [statusSFX],
+                settings = new(),
+            },
+        };
+        new StatusContent(spikyStatus).Register(Definition);
+        SpikyStatus = spikyStatus.Type;
+    }
+
+    // automatically-applied status effect test: sun during daytime
+    private void InitSunStatus(AssetBundle bundle)
+    {
+        var sunTex = bundle.LoadAsset<Texture2D>("IC_Heat");
+        var statusSFX = bundle.LoadAsset<AudioClip>("status");
         Status sunStatus = new Status()
         {
             Name = "Sun",
@@ -57,20 +99,17 @@ public partial class TestsPlugin : BaseUnityPlugin
 
             SFX = new SFX_Instance
             {
-                clips = [sunBundle.LoadAsset<AudioClip>("status")],
+                clips = [statusSFX],
                 settings = new(),
             },
 
             Update = (self, status) => {
-                // this DOES apply in airport for testing purposes
-                // check !self.m_inAirport to prevent this
-
                 // only apply to shore or tropics
                 bool notReachedAlpine = (bool)Singleton<MountainProgressHandler>.Instance &&
                     Singleton<MountainProgressHandler>.Instance.maxProgressPointReached < 2;
                 // calculate how close to noon it is
                 float sun = 0f;
-                if (DayNightManager.instance != null && DayNightManager.instance.isDay > 0.5f)
+                if (!self.m_inAirport && DayNightManager.instance != null && DayNightManager.instance.isDay > 0.5f)
                 {
                     float dayStart = DayNightManager.instance.dayStart / 24f;
                     float dayEnd = DayNightManager.instance.dayEnd / 24f;
@@ -83,8 +122,5 @@ public partial class TestsPlugin : BaseUnityPlugin
             },
         };
         new StatusContent(sunStatus).Register(Definition);
-
-        // Log our awake here so we can see it in LogOutput.log file
-        Log.LogInfo($"Plugin {Name} is loaded!");
     }
 }

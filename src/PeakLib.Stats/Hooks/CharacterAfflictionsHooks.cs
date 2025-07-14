@@ -80,11 +80,11 @@ static class CharacterAfflictionsHooks
         foreach (Status status in CustomStatusManager.Statuses)
         {
             // printouts left in for consistency with vanilla function
-            Debug.Log("Clearing status: " + status.Type);
+            StatsPlugin.Log.LogInfo("Clearing status: " + status.Type);
             if (status.AllowClear)
             {
-                Debug.Log($"Current: {status.Type}, amount {self.character.refs.afflictions.GetCurrentStatus(status.Type)}");
-                Debug.Log($"SetStatus status: {status.Type}");
+                StatsPlugin.Log.LogInfo($"Current: {status.Type}, amount {self.character.refs.afflictions.GetCurrentStatus(status.Type)}");
+                StatsPlugin.Log.LogInfo($"SetStatus status: {status.Type}");
                 self.character.refs.afflictions.SetStatus(status.Type, 0f);
             }
         }

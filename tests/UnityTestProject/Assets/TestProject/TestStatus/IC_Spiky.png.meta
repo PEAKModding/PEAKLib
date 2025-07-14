@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 85e911fa574027141871699a5331ecd3
+guid: 724d9ffe37073fa429b2fec00c9191bf
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -113,5 +113,5 @@ TextureImporter:
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
-  assetBundleName: peaklibtest.peakbundle.sunstatus
+  assetBundleName: teststatus.peakbundle
   assetBundleVariant: 
