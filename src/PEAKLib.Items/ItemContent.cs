@@ -27,6 +27,7 @@ public class ItemContent(Item item) : IContent<ItemContent>, IItemContent
 #if !UNITY_EDITOR
         NetworkPrefabManager.RegisterNetworkPrefab(owner, "0_Items/", item.gameObject);
         s_RegisteredItems.Add(registered);
+        ItemRegistrar.RegisterIfTooLate(registered);
 #endif
         return registered;
     }
