@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>com.github.PEAKModding.PEAKLib.Stats</AssemblyName>
+    <AssemblyTitle>PEAKLib.Stats</AssemblyTitle>
+    <Version>1.2.0</Version>
+  </PropertyGroup>
+
+  <!-- NuGet metadata -->
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>PEAKModding.PEAKLib.Stats</PackageId>
+    <Description>Stats module of the PEAKLib community API for the game PEAK.</Description>
+    <Authors>$(Authors), chaendizzle</Authors>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="./README.md" Pack="true" PackagePath="/" />
+    <None Include="$(SolutionRoot)icon.png" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../PEAKLib.Core/PEAKLib.Core.csproj" />
+  </ItemGroup>
+
+</Project>

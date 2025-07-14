@@ -143,4 +143,11 @@ public class ModDefinition : IModDefinitionResolvable
     /// </summary>
     /// <returns>This <see cref="ModDefinition"/>.</returns>
     public ModDefinition Resolve() => this;
+
+    /// <summary>
+    /// Returns the hash code for this <see cref="ModDefinition"/>
+    /// by using the hash code from <see cref="Id"/>.
+    /// </summary>
+    /// <returns>The hash code for <see cref="Id"/>.</returns>
+    public override int GetHashCode() => Id.GetHashCode();
 }

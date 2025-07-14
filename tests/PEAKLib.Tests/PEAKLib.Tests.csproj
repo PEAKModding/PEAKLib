@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="$(SolutionRoot)src/PEAKLib.Core/PEAKLib.Core.csproj" />
     <ProjectReference Include="$(SolutionRoot)src/PEAKLib.Items/PEAKLib.Items.csproj" />
+    <ProjectReference Include="$(SolutionRoot)src/PeakLib.Stats/PEAKLib.Stats.csproj" />
   </ItemGroup>
 
 </Project>

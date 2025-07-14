@@ -25,6 +25,9 @@ public interface IContent
     /// <summary>
     /// Gets the name of this content.
     /// </summary>
+    /// <remarks>
+    /// This should never throw.
+    /// </remarks>
     public string Name { get; }
 
     /// <summary>

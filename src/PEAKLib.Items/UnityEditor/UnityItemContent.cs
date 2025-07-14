@@ -12,7 +12,20 @@ namespace PEAKLib.Items.UnityEditor;
 public class UnityItemContent : ScriptableObject, IItemContent
 {
     /// <inheritdoc/>
-    public string Name => Item.name;
+    public string Name
+    {
+        get
+        {
+            if (ItemPrefab == null)
+                return name;
+
+            var item = ItemPrefab.GetComponent<Item>();
+            if (item == null)
+                return name;
+
+            return item.name;
+        }
+    }
 
     /// <inheritdoc/>
     public Item Item => Resolve().Item;
