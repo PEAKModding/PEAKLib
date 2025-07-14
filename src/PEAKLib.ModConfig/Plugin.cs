@@ -40,7 +40,14 @@ public partial class ModConfigPlugin : BaseUnityPlugin
 
         void builderDelegate(Transform parent)
         {
-            var modSettingsPage = MenuAPI.CreatePage("ModSettings").CreateBackground();
+            var isTitleScreen = SceneManager.GetActiveScene().name == "Title";
+            MenuWindow settingMenu = isTitleScreen
+                ? parent.GetComponentInParent<PauseMainMenu>()
+                : parent.GetComponentInParent<PauseSettingsMenu>();
+
+            var modSettingsPage = MenuAPI.CreatePage("ModSettings")
+                .CreateBackground(isTitleScreen ? new Color(0, 0, 0, 0.8667f) : null)
+                .SetOnClose(settingMenu.Open);
 
             var newText = MenuAPI.CreateText("Mod Settings", "Header")
                 .SetFontSize(48)
@@ -102,27 +109,27 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                 moddedButton.SelectedGraphic = tabButton.transform.Find("Selected").gameObject;
             }
 
-            var isTitleScreen = SceneManager.GetActiveScene().name == "Title";
-
-            var pauseOptionsMenu = FindAnyObjectByType<PauseOptionsMenu>();
             var modSettingsButton = MenuAPI.CreatePauseMenuButton("MOD SETTINGS")?
                 .SetColor(new Color(0.15f, 0.75f, 0.85f))
                 .ParentTo(parent)
                 .OnClick(() =>
                 {
                     UIInputHandler.SetSelectedObject(null);
-                    if (!isTitleScreen) pauseOptionsMenu?.Close();
+                    settingMenu?.Close();
+
+                    if (!isTitleScreen && settingMenu is PauseSettingsMenu pauseSettingsMenu)
+                        pauseSettingsMenu.optionsMenu?.Close();
+                    
                     modSettingsPage.Open();
                 });
 
-            if (modSettingsButton != null && isTitleScreen)
-                modSettingsButton.SetPosition(new Vector2(-130, -210)).SetWidth(220);
-            else if (modSettingsButton != null && !isTitleScreen)
-                modSettingsButton.transform.SetSiblingIndex(4);
+            if (modSettingsButton != null)
+                modSettingsButton
+                .SetPosition(new Vector2(171, -230))
+                .SetWidth(220);
         }
 
-        MenuAPI.AddToPauseMenu(builderDelegate);
-        MenuAPI.AddToMainMenu(builderDelegate);
+        MenuAPI.AddToSettingsMenu(builderDelegate);
     }
 
     private static bool modSettingsLoaded = false;
