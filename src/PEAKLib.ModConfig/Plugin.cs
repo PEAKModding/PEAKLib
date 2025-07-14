@@ -40,7 +40,14 @@ public partial class ModConfigPlugin : BaseUnityPlugin
 
         void builderDelegate(Transform parent)
         {
-            var modSettingsPage = MenuAPI.CreatePage("ModSettings").CreateBackground();
+            var isTitleScreen = SceneManager.GetActiveScene().name == "Title";
+            MenuWindow settingMenu = isTitleScreen
+                ? parent.GetComponentInParent<PauseMainMenu>()
+                : parent.GetComponentInParent<PauseSettingsMenu>();
+
+            var modSettingsPage = MenuAPI.CreatePage("ModSettings")
+                .CreateBackground()
+                .SetOnClose(settingMenu.Open);
 
             var newText = MenuAPI.CreateText("Mod Settings", "Header")
                 .SetFontSize(48)
@@ -102,12 +109,6 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                 moddedButton.SelectedGraphic = tabButton.transform.Find("Selected").gameObject;
             }
 
-            var isTitleScreen = SceneManager.GetActiveScene().name == "Title";
-
-            MenuWindow settingMenu = isTitleScreen
-                ? parent.GetComponentInParent<PauseMainMenu>()
-                : parent.GetComponentInParent<PauseSettingsMenu>();
-            
             var modSettingsButton = MenuAPI.CreatePauseMenuButton("MOD SETTINGS")?
                 .SetColor(new Color(0.15f, 0.75f, 0.85f))
                 .ParentTo(parent)

@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using On.MenuWindow;
+using System;
+using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace PEAKLib.UI.Elements;
@@ -137,6 +140,44 @@ public class PeakCustomPage : MenuWindow
             Background.color = backgroundColor.Value;
         }
 
+        return this;
+    }
+
+    private UnityAction? onCloseAction, onOpenAction;
+
+    /// <summary>
+    /// </summary>
+    public override void OnClose()
+    {
+        onCloseAction?.Invoke();
+    }
+
+    /// <summary>
+    /// </summary>
+    public override void OnOpen()
+    {
+        onOpenAction?.Invoke();
+    }
+
+    /// <summary>
+    /// Set a custom event that will be called when page closes
+    /// </summary>
+    /// <param name="onCloseEvent"></param>
+    /// <returns></returns>
+    public PeakCustomPage SetOnClose(UnityAction onCloseEvent)
+    {
+        onCloseAction = onCloseEvent;
+        return this;
+    }
+
+    /// <summary>
+    /// Set a custom event that will be called when page opens
+    /// </summary>
+    /// <param name="onOpenEvent"></param>
+    /// <returns></returns>
+    public PeakCustomPage SetOnOpen(UnityAction onOpenEvent)
+    {
+        onOpenAction = onOpenEvent;
         return this;
     }
 }
