@@ -46,7 +46,7 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                 : parent.GetComponentInParent<PauseSettingsMenu>();
 
             var modSettingsPage = MenuAPI.CreatePage("ModSettings")
-                .CreateBackground()
+                .CreateBackground(isTitleScreen ? new Color(0, 0, 0, 0.8667f) : null)
                 .SetOnClose(settingMenu.Open);
 
             var newText = MenuAPI.CreateText("Mod Settings", "Header")
