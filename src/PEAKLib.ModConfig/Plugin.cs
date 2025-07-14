@@ -42,29 +42,55 @@ public partial class ModConfigPlugin : BaseUnityPlugin
         {
             var modSettingsPage = MenuAPI.CreatePage("ModSettings").CreateBackground();
 
-            var newText = MenuAPI.CreateText("Mod Settings", "ModSettings_Header")
+            var modSettingsLocalization = MenuAPI.CreateLocalization("MOD SETTINGS")
+                .AddLocalization("MOD SETTINGS", LocalizedText.Language.English)
+                .AddLocalization("PARAMÈTRES DU MOD", LocalizedText.Language.French)
+                .AddLocalization("IMPOSTAZIONI MOD", LocalizedText.Language.Italian)
+                .AddLocalization("MOD-EINSTELLUNGEN", LocalizedText.Language.German)
+                .AddLocalization("AJUSTES DEL MOD", LocalizedText.Language.SpanishSpain)
+                .AddLocalization("CONFIGURACIONES DEL MOD", LocalizedText.Language.SpanishLatam)
+                .AddLocalization("CONFIGURAÇÕES DE MOD", LocalizedText.Language.BRPortuguese)
+                .AddLocalization("НАСТРОЙКИ МОДА", LocalizedText.Language.Russian)
+                .AddLocalization("НАЛАШТУВАННЯ МОДА", LocalizedText.Language.Ukrainian)
+                .AddLocalization("模组设置", LocalizedText.Language.SimplifiedChinese)
+                .AddLocalization("模組設定", LocalizedText.Language.TraditionalChinese)
+                .AddLocalization("MOD設定", LocalizedText.Language.Japanese)
+                .AddLocalization("모드 설정", LocalizedText.Language.Korean);
+
+            var headerContainer = new GameObject("Header")
+                .ParentTo(modSettingsPage)
+                .AddComponent<PeakElement>()
+                .SetAnchorMinMax(new Vector2(0, 1))
+                .SetPosition(new Vector2(40, -40))
+                .SetPivot(new Vector2(0, 1))
+                .SetSize(new Vector2(360, 100));
+
+            var newText = MenuAPI.CreateText("Mod Settings", "HeaderText")
                 .SetFontSize(48)
-                .ParentTo(modSettingsPage.transform)
-                .AlignToParent(UIAlignment.TopLeft)
-                .SetPosition(new Vector2(100f, -60f))
-                .AddLocalization("CONFIGURAÇÕES DE MOD", LocalizedText.Language.BRPortuguese);
+                .ParentTo(headerContainer)
+                .ExpandToParent()
+                .SetLocalizationIndex(modSettingsLocalization);
 
+            newText.Text.fontSizeMax = 48;
+            newText.Text.fontSizeMin = 24;
             newText.Text.enableAutoSizing = true;
+            newText.Text.alignment = TextAlignmentOptions.Center;
 
-            MenuAPI.CreateMenuButton("Back")?
+            MenuAPI.CreateMenuButton("Back")
+                .SetLocalizationIndex("BACK") // Peak already have a "BACK" official translation, so let's just use it
                 .SetColor(new Color(1, 0.5f, 0.2f))
-                .ParentTo(modSettingsPage.transform)
+                .ParentTo(modSettingsPage)
                 .SetPosition(new Vector2(230, -160))
                 .SetWidth(200)
                 .OnClick(modSettingsPage.Close);
 
             MenuAPI.CreateText("Search")
-                .ParentTo(modSettingsPage.transform)
+                .ParentTo(modSettingsPage)
                 .SetPosition(new Vector2(90, -210));
 
             var content = new GameObject("Content")
                 .AddComponent<PeakElement>()
-                .ParentTo(modSettingsPage.transform)
+                .ParentTo(modSettingsPage)
                 .SetPivot(new Vector2(0, 1))
                 .SetAnchorMin(new Vector2(0, 1))
                 .SetAnchorMax(new Vector2(0, 1))
@@ -75,21 +101,21 @@ public partial class ModConfigPlugin : BaseUnityPlugin
 
 
             var textInput = MenuAPI.CreateTextInput("SearchInput")
-                .ParentTo(modSettingsPage.transform)
+                .ParentTo(modSettingsPage)
                 .SetSize(new Vector2(300, 70))
                 .SetPosition(new Vector2(230, -300))
                 .SetPlaceholder("Search here")
                 .OnValueChanged(settingsMenu.SetSearch);
 
             var horizontalTabs = new GameObject("TABS")
-                .ParentTo(content.transform)
+                .ParentTo(content)
                 .AddComponent<PeakHorizontalTabs>();
 
             var moddedSettingsTABS = horizontalTabs.gameObject.AddComponent<ModdedSettingsTABS>();
             moddedSettingsTABS.SettingsMenu = settingsMenu;
 
             var tabContent = MenuAPI.CreateScrollableContent("TabContent")
-                .ParentTo(content.transform)
+                .ParentTo(content)
                 .ExpandToParent()
                 .SetOffsetMax(new Vector2(0, -60f));
 
@@ -109,19 +135,7 @@ public partial class ModConfigPlugin : BaseUnityPlugin
 
             var pauseOptionsMenu = FindAnyObjectByType<PauseOptionsMenu>();
             var modSettingsButton = MenuAPI.CreatePauseMenuButton("MOD SETTINGS")
-                .AddLocalization("MOD SETTINGS", LocalizedText.Language.English)
-                .AddLocalization("PARAMÈTRES DU MOD", LocalizedText.Language.French)
-                .AddLocalization("IMPOSTAZIONI MOD", LocalizedText.Language.Italian)
-                .AddLocalization("MOD-EINSTELLUNGEN", LocalizedText.Language.German)
-                .AddLocalization("AJUSTES DEL MOD", LocalizedText.Language.SpanishSpain)
-                .AddLocalization("CONFIGURACIONES DEL MOD", LocalizedText.Language.SpanishLatam)
-                .AddLocalization("CONFIGURAÇÕES DE MOD", LocalizedText.Language.BRPortuguese)
-                .AddLocalization("НАСТРОЙКИ МОДА", LocalizedText.Language.Russian)
-                .AddLocalization("НАЛАШТУВАННЯ МОДА", LocalizedText.Language.Ukrainian)
-                .AddLocalization("模组设置", LocalizedText.Language.SimplifiedChinese)
-                .AddLocalization("模組設定", LocalizedText.Language.TraditionalChinese)
-                .AddLocalization("MOD設定", LocalizedText.Language.Japanese)
-                .AddLocalization("모드 설정", LocalizedText.Language.Korean)
+                .SetLocalizationIndex(modSettingsLocalization)
                 .SetColor(new Color(0.15f, 0.75f, 0.85f))
                 .ParentTo(parent)
                 .OnClick(() =>
@@ -134,7 +148,7 @@ public partial class ModConfigPlugin : BaseUnityPlugin
             if (modSettingsButton != null && isTitleScreen)
                 modSettingsButton.SetPosition(new Vector2(-130, -210)).SetWidth(220);
             else if (modSettingsButton != null && !isTitleScreen)
-                modSettingsButton.transform.SetSiblingIndex(4);
+                modSettingsButton.SetSiblingIndex(4);
         }
 
         MenuAPI.AddToPauseMenu(builderDelegate);
