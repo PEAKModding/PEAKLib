@@ -14,6 +14,7 @@ using System.Text.RegularExpressions;
 using System;
 using System.Linq;
 using PEAKLib.ModConfig.Components;
+using Language = LocalizedText.Language;
 
 namespace PEAKLib.ModConfig;
 
@@ -43,19 +44,19 @@ public partial class ModConfigPlugin : BaseUnityPlugin
             var modSettingsPage = MenuAPI.CreatePage("ModSettings").CreateBackground();
 
             var modSettingsLocalization = MenuAPI.CreateLocalization("MOD SETTINGS")
-                .AddLocalization("MOD SETTINGS", LocalizedText.Language.English)
-                .AddLocalization("PARAMÈTRES DU MOD", LocalizedText.Language.French)
-                .AddLocalization("IMPOSTAZIONI MOD", LocalizedText.Language.Italian)
-                .AddLocalization("MOD-EINSTELLUNGEN", LocalizedText.Language.German)
-                .AddLocalization("AJUSTES DEL MOD", LocalizedText.Language.SpanishSpain)
-                .AddLocalization("CONFIGURACIONES DEL MOD", LocalizedText.Language.SpanishLatam)
-                .AddLocalization("CONFIGURAÇÕES DE MOD", LocalizedText.Language.BRPortuguese)
-                .AddLocalization("НАСТРОЙКИ МОДА", LocalizedText.Language.Russian)
-                .AddLocalization("НАЛАШТУВАННЯ МОДА", LocalizedText.Language.Ukrainian)
-                .AddLocalization("模组设置", LocalizedText.Language.SimplifiedChinese)
-                .AddLocalization("模組設定", LocalizedText.Language.TraditionalChinese)
-                .AddLocalization("MOD設定", LocalizedText.Language.Japanese)
-                .AddLocalization("모드 설정", LocalizedText.Language.Korean);
+                .AddLocalization("MOD SETTINGS", Language.English)
+                .AddLocalization("PARAMÈTRES DU MOD", Language.French)
+                .AddLocalization("IMPOSTAZIONI MOD", Language.Italian)
+                .AddLocalization("MOD-EINSTELLUNGEN", Language.German)
+                .AddLocalization("AJUSTES DEL MOD", Language.SpanishSpain)
+                .AddLocalization("CONFIGURACIONES DEL MOD", Language.SpanishLatam)
+                .AddLocalization("CONFIGURAÇÕES DE MOD", Language.BRPortuguese)
+                .AddLocalization("НАСТРОЙКИ МОДА", Language.Russian)
+                .AddLocalization("НАЛАШТУВАННЯ МОДА", Language.Ukrainian)
+                .AddLocalization("模组设置", Language.SimplifiedChinese)
+                .AddLocalization("模組設定", Language.TraditionalChinese)
+                .AddLocalization("MOD設定", Language.Japanese)
+                .AddLocalization("모드 설정", Language.Korean);
 
             var headerContainer = new GameObject("Header")
                 .ParentTo(modSettingsPage)
@@ -80,7 +81,7 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                 .SetLocalizationIndex("BACK") // Peak already have a "BACK" official translation, so let's just use it
                 .SetColor(new Color(1, 0.5f, 0.2f))
                 .ParentTo(modSettingsPage)
-                .SetPosition(new Vector2(230, -160))
+                .SetPosition(new Vector2(225, -180))
                 .SetWidth(200)
                 .OnClick(modSettingsPage.Close);
 
