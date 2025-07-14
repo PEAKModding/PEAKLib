@@ -17,6 +17,20 @@ static class MenuWindowHooks
 
     static void Prefix_Start(MenuWindow self)
     {
+        if (self is PauseMainMenu mainSettingMenu)
+        {
+            var sharedSettingsMenu = mainSettingMenu.GetComponentInChildren<SharedSettingsMenu>();
+            if (sharedSettingsMenu != null)
+                MenuAPI.settingsMenuBuilderDelegate?.Invoke(sharedSettingsMenu.transform);
+        }
+        else if (self is PauseSettingsMenu pauseSettingsMenu)
+        {
+            var sharedSettingsMenu = pauseSettingsMenu.GetComponentInChildren<SharedSettingsMenu>();
+            if (sharedSettingsMenu != null)
+                MenuAPI.settingsMenuBuilderDelegate?.Invoke(sharedSettingsMenu.transform);
+        }
+
+
         if (self is not MainMenu menu || menu.settingsMenu is not PauseMainMenu settingsMenu)
             return;
 
