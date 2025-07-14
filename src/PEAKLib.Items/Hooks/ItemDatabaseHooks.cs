@@ -8,7 +8,6 @@ namespace PEAKLib.Items.Hooks;
 [MonoDetourTargets(typeof(ItemDatabase))]
 static class ItemDatabaseHooks
 {
-
     [MonoDetourHookInitialize]
     static void Init()
     {

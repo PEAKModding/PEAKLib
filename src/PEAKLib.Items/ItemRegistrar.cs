@@ -11,7 +11,7 @@ namespace PEAKLib.Items;
 /// <summary>
 /// Helper library for item registration
 /// </summary>
-public static class ItemRegistrar
+internal static class ItemRegistrar
 {
     internal static ItemDatabase? ItemDatabaseLoaded;
 
@@ -66,7 +66,10 @@ public static class ItemRegistrar
         }
     }
 
-    internal static void FinishRegisterItem(ItemDatabase self, RegisteredContent<ItemContent> registeredItem)
+    internal static void FinishRegisterItem(
+        ItemDatabase self,
+        RegisteredContent<ItemContent> registeredItem
+    )
     {
         var item = registeredItem.Content.Item;
 
@@ -99,13 +102,13 @@ public static class ItemRegistrar
 
         foreach (Renderer renderer in item.GetComponentsInChildren<Renderer>())
         {
-            if (!PeakShaders.ContainsKey(renderer.material.shader.name))
+            if (!PeakShaders.TryGetValue(renderer.material.shader.name, out var peakShader))
             {
                 continue;
             }
 
             // Replace dummy shader
-            renderer.material.shader = PeakShaders[renderer.material.shader.name];
+            renderer.material.shader = peakShader;
         }
 
         // Fix smoke
