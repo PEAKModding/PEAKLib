@@ -1,10 +1,10 @@
-﻿using BepInEx;
+﻿using System.IO;
+using System.Reflection;
+using BepInEx;
 using BepInEx.Logging;
 using PEAKLib.Core;
-using PEAKLib.Tests;
-using System.IO;
-using System.Reflection;
 using PEAKLib.Stats;
+using PEAKLib.Tests;
 using UnityEngine;
 using Zorro.Core;
 
@@ -27,33 +27,36 @@ public partial class TestsPlugin : BaseUnityPlugin
         Instance = this;
         Definition = ModDefinition.GetOrCreate(Info.Metadata);
 
-        // Not using LoadBundleWithName because there is an issue where items are
-        // loaded after "Finished initializing NetworkPrefabs" so they don't actually get loaded
-        string bundlePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        AssetBundle ballBundle = AssetBundle.LoadFromFile(Path.Join(bundlePath, "testball.peakbundle"));
-        InitTestBall(ballBundle);
-        AssetBundle statusBundle = AssetBundle.LoadFromFile(Path.Join(bundlePath, "teststatus.peakbundle"));
-        InitSpikyStatus(statusBundle);
-        InitSunStatus(statusBundle);
+        this.LoadBundleWithName("testball.peakbundle", InitTestBall);
+
+        this.LoadBundleWithName(
+            "teststatus.peakbundle",
+            statusBundle =>
+            {
+                InitSpikyStatus(statusBundle);
+                InitSunStatus(statusBundle);
+            }
+        );
 
         // Log our awake here so we can see it in LogOutput.log file
         Log.LogInfo($"Plugin {Name} is loaded!");
     }
 
     // test ball for multiplayer item data
-    private void InitTestBall(AssetBundle bundle)
+    private void InitTestBall(PeakBundle bundle)
     {
         var testBallPrefab = bundle.LoadAsset<GameObject>("TestBall.prefab");
         // attach behavior
         testBallPrefab.AddComponent<TestBall>();
         var action = testBallPrefab.AddComponent<Action_TestBallRecolor>();
         action.OnCastFinished = true;
-        new ItemContent(testBallPrefab.GetComponent<Item>()).Register(Definition);
+
+        bundle.Mod.RegisterContent();
     }
 
     // basic triggered status effect test: spiky
     // triggered when we recolor the test ball
-    private void InitSpikyStatus(AssetBundle bundle)
+    private void InitSpikyStatus(PeakBundle bundle)
     {
         var spikyTex = bundle.LoadAsset<Texture2D>("IC_Spiky");
         var statusSFX = bundle.LoadAsset<AudioClip>("status");
@@ -67,20 +70,20 @@ public partial class TestsPlugin : BaseUnityPlugin
             ReductionCooldown = 1.5f,
             ReductionPerSecond = 0.01f,
 
-            Icon = Sprite.Create(spikyTex, new Rect(0, 0, spikyTex.width, spikyTex.height), new Vector2(0.5f, 0.5f)),
+            Icon = Sprite.Create(
+                spikyTex,
+                new Rect(0, 0, spikyTex.width, spikyTex.height),
+                new Vector2(0.5f, 0.5f)
+            ),
 
-            SFX = new SFX_Instance
-            {
-                clips = [statusSFX],
-                settings = new(),
-            },
+            SFX = new SFX_Instance { clips = [statusSFX], settings = new() },
         };
         new StatusContent(spikyStatus).Register(Definition);
         SpikyStatus = spikyStatus.Type;
     }
 
     // automatically-applied status effect test: sun during daytime
-    private void InitSunStatus(AssetBundle bundle)
+    private void InitSunStatus(PeakBundle bundle)
     {
         var sunTex = bundle.LoadAsset<Texture2D>("IC_Heat");
         var statusSFX = bundle.LoadAsset<AudioClip>("status");
@@ -95,26 +98,35 @@ public partial class TestsPlugin : BaseUnityPlugin
             ReductionCooldown = 1f,
             ReductionPerSecond = 0f,
 
-            Icon = Sprite.Create(sunTex, new Rect(0, 0, sunTex.width, sunTex.height), new Vector2(0.5f, 0.5f)),
+            Icon = Sprite.Create(
+                sunTex,
+                new Rect(0, 0, sunTex.width, sunTex.height),
+                new Vector2(0.5f, 0.5f)
+            ),
 
-            SFX = new SFX_Instance
+            SFX = new SFX_Instance { clips = [statusSFX], settings = new() },
+
+            Update = (self, status) =>
             {
-                clips = [statusSFX],
-                settings = new(),
-            },
-
-            Update = (self, status) => {
                 // only apply to shore or tropics
-                bool notReachedAlpine = (bool)Singleton<MountainProgressHandler>.Instance &&
-                    Singleton<MountainProgressHandler>.Instance.maxProgressPointReached < 2;
+                bool notReachedAlpine =
+                    (bool)Singleton<MountainProgressHandler>.Instance
+                    && Singleton<MountainProgressHandler>.Instance.maxProgressPointReached < 2;
                 // calculate how close to noon it is
                 float sun = 0f;
-                if (!self.m_inAirport && DayNightManager.instance != null && DayNightManager.instance.isDay > 0.5f)
+                if (
+                    !self.m_inAirport
+                    && DayNightManager.instance != null
+                    && DayNightManager.instance.isDay > 0.5f
+                )
                 {
                     float dayStart = DayNightManager.instance.dayStart / 24f;
                     float dayEnd = DayNightManager.instance.dayEnd / 24f;
                     float time = DayNightManager.instance.timeOfDayNormalized;
-                    sun = 2f * Mathf.Min(Mathf.Abs(time - dayStart), Mathf.Abs(time - dayEnd)) / Mathf.Abs(dayStart - dayEnd);
+                    sun =
+                        2f
+                        * Mathf.Min(Mathf.Abs(time - dayStart), Mathf.Abs(time - dayEnd))
+                        / Mathf.Abs(dayStart - dayEnd);
                     sun = Mathf.Max(0.01f, sun * status.MaxAmount);
                 }
                 // apply scaling heat status depending on how close to noon it is
