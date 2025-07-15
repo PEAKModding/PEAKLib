@@ -1,0 +1,157 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: MetallicBlack
+  m_Shader: {fileID: 4800000, guid: 3f2c8e9fc21f4a149ac905a41b1c5793, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _USEUV2_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BaseTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture3:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _texcoord:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AddPrecomputedVelocity: 0
+    - _AlphaClip: 0
+    - _AlphaCutoff: 0.5
+    - _AlphaToMask: 0
+    - _BaseMetallic: 0.516
+    - _BaseSmooth: 0.834
+    - _Blend: 0
+    - _BlendModePreserveSpecular: 1
+    - _Brightness: 1
+    - _BumpScale: 1
+    - _ClearCoatMask: 0
+    - _ClearCoatSmoothness: 0
+    - _Cull: 2
+    - _Cutoff: 0.5
+    - _DetailAlbedoMapScale: 1
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 0
+    - _DstBlendAlpha: 0
+    - _EnvironmentReflections: 1
+    - _Flip1: 0
+    - _Flip2: 0
+    - _Flip3: 0
+    - _Flip4: 0
+    - _FlipHeightMask: 0
+    - _GlossMapScale: 0
+    - _Glossiness: 0
+    - _GlossyReflections: 0
+    - _Height1: 0
+    - _Height2: 0
+    - _Height3: -0.1
+    - _Height4: 0
+    - _HueStr: 0.37
+    - _HueStr1: 1
+    - _HueStr2: 0
+    - _INTERACTABLE: 0
+    - _Interactable: 0
+    - _Metalic: 0
+    - _Metallic: 0
+    - _OcclusionStrength: 1
+    - _Outline: 1
+    - _Parallax: 0.005
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _ReceiveShadows: 1
+    - _ReflectionBoost: 0
+    - _Smooth1: 0.592
+    - _Smooth2: 0.51
+    - _Smooth3: 0.793
+    - _Smooth4: 0
+    - _Smoothness: 0.5
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _SrcBlendAlpha: 1
+    - _Surface: 0
+    - _Triplanar1: 0
+    - _Triplanar1On: 0
+    - _Triplanar2: 0
+    - _Triplanar2On: 0
+    - _Triplanar3: 0
+    - _Triplanar3On: 0
+    - _Triplanar4: 0
+    - _Triplanar4On: 0
+    - _UV1: 5.33
+    - _UV2: 0.99
+    - _UV3: 0.13
+    - _UV4: 1
+    - _UseHeightMask1: 0
+    - _UseHeightMask2: 0
+    - _UseHeightMask3: 0
+    - _UseHeightMask4: 0
+    - _UseUV2: 1
+    - _VertexColorAmount: 1
+    - _ViewDirBlend: 0
+    - _WorkflowMode: 1
+    - _ZWrite: 1
+    m_Colors:
+    - _BaseColor: {r: 0.042452842, g: 0.042452842, b: 0.042452842, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color1: {r: 0.013112596, g: 0.04429967, b: 0.24528301, a: 0}
+    - _Color2: {r: 0.19032924, g: 0.22012573, b: 0.16128708, a: 0.61960787}
+    - _Color21: {r: 1, g: 1, b: 1, a: 0}
+    - _Color3: {r: 0.19496846, g: 0.088617735, b: 0.069281235, a: 0}
+    - _Color4: {r: 1, g: 1, b: 1, a: 0}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _HeightMaskSmoothness: {r: 0, g: 0, b: 0, a: 0}
+    - _HueShifts: {r: -0.02, g: 0, b: 0, a: 0}
+    - _HueShifts1: {r: 0, g: 0, b: 0, a: 0}
+    - _Remap1: {r: 0.18736434, g: 0.24514407, b: 0, a: 0}
+    - _Remap2: {r: 0.38239753, g: 1, b: 0, a: 0}
+    - _Remap3: {r: 0.78644764, g: 0.8564019, b: 0, a: 0}
+    - _Remap4: {r: 0, g: 1, b: 0, a: 0}
+    - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _TextureScroll: {r: 0, g: 0, b: 0, a: 0}
+    - _Tint: {r: 0.55345905, g: 0.55345905, b: 0.55345905, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 0

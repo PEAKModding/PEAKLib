@@ -38,6 +38,14 @@ public partial class TestsPlugin : BaseUnityPlugin
             }
         );
 
+        this.LoadBundleWithName(
+            "testmonolith.peakbundle",
+            monolithBundle =>
+            {
+                InitMonolith(monolithBundle);
+            }
+        );
+
         // Log our awake here so we can see it in LogOutput.log file
         Log.LogInfo($"Plugin {Name} is loaded!");
     }
@@ -134,5 +142,13 @@ public partial class TestsPlugin : BaseUnityPlugin
             },
         };
         new StatusContent(sunStatus).Register(Definition);
+    }
+
+    // Monolith that you can offer items to in exchange for bonus stamina
+    private void InitMonolith(PeakBundle bundle)
+    {
+        MonolithPrefab = bundle.LoadAsset<GameObject>("Monolith.prefab");
+        MonolithPrefab.AddComponent<AcceptItem_Monolith>();
+        MonolithPrefab.GetComponentInChildren<Renderer>().material.shader = Shader.Find("W/Peak_Standard");
     }
 }
