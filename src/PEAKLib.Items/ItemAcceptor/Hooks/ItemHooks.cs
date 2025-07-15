@@ -21,28 +21,19 @@ internal class ItemHooks
         if (itemAcceptor != null)
         {
             itemAcceptor.AcceptItem(item, interactor);
-            if (item != null && itemAcceptor.FullyConsume)
-            {
-                item.StartCoroutine(item.ConsumeDelayed(ignoreActions: true));
-            }
         }
-    }
-
-    internal static bool HasItemCanUseOnFriend()
-    {
-        return Character.localCharacter.data.currentItem && Character.localCharacter.data.currentItem.canUseOnFriend;
     }
 
     static void Postfix_CanUseSecondary(Item self, ref bool returnValue)
     {
-        returnValue = returnValue || (self.canUseOnFriend && InteractionHooks.itemAcceptor != null);
+        returnValue = returnValue || (self.canUseOnFriend && InteractionHooks.itemAcceptors.Count > 0);
     }
 
     static void Postfix_StartUseSecondary(Item self)
     {
         if (!self.isUsingPrimary && !self.isUsingSecondary)
         {
-            if ((bool)self.holderCharacter && self.canUseOnFriend && InteractionHooks.itemAcceptor != null)
+            if ((bool)self.holderCharacter && self.canUseOnFriend && InteractionHooks.itemAcceptors.Count > 0)
             {
                 // start interaction
                 GameUtils.instance.StartFeed(self.holderCharacter.photonView.ViewID, self.holderCharacter.photonView.ViewID, self.itemID, self.totalSecondaryUsingTime);
@@ -52,10 +43,13 @@ internal class ItemHooks
 
     static void Postfix_FinishCastSecondary(Item self)
     {
-        if (self.canUseOnFriend && InteractionHooks.itemAcceptor != null)
+        if (self.canUseOnFriend && InteractionHooks.itemAcceptors.Count > 0)
         {
-            FeedItem(InteractionHooks.itemAcceptor, self, self.holderCharacter);
-            self.photonView.RPC("RemoveFeedDataRPC", RpcTarget.All, self.holderCharacter.photonView.ViewID);
+            foreach (IItemAcceptor itemAcceptor in InteractionHooks.itemAcceptors)
+            {
+                FeedItem(itemAcceptor, self, self.holderCharacter);
+            }
+            self.photonView.RPC(nameof(RemoveFeedDataRPC), RpcTarget.All, self.holderCharacter.photonView.ViewID);
         }
     }
 }

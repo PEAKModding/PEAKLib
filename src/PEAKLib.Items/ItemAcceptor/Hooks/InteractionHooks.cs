@@ -1,13 +1,14 @@
 ﻿using MonoDetour;
 using MonoDetour.HookGen;
 using On.Interaction;
+using System.Collections.Generic;
 
 namespace PEAKLib.Items.ItemAcceptor.Hooks;
 
 [MonoDetourTargets(typeof(Interaction))]
 internal class InteractionHooks
 {
-    internal static IItemAcceptor? itemAcceptor = null;
+    internal static List<IItemAcceptor> itemAcceptors = new();
 
     [MonoDetourHookInitialize]
     static void Init()
@@ -17,6 +18,6 @@ internal class InteractionHooks
 
     static void Postfix_LateUpdate(Interaction self)
     {
-        itemAcceptor = IItemAcceptor.GetItemAcceptor(self.bestInteractable);
+        IItemAcceptor.TryGetItemAcceptors(self.bestInteractable, out itemAcceptors);
     }
 }

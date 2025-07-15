@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace PEAKLib.Items.ItemAcceptor;
 
@@ -15,15 +17,16 @@ public interface IItemAcceptor
     void AcceptItem(Item item, Character interactor);
 
     /// <summary>
+    /// Check whether a secondary interaction is valid.
+    /// </summary>
+    /// <returns></returns>
+    bool SecondaryInteractionEnabled();
+
+    /// <summary>
     /// Prompt for secondary interaction.
     /// </summary>
     /// <returns></returns>
     string GetSecondaryInteractionText();
-
-    /// <summary>
-    /// Fully consume the item, or only consume one use.
-    /// </summary>
-    public bool FullyConsume { get; }
 
     /// <summary>
     /// Suppress Primary interact menu when secondary interaction is active
@@ -31,13 +34,68 @@ public interface IItemAcceptor
     public bool SecondaryInteractOnly { get; }
 
     /// <summary>
-    /// Check for an ItemAcceptor attached to the Interactible.
+    /// Check for ItemAcceptors attached to the Interactible.
     /// </summary>
     /// <param name="interactible"></param>
+    /// <param name="itemAcceptors"></param>
     /// <returns></returns>
-    public static IItemAcceptor? GetItemAcceptor(IInteractible? interactible)
+    public static bool TryGetItemAcceptors(IInteractible? interactible, out List<IItemAcceptor> itemAcceptors)
     {
         MonoBehaviour? mb = interactible as MonoBehaviour;
-        return mb?.GetComponent<IItemAcceptor>();
+        if (mb != null)
+        {
+            itemAcceptors = mb.GetComponents<IItemAcceptor>().Where(x => x.SecondaryInteractionEnabled()).ToList();
+        }
+        else
+        {
+            itemAcceptors = new();
+        }
+        return itemAcceptors.Count > 0;
+    }
+
+    /// <summary>
+    /// Consume one use from the item.
+    /// Item is removed if it is used up and marked to be consumed on full use.
+    /// </summary>
+    public static void ConsumeOneUse(Item item)
+    {
+        ConsumeUses(item, 1);
+    }
+
+    /// <summary>
+    /// Consume all uses from the item.
+    /// Item is removed if it is used up and marked to be consumed on full use.
+    /// </summary>
+    public static void ConsumeAllUses(Item item)
+    {
+        ConsumeUses(item, item.totalUses);
+    }
+
+    /// <summary>
+    /// Item is removed, even if it is NOT consumed on full use.
+    /// </summary>
+    public static void ConsumeEntireItem(Item item)
+    {
+        item.StartCoroutine(item.ConsumeDelayed(ignoreActions: true));
+    }
+
+    internal static void ConsumeUses(Item item, int uses)
+    {
+        Action_ReduceUses reduceUses = item.GetComponent<Action_ReduceUses>();
+        if (reduceUses == null)
+        {
+            bool multiUse = item.totalUses > 1;
+            if (!multiUse)
+            {
+                ConsumeEntireItem(item);
+                return;
+            }
+            ItemsPlugin.Log.LogWarning($"{item} is multi-use but lacks the Action_ReduceUses component.");
+            return;
+        }
+        for (int i = 0; i < uses; i++)
+        {
+            reduceUses.RunAction();
+        }
     }
 }

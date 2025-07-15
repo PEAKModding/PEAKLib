@@ -1,11 +1,12 @@
-﻿using System.IO;
-using System.Reflection;
+﻿using System.Text.RegularExpressions;
 using BepInEx;
 using BepInEx.Logging;
 using PEAKLib.Core;
 using PEAKLib.Stats;
 using PEAKLib.Tests;
+using Photon.Pun;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Zorro.Core;
 
 namespace PEAKLib.Items;
@@ -21,6 +22,11 @@ public partial class TestsPlugin : BaseUnityPlugin
     internal static ManualLogSource Log { get; } = BepInEx.Logging.Logger.CreateLogSource(Name);
 
     internal static CharacterAfflictions.STATUSTYPE SpikyStatus;
+
+    GameObject? monolithPrefab;
+    Vector3 monolithPosition = new Vector3(-0.8f, 4.1f, -368.4f);
+    bool modifiedBingBong = false;
+    const ushort bingBongID = 13;
 
     private void Awake()
     {
@@ -48,6 +54,15 @@ public partial class TestsPlugin : BaseUnityPlugin
 
         // Log our awake here so we can see it in LogOutput.log file
         Log.LogInfo($"Plugin {Name} is loaded!");
+    }
+
+    private void Start()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     // test ball for multiplayer item data
@@ -147,8 +162,33 @@ public partial class TestsPlugin : BaseUnityPlugin
     // Monolith that you can offer items to in exchange for bonus stamina
     private void InitMonolith(PeakBundle bundle)
     {
-        MonolithPrefab = bundle.LoadAsset<GameObject>("Monolith.prefab");
-        MonolithPrefab.AddComponent<AcceptItem_Monolith>();
-        MonolithPrefab.GetComponentInChildren<Renderer>().material.shader = Shader.Find("W/Peak_Standard");
+        monolithPrefab = bundle.LoadAsset<GameObject>("Monolith.prefab");
+        monolithPrefab.AddComponent<AcceptItem_Monolith>();
+        monolithPrefab.GetComponentInChildren<Renderer>().material.shader = Shader.Find("W/Peak_Standard");
+    }
+
+    // spawn the Monolith at game start and modify the bingbong to be feedable
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // check for game start: Load single scene, scene name is Level_X,
+        // and game is connected
+        Match match = new Regex(@"^Level_(\d+)$").Match(scene.name);
+        if (mode == LoadSceneMode.Single && match.Success &&
+            int.TryParse(match.Groups[1].Value, out int level) &&
+            level >= 0 && level <= 13 &&
+            PhotonNetwork.IsConnected && PhotonNetwork.InRoom)
+        {
+            Log.LogInfo("Game Start detected, spawning Monolith");
+            GameObject go = Instantiate(monolithPrefab)!;
+            go.transform.position = monolithPosition;
+        }
+        // modify bingbong if found in ItemDatabase
+        if (!modifiedBingBong && ItemDatabase.TryGetItem(bingBongID, out Item item) && item != null)
+        {
+            Log.LogInfo("Modifying BingBong to accept items");
+            item.gameObject.AddComponent<AcceptItem_BingBong>();
+            item.gameObject.AddComponent<AcceptItem_BingBong2>();
+            modifiedBingBong = true;
+        }
     }
 }

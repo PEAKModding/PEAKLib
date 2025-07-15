@@ -1,6 +1,8 @@
 ﻿using MonoDetour;
 using MonoDetour.HookGen;
 using On.GUIManager;
+using System.Collections.Generic;
+using System.Linq;
 using Zorro.Core;
 
 namespace PEAKLib.Items.ItemAcceptor.Hooks;
@@ -18,15 +20,14 @@ internal class GUIManagerHooks
     {
         if (self.currentInteractable.UnityObjectExists())
         {
-            var itemAcceptor = IItemAcceptor.GetItemAcceptor(self.currentInteractable);
-            if (itemAcceptor != null)
+            if (IItemAcceptor.TryGetItemAcceptors(self.currentInteractable, out List<IItemAcceptor> itemAcceptors))
             {
                 self.interactName.SetActive(value: false);
-                if (ItemHooks.HasItemCanUseOnFriend())
+                if (Character.localCharacter.data.currentItem && Character.localCharacter.data.currentItem.canUseOnFriend)
                 {
                     self.interactPromptSecondary.SetActive(value: true);
-                    self.secondaryInteractPromptText.text = itemAcceptor.GetSecondaryInteractionText();
-                    if (itemAcceptor.SecondaryInteractOnly)
+                    self.secondaryInteractPromptText.text = itemAcceptors[0].GetSecondaryInteractionText();
+                    if (itemAcceptors.All(x => x.SecondaryInteractOnly))
                     {
                         self.interactPromptPrimary.SetActive(value: false);
                     }

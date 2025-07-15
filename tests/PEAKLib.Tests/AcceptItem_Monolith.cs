@@ -8,14 +8,13 @@ namespace PEAKLib.Items;
 /// </summary>
 public class AcceptItem_Monolith : MonoBehaviour, IItemAcceptor, IInteractible
 {
-    public bool FullyConsume => true;
-
     public bool SecondaryInteractOnly => true;
 
     public void AcceptItem(Item item, Character interactor)
     {
         TestsPlugin.Log.LogInfo($"Monolith accepted {item.GetItemName()} from {interactor.characterName}");
         interactor.AddExtraStamina(0.125f);
+        IItemAcceptor.ConsumeEntireItem(item);
     }
 
     public string GetSecondaryInteractionText()
@@ -27,6 +26,8 @@ public class AcceptItem_Monolith : MonoBehaviour, IItemAcceptor, IInteractible
         }
         return "";
     }
+
+    public bool SecondaryInteractionEnabled() => true;
 
     // Typically, a separate MonoBehaviour is the IInteractible, like Item.
     // but since this is just a normal object, it cannot be interacted with normally,
