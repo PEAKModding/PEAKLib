@@ -17,10 +17,6 @@ internal class InteractionHooks
 
     static void Postfix_LateUpdate(Interaction self)
     {
-        if (self.bestInteractable != null)
-        {
-            ItemsPlugin.Log.LogInfo($"Looking at: {self.bestInteractable}");
-        }
         itemAcceptor = IItemAcceptor.GetItemAcceptor(self.bestInteractable);
     }
 }
