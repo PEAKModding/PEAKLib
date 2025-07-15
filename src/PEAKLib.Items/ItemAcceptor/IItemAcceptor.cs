@@ -31,7 +31,7 @@ public interface IItemAcceptor
     /// <summary>
     /// Suppress Primary interact menu when secondary interaction is active
     /// </summary>
-    public bool SecondaryInteractOnly { get; }
+    bool SecondaryInteractOnly { get; }
 
     /// <summary>
     /// Check for ItemAcceptors attached to the Interactible.
