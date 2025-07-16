@@ -18,7 +18,7 @@ public class AcceptItem_BingBong : MonoBehaviour, IItemAcceptor
         IItemAcceptor.ConsumeOneUse(item);
     }
 
-    public string GetSecondaryInteractionText()
+    public string GetPrompt()
     {
         Item item = Character.localCharacter.data.currentItem;
         if (item?.canUseOnFriend ?? false)
@@ -29,5 +29,5 @@ public class AcceptItem_BingBong : MonoBehaviour, IItemAcceptor
         return "";
     }
 
-    public bool SecondaryInteractionEnabled() => true;
+    public bool IsEnabled() => true;
 }

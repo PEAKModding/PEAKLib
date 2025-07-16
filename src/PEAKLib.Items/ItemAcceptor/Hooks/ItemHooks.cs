@@ -2,6 +2,7 @@
 using MonoDetour.HookGen;
 using Photon.Pun;
 using On.Item;
+using System.Linq;
 
 namespace PEAKLib.Items.ItemAcceptor.Hooks;
 
@@ -26,14 +27,14 @@ internal class ItemHooks
 
     static void Postfix_CanUseSecondary(Item self, ref bool returnValue)
     {
-        returnValue = returnValue || (self.canUseOnFriend && InteractionHooks.itemAcceptors.Count > 0);
+        returnValue = returnValue || (self.canUseOnFriend && InteractionHooks.itemAcceptors.Any());
     }
 
     static void Postfix_StartUseSecondary(Item self)
     {
         if (!self.isUsingPrimary && !self.isUsingSecondary)
         {
-            if ((bool)self.holderCharacter && self.canUseOnFriend && InteractionHooks.itemAcceptors.Count > 0)
+            if ((bool)self.holderCharacter && self.canUseOnFriend && InteractionHooks.itemAcceptors.Any())
             {
                 // start interaction
                 GameUtils.instance.StartFeed(self.holderCharacter.photonView.ViewID, self.holderCharacter.photonView.ViewID, self.itemID, self.totalSecondaryUsingTime);
@@ -43,7 +44,7 @@ internal class ItemHooks
 
     static void Postfix_FinishCastSecondary(Item self)
     {
-        if (self.canUseOnFriend && InteractionHooks.itemAcceptors.Count > 0)
+        if (self.canUseOnFriend && InteractionHooks.itemAcceptors.Any())
         {
             foreach (IItemAcceptor itemAcceptor in InteractionHooks.itemAcceptors)
             {

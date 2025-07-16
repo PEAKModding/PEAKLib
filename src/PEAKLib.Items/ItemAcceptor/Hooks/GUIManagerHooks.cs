@@ -20,13 +20,13 @@ internal class GUIManagerHooks
     {
         if (self.currentInteractable.UnityObjectExists())
         {
-            if (IItemAcceptor.TryGetItemAcceptors(self.currentInteractable, out List<IItemAcceptor> itemAcceptors))
+            if (IItemAcceptor.TryGetItemAcceptors(self.currentInteractable, out IEnumerable<IItemAcceptor> itemAcceptors))
             {
                 self.interactName.SetActive(value: false);
                 if (Character.localCharacter.data.currentItem && Character.localCharacter.data.currentItem.canUseOnFriend)
                 {
                     self.interactPromptSecondary.SetActive(value: true);
-                    self.secondaryInteractPromptText.text = itemAcceptors[0].GetSecondaryInteractionText();
+                    self.secondaryInteractPromptText.text = itemAcceptors.First().GetPrompt();
                     if (itemAcceptors.All(x => x.SecondaryInteractOnly))
                     {
                         self.interactPromptPrimary.SetActive(value: false);

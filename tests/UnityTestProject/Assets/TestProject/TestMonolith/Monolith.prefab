@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5608476578700361981}
   - component: {fileID: 1764333645856581872}
   - component: {fileID: 414924410184920224}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -118,7 +118,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8358954673666864062}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: Monolith
   m_TagString: Untagged
   m_Icon: {fileID: 0}

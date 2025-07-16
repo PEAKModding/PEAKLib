@@ -8,7 +8,7 @@ namespace PEAKLib.Items.ItemAcceptor.Hooks;
 [MonoDetourTargets(typeof(Interaction))]
 internal class InteractionHooks
 {
-    internal static List<IItemAcceptor> itemAcceptors = new();
+    internal static IEnumerable<IItemAcceptor> itemAcceptors = [];
 
     [MonoDetourHookInitialize]
     static void Init()

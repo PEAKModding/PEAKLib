@@ -20,13 +20,13 @@ public interface IItemAcceptor
     /// Check whether a secondary interaction is valid.
     /// </summary>
     /// <returns></returns>
-    bool SecondaryInteractionEnabled();
+    bool IsEnabled();
 
     /// <summary>
     /// Prompt for secondary interaction.
     /// </summary>
     /// <returns></returns>
-    string GetSecondaryInteractionText();
+    string GetPrompt();
 
     /// <summary>
     /// Suppress Primary interact menu when secondary interaction is active
@@ -39,18 +39,18 @@ public interface IItemAcceptor
     /// <param name="interactible"></param>
     /// <param name="itemAcceptors"></param>
     /// <returns></returns>
-    public static bool TryGetItemAcceptors(IInteractible? interactible, out List<IItemAcceptor> itemAcceptors)
+    public static bool TryGetItemAcceptors(IInteractible? interactible, out IEnumerable<IItemAcceptor> itemAcceptors)
     {
         MonoBehaviour? mb = interactible as MonoBehaviour;
         if (mb != null)
         {
-            itemAcceptors = mb.GetComponents<IItemAcceptor>().Where(x => x.SecondaryInteractionEnabled()).ToList();
+            itemAcceptors = mb.GetComponents<IItemAcceptor>().Where(x => x.IsEnabled());
         }
         else
         {
-            itemAcceptors = new();
+            itemAcceptors = [];
         }
-        return itemAcceptors.Count > 0;
+        return itemAcceptors.Any();
     }
 
     /// <summary>

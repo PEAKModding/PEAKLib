@@ -17,7 +17,7 @@ public class AcceptItem_Monolith : MonoBehaviour, IItemAcceptor, IInteractible
         IItemAcceptor.ConsumeEntireItem(item);
     }
 
-    public string GetSecondaryInteractionText()
+    public string GetPrompt()
     {
         Item item = Character.localCharacter.data.currentItem;
         if (item?.canUseOnFriend ?? false)
@@ -27,7 +27,7 @@ public class AcceptItem_Monolith : MonoBehaviour, IItemAcceptor, IInteractible
         return "";
     }
 
-    public bool SecondaryInteractionEnabled() => true;
+    public bool IsEnabled() => true;
 
     // Typically, a separate MonoBehaviour is the IInteractible, like Item.
     // but since this is just a normal object, it cannot be interacted with normally,
