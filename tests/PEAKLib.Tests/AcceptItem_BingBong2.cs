@@ -22,7 +22,7 @@ public class AcceptItem_BingBong2 : MonoBehaviour, IItemAcceptor
     // this is the second interact prompt, so this should not show up
     public string GetPrompt() => "ERROR";
 
-    public bool IsEnabled()
+    public bool AllowInteraction()
     {
         // only happens with healing items
         Item item = Character.localCharacter.data.currentItem;

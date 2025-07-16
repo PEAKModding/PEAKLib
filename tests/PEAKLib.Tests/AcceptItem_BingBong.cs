@@ -29,5 +29,5 @@ public class AcceptItem_BingBong : MonoBehaviour, IItemAcceptor
         return "";
     }
 
-    public bool IsEnabled() => true;
+    public bool AllowInteraction() => true;
 }

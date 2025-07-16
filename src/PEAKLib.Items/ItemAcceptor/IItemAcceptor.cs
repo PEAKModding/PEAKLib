@@ -20,7 +20,7 @@ public interface IItemAcceptor
     /// Check whether a secondary interaction is valid.
     /// </summary>
     /// <returns></returns>
-    bool IsEnabled();
+    bool AllowInteraction();
 
     /// <summary>
     /// Prompt for secondary interaction.
@@ -44,7 +44,7 @@ public interface IItemAcceptor
         MonoBehaviour? mb = interactible as MonoBehaviour;
         if (mb != null)
         {
-            itemAcceptors = mb.GetComponents<IItemAcceptor>().Where(x => x.IsEnabled());
+            itemAcceptors = mb.GetComponents<IItemAcceptor>().Where(x => x.AllowInteraction());
         }
         else
         {

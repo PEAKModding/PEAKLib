@@ -27,7 +27,7 @@ public class AcceptItem_Monolith : MonoBehaviour, IItemAcceptor, IInteractible
         return "";
     }
 
-    public bool IsEnabled() => true;
+    public bool AllowInteraction() => true;
 
     // Typically, a separate MonoBehaviour is the IInteractible, like Item.
     // but since this is just a normal object, it cannot be interacted with normally,
