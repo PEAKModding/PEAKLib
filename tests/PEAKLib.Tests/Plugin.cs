@@ -174,8 +174,7 @@ public partial class TestsPlugin : BaseUnityPlugin
         // and game is connected
         Match match = new Regex(@"^Level_(\d+)$").Match(scene.name);
         if (mode == LoadSceneMode.Single && match.Success &&
-            int.TryParse(match.Groups[1].Value, out int level) &&
-            level >= 0 && level <= 13 &&
+            int.TryParse(match.Groups[1].Value, out _) &&
             PhotonNetwork.IsConnected && PhotonNetwork.InRoom)
         {
             Log.LogInfo("Game Start detected, spawning Monolith");
