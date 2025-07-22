@@ -102,13 +102,16 @@ internal static class ItemRegistrar
 
         foreach (Renderer renderer in item.GetComponentsInChildren<Renderer>())
         {
-            if (!PeakShaders.TryGetValue(renderer.material.shader.name, out var peakShader))
+            foreach (Material mat in renderer.materials)
             {
-                continue;
-            }
+                if (!PeakShaders.TryGetValue(mat.shader.name, out var peakShader))
+                {
+                    continue;
+                }
 
-            // Replace dummy shader
-            renderer.material.shader = peakShader;
+                // Replace dummy shader
+                mat.shader = peakShader;
+            }
         }
 
         // Fix smoke
