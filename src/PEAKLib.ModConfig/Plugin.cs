@@ -28,7 +28,7 @@ namespace PEAKLib.ModConfig;
 public partial class ModConfigPlugin : BaseUnityPlugin
 {
     internal static ManualLogSource Log { get; } = BepInEx.Logging.Logger.CreateLogSource(Name);
-    internal static List<ConfigEntryBase> EntriesProcessed = [];
+    private static List<ConfigEntryBase> EntriesProcessed = [];
 
     private void Awake()
     {
@@ -50,6 +50,12 @@ public partial class ModConfigPlugin : BaseUnityPlugin
             var modSettingsPage = MenuAPI.CreatePage("ModSettings")
                 .CreateBackground(isTitleScreen ? new Color(0, 0, 0, 0.8667f) : null)
                 .SetOnClose(settingMenu.Open);
+
+            modSettingsPage.SetOnOpen(() =>
+            {
+                //Double check if any config items have been created since initialization
+                ProcessModEntries();
+            });
 
             var modSettingsLocalization = MenuAPI.CreateLocalization("MOD SETTINGS")
                 .AddLocalization("MOD SETTINGS", Language.English)
@@ -164,7 +170,7 @@ public partial class ModConfigPlugin : BaseUnityPlugin
         MenuAPI.AddToSettingsMenu(builderDelegate);
     }
 
-    internal static bool modSettingsLoaded = false;
+    private static bool modSettingsLoaded = false;
     private static void LoadModSettings()
     {
         if (modSettingsLoaded) return;
@@ -172,97 +178,98 @@ public partial class ModConfigPlugin : BaseUnityPlugin
         EntriesProcessed = [];
         modSettingsLoaded = true;
 
-        foreach (var (modName, configEntryBases) in GetModConfigEntries())
-        {
-            //Moved to separate method for re-use post initialization
-            ProcessModEntries(modName, configEntryBases);
-        }
+        ProcessModEntries();
     }
 
-    //Allow for calling from other classes, ie. API
-    internal static void ProcessModEntries(string modName, ConfigEntryBase[] configEntryBases)
+    //Processes Bepinex config items to Settings entries
+    //Called during mod initialization AND whenever the mod settings page is opened
+    private static void ProcessModEntries()
     {
-        foreach (var configEntry in configEntryBases)
+        foreach (var (modName, configEntryBases) in GetModConfigEntries())
         {
-            try
+            foreach (var configEntry in configEntryBases)
             {
-                //track mod entries we have processed to not duplicate setting entries
-                if (EntriesProcessed.Contains(configEntry))
-                    continue;
-                else
-                    EntriesProcessed.Add(configEntry);
-
-                if (configEntry.SettingType == typeof(bool))
+                try
                 {
-                    var defaultValue = configEntry.DefaultValue is bool dValue && dValue;
-                    var currentValue = configEntry.BoxedValue is bool bValue && bValue;
+                    //track mod entries we have processed to not duplicate setting entries
+                    if (EntriesProcessed.Contains(configEntry))
+                        continue;
+                    else
+                        EntriesProcessed.Add(configEntry);
 
-                    SettingsHandlerUtility.AddBoolToTab(configEntry.Definition.Key, defaultValue, modName, currentValue, newVal => configEntry.BoxedValue = newVal);
-                }
-                else if (configEntry.SettingType == typeof(float))
-                {
-                    var defaultValue = configEntry.DefaultValue is float cValue ? cValue : 0f;
-                    var currentValue = configEntry.BoxedValue is float bValue ? bValue : 0f;
-
-                    float minValue = 0f;
-                    float maxValue = 1000f;
-
-                    if (configEntry.Description.AcceptableValues is AcceptableValueRange<float> range)
+                    if (configEntry.SettingType == typeof(bool))
                     {
-                        minValue = range.MinValue;
-                        maxValue = range.MaxValue;
+                        var defaultValue = configEntry.DefaultValue is bool dValue && dValue;
+                        var currentValue = configEntry.BoxedValue is bool bValue && bValue;
+
+                        SettingsHandlerUtility.AddBoolToTab(configEntry.Definition.Key, defaultValue, modName, currentValue, newVal => configEntry.BoxedValue = newVal);
+                    }
+                    else if (configEntry.SettingType == typeof(float))
+                    {
+                        var defaultValue = configEntry.DefaultValue is float cValue ? cValue : 0f;
+                        var currentValue = configEntry.BoxedValue is float bValue ? bValue : 0f;
+
+                        float minValue = 0f;
+                        float maxValue = 1000f;
+
+                        if (configEntry.Description.AcceptableValues is AcceptableValueRange<float> range)
+                        {
+                            minValue = range.MinValue;
+                            maxValue = range.MaxValue;
+                        }
+
+                        SettingsHandlerUtility.AddFloatToTab(configEntry.Definition.Key, defaultValue, modName, minValue, maxValue, currentValue, newVal => configEntry.BoxedValue = newVal);
                     }
 
-                    SettingsHandlerUtility.AddFloatToTab(configEntry.Definition.Key, defaultValue, modName, minValue, maxValue, currentValue, newVal => configEntry.BoxedValue = newVal);
-                }
-
-                else if (configEntry.SettingType == typeof(int))
-                {
-                    var defaultValue = configEntry.DefaultValue is int cValue ? cValue : 0;
-                    var currentValue = configEntry.BoxedValue is int bValue ? bValue : 0;
-                    SettingsHandlerUtility.AddIntToTab(configEntry.Definition.Key, defaultValue, modName, currentValue, newVal => configEntry.BoxedValue = newVal);
-                }
-                else if (configEntry.SettingType == typeof(string))
-                {
-                    var defaultValue = configEntry.DefaultValue is string cValue ? cValue : "";
-                    var currentValue = configEntry.BoxedValue is string bValue ? bValue : "";
-                    SettingsHandlerUtility.AddStringToTab(configEntry.Definition.Key, defaultValue, modName, currentValue, newVal => configEntry.BoxedValue = newVal);
-                }
-                else if (configEntry.SettingType == typeof(KeyCode))
-                {
-                    var defaultValue = configEntry.DefaultValue is KeyCode cValue ? cValue : KeyCode.None;
-                    var currentValue = configEntry.BoxedValue is KeyCode bValue ? bValue : KeyCode.None;
-
-                    SettingsHandlerUtility.AddKeybindToTab(configEntry.Definition.Key, defaultValue, modName, currentValue, newVal => configEntry.BoxedValue = newVal);
-                }
-                else if (configEntry.SettingType.IsEnum)
-                {
-                    var defaultValue = configEntry.DefaultValue is object cValue ? cValue : Enum.ToObject(configEntry.SettingType, 0);
-                    var currentValue = configEntry.BoxedValue is object bValue ? bValue : Enum.ToObject(configEntry.SettingType, 0);
-
-                    var defaultValueName = Enum.GetName(configEntry.SettingType, defaultValue);
-                    var currentValueName = Enum.GetName(configEntry.SettingType, currentValue);
-                    var options = new List<string>(Enum.GetNames(configEntry.SettingType));
-
-                    SettingsHandlerUtility.AddEnumToTab(configEntry.Definition.Key, options, modName, currentValueName, newVal =>
+                    else if (configEntry.SettingType == typeof(int))
                     {
-                        if (Enum.TryParse(configEntry.SettingType, newVal, out var value))
-                            configEntry.BoxedValue = value;
-                    });
-                }
-                else // Warn about missing SettingTypes
-                    Log.LogWarning($"Missing SettingType: [Mod: {modName}] {configEntry.Definition.Key} (Type: {configEntry.SettingType})");
-            }
+                        var defaultValue = configEntry.DefaultValue is int cValue ? cValue : 0;
+                        var currentValue = configEntry.BoxedValue is int bValue ? bValue : 0;
+                        SettingsHandlerUtility.AddIntToTab(configEntry.Definition.Key, defaultValue, modName, currentValue, newVal => configEntry.BoxedValue = newVal);
+                    }
+                    else if (configEntry.SettingType == typeof(string))
+                    {
+                        var defaultValue = configEntry.DefaultValue is string cValue ? cValue : "";
+                        var currentValue = configEntry.BoxedValue is string bValue ? bValue : "";
+                        SettingsHandlerUtility.AddStringToTab(configEntry.Definition.Key, defaultValue, modName, currentValue, newVal => configEntry.BoxedValue = newVal);
+                    }
+                    else if (configEntry.SettingType == typeof(KeyCode))
+                    {
+                        var defaultValue = configEntry.DefaultValue is KeyCode cValue ? cValue : KeyCode.None;
+                        var currentValue = configEntry.BoxedValue is KeyCode bValue ? bValue : KeyCode.None;
 
-            catch (Exception e)
-            {
-                Log.LogError(e);
+                        SettingsHandlerUtility.AddKeybindToTab(configEntry.Definition.Key, defaultValue, modName, currentValue, newVal => configEntry.BoxedValue = newVal);
+                    }
+                    else if (configEntry.SettingType.IsEnum)
+                    {
+                        var defaultValue = configEntry.DefaultValue is object cValue ? cValue : Enum.ToObject(configEntry.SettingType, 0);
+                        var currentValue = configEntry.BoxedValue is object bValue ? bValue : Enum.ToObject(configEntry.SettingType, 0);
+
+                        var defaultValueName = Enum.GetName(configEntry.SettingType, defaultValue);
+                        var currentValueName = Enum.GetName(configEntry.SettingType, currentValue);
+                        var options = new List<string>(Enum.GetNames(configEntry.SettingType));
+
+                        SettingsHandlerUtility.AddEnumToTab(configEntry.Definition.Key, options, modName, currentValueName, newVal =>
+                        {
+                            if (Enum.TryParse(configEntry.SettingType, newVal, out var value))
+                                configEntry.BoxedValue = value;
+                        });
+                    }
+                    else // Warn about missing SettingTypes
+                        Log.LogWarning($"Missing SettingType: [Mod: {modName}] {configEntry.Definition.Key} (Type: {configEntry.SettingType})");
+                }
+
+                catch (Exception e)
+                {
+                    Log.LogError(e);
+                }
             }
         }
+        
     }
 
     // From https://github.com/IsThatTheRealNick/REPOConfig/blob/main/REPOConfig/ConfigMenu.cs#L453
-    internal static Dictionary<string, ConfigEntryBase[]> GetModConfigEntries()
+    private static Dictionary<string, ConfigEntryBase[]> GetModConfigEntries()
     {
         var configs = new Dictionary<string, ConfigEntryBase[]>();
 
@@ -286,7 +293,7 @@ public partial class ModConfigPlugin : BaseUnityPlugin
         return configs;
     }
 
-    internal static string FixNaming(string input)
+    private static string FixNaming(string input)
     {
         input = Regex.Replace(input, "([a-z])([A-Z])", "$1 $2");
         input = Regex.Replace(input, "([A-Z])([A-Z][a-z])", "$1 $2");
