@@ -28,6 +28,7 @@ namespace PEAKLib.ModConfig;
 public partial class ModConfigPlugin : BaseUnityPlugin
 {
     internal static ManualLogSource Log { get; } = BepInEx.Logging.Logger.CreateLogSource(Name);
+    private static List<ConfigEntryBase> EntriesProcessed = [];
 
     private void Awake()
     {
@@ -49,6 +50,12 @@ public partial class ModConfigPlugin : BaseUnityPlugin
             var modSettingsPage = MenuAPI.CreatePage("ModSettings")
                 .CreateBackground(isTitleScreen ? new Color(0, 0, 0, 0.8667f) : null)
                 .SetOnClose(settingMenu.Open);
+
+            modSettingsPage.SetOnOpen(() =>
+            {
+                //Double check if any config items have been created since initialization
+                ProcessModEntries();
+            });
 
             var modSettingsLocalization = MenuAPI.CreateLocalization("MOD SETTINGS")
                 .AddLocalization("MOD SETTINGS", Language.English)
@@ -168,14 +175,28 @@ public partial class ModConfigPlugin : BaseUnityPlugin
     {
         if (modSettingsLoaded) return;
 
+        EntriesProcessed = [];
         modSettingsLoaded = true;
 
+        ProcessModEntries();
+    }
+
+    //Processes Bepinex config items to Settings entries
+    //Called during mod initialization AND whenever the mod settings page is opened
+    private static void ProcessModEntries()
+    {
         foreach (var (modName, configEntryBases) in GetModConfigEntries())
         {
             foreach (var configEntry in configEntryBases)
             {
                 try
                 {
+                    //track mod entries we have processed to not duplicate setting entries
+                    if (EntriesProcessed.Contains(configEntry))
+                        continue;
+                    else
+                        EntriesProcessed.Add(configEntry);
+
                     if (configEntry.SettingType == typeof(bool))
                     {
                         var defaultValue = configEntry.DefaultValue is bool dValue && dValue;
@@ -243,8 +264,8 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                     Log.LogError(e);
                 }
             }
-
         }
+        
     }
 
     // From https://github.com/IsThatTheRealNick/REPOConfig/blob/main/REPOConfig/ConfigMenu.cs#L453
