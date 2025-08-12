@@ -115,13 +115,30 @@ internal static class ItemRegistrar
         }
 
         // Fix smoke
-        item
-            .gameObject.GetComponentInChildren<ParticleSystem>()
-            .GetComponent<ParticleSystemRenderer>()
-            .material = Resources
-            .FindObjectsOfTypeAll<Material>()
-            .ToList()
-            .Find(x => x.name == "Smoke");
+        var particleSystem = item.gameObject.GetComponentInChildren<ParticleSystem>();
+        if (particleSystem != null)
+        {
+            var particleRenderer = particleSystem.GetComponent<ParticleSystemRenderer>();
+            if (particleRenderer != null)
+            {
+                var smokeMaterial = Resources.FindObjectsOfTypeAll<Material>()
+                    .ToList()
+                    .Find(x => x.name == "Smoke");
+        
+                if (smokeMaterial != null)
+                {
+                    particleRenderer.material = smokeMaterial;
+                }
+                else
+                {
+                    ItemsPlugin.Log.LogWarning($"Smoke material not found for {item.name}");
+                }
+            }
+            else
+            {
+                ItemsPlugin.Log.LogWarning($"ParticleSystemRenderer not found for {item.name}");
+            }
+        }
 
         // Add item to database
         self.Objects.Add(item);
