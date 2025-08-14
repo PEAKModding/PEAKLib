@@ -1,4 +1,4 @@
-﻿using MonoDetour;
+﻿/*using MonoDetour;
 using MonoDetour.HookGen;
 using On.PauseOptionsMenu;
 
@@ -25,3 +25,4 @@ static class PauseMenuHooks
             );
     }
 }
+*/

@@ -15,6 +15,9 @@ using System;
 using System.Linq;
 using PEAKLib.ModConfig.Components;
 using Language = LocalizedText.Language;
+using System.Collections;
+using pworld.Scripts.Extensions;
+//using PEAKLib.ModConfig.Hooks;
 
 namespace PEAKLib.ModConfig;
 
@@ -29,9 +32,11 @@ public partial class ModConfigPlugin : BaseUnityPlugin
 {
     internal static ManualLogSource Log { get; } = BepInEx.Logging.Logger.CreateLogSource(Name);
     private static List<ConfigEntryBase> EntriesProcessed = [];
+    internal static ModConfigPlugin instance = null!;
 
     private void Awake()
     {
+        instance = this;
         MonoDetourManager.InvokeHookInitializers(typeof(ModConfigPlugin).Assembly);
         Log.LogInfo($"Plugin {Name} is loaded!");
     }
@@ -43,13 +48,26 @@ public partial class ModConfigPlugin : BaseUnityPlugin
         void builderDelegate(Transform parent)
         {
             var isTitleScreen = SceneManager.GetActiveScene().name == "Title";
-            MenuWindow settingMenu = isTitleScreen
-                ? parent.GetComponentInParent<PauseMainMenu>()
-                : parent.GetComponentInParent<PauseSettingsMenu>();
+            Log.LogDebug($"Builder delegate started for {parent.name}, isTitleScreen = {isTitleScreen}");
+            var pauseMenu = parent.GetComponentInParent<PauseMenuHandler>();
+            MainMenuSettingsPage mainMenuSettings = parent.GetComponentInParent<MainMenuSettingsPage>();
+            MainMenuPageSelector pageSelector = parent.GetComponentInParent<MainMenuPageSelector>();
 
             var modSettingsPage = MenuAPI.CreatePage("ModSettings")
-                .CreateBackground(isTitleScreen ? new Color(0, 0, 0, 0.8667f) : null)
-                .SetOnClose(settingMenu.Open);
+                .CreateBackground(isTitleScreen ? new Color(0, 0, 0, 0.8667f) : null);
+
+            if (isTitleScreen)
+                modSettingsPage.SetOnClose(pageSelector.mainPage.m_settingsButton.onClick.Invoke);
+            else
+            {
+                modSettingsPage.SetOnClose(() =>
+                {
+                    pauseMenu?.transform.GetChild(0).gameObject.SetActive(true); //background
+                    pauseMenu?.transform.GetChild(2).gameObject.SetActive(true); //settings page
+                });
+            }
+                
+                
 
             modSettingsPage.SetOnOpen(() =>
             {
@@ -153,11 +171,9 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                 .OnClick(() =>
                 {
                     UIInputHandler.SetSelectedObject(null);
-                    settingMenu?.Close();
-
-                    if (!isTitleScreen && settingMenu is PauseSettingsMenu pauseSettingsMenu)
-                        pauseSettingsMenu.optionsMenu?.Close();
-                    
+                    pauseMenu?.transform.GetChild(0).gameObject.SetActive(false); //background
+                    pauseMenu?.transform.GetChild(2).gameObject.SetActive(false); //settings page
+                    mainMenuSettings?.backButton.onClick.Invoke();
                     modSettingsPage.Open();
                 });
 

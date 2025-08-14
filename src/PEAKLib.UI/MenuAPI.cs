@@ -13,6 +13,15 @@ namespace PEAKLib.UI;
 /// </summary>
 public static class MenuAPI
 {
+    /// <summary>
+    /// Reference to PEAK back button, used as a template for buttons
+    /// </summary>
+    public static GameObject? ButtonTemplate { get; internal set; }
+    /// <summary>
+    /// Reference to PEAK settings cell prefab
+    /// </summary>
+    public static GameObject? SettingsCellPrefab { get; internal set; }
+
     internal static BuilderDelegate? pauseMenuBuilderDelegate,
         mainMenuBuilderDelegate,
         settingsMenuBuilderDelegate;
@@ -52,7 +61,6 @@ public static class MenuAPI
     public static PeakCustomPage CreatePage(string pageName)
     {
         ThrowHelper.ThrowIfArgumentNullOrWhiteSpace(pageName);
-
         return new GameObject(pageName).AddComponent<PeakCustomPage>();
     }
 
@@ -74,12 +82,12 @@ public static class MenuAPI
     {
         ThrowHelper.ThrowIfFieldNull(buttonName);
 
-        if (Templates.ButtonTemplate == null)
+        if (ButtonTemplate == null)
             throw new System.Exception(
                 "You're creating MenuButton too early! Prefab hasn't been loaded yet."
             );
 
-        var clone = Object.Instantiate(Templates.ButtonTemplate);
+        var clone = Object.Instantiate(ButtonTemplate);
         clone.name = $"UI_MainMenuButton_{buttonName}";
 
         var newButton = clone.AddComponent<PeakMenuButton>();

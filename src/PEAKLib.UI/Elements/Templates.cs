@@ -4,6 +4,5 @@ namespace PEAKLib.UI.Elements;
 
 internal static class Templates
 {
-    internal static GameObject? ButtonTemplate { get; set; }
-    internal static GameObject? SettingsCellPrefab { get; set; }
+    //moved object references to MenuAPI so others can use them
 }

@@ -1,4 +1,4 @@
-using MonoDetour;
+/*using MonoDetour;
 using MonoDetour.HookGen;
 using UnityEngine;
 
@@ -25,3 +25,4 @@ static class MenuWindowHooks
             SettingsCellPrefab = sharedSettings.m_settingsCellPrefab;
     }
 }
+*/

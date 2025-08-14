@@ -1,4 +1,4 @@
-using MonoDetour;
+/*using MonoDetour;
 using MonoDetour.HookGen;
 using On.MenuWindow;
 using PEAKLib.UI.Elements;
@@ -60,3 +60,4 @@ static class MenuWindowHooks
         MenuAPI.mainMenuBuilderDelegate?.Invoke(menu.playWithFriendsButton.transform.parent);
     }
 }
+*/
