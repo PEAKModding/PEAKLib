@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zorro.Settings;
 using System.Linq;
-using PEAKLib.ModConfig.Hooks;
+using PEAKLib.UI.Elements;
 
 namespace PEAKLib.ModConfig.Components;
 
@@ -62,7 +62,7 @@ internal class ModdedSettingsMenu : MonoBehaviour
                                          select setting)
 
         {
-            if (MenuWindowHooks.SettingsCellPrefab == null)
+            if (Templates.SettingsCellPrefab == null)
             {
                 ModConfigPlugin.Log.LogError("SettingsCellPrefab has not been loaded.");
                 return;
@@ -74,7 +74,7 @@ internal class ModdedSettingsMenu : MonoBehaviour
                 return;
             }
 
-            SettingsUICell component = Instantiate(MenuWindowHooks.SettingsCellPrefab, Content).GetComponent<SettingsUICell>();
+            SettingsUICell component = Instantiate(Templates.SettingsCellPrefab, Content).GetComponent<SettingsUICell>();
             m_spawnedCells.Add(component);
             // component.Setup(item as Setting);
 

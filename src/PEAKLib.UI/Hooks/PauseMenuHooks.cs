@@ -1,19 +1,19 @@
 ﻿using MonoDetour;
 using MonoDetour.HookGen;
-using On.PauseOptionsMenu;
+using On.PauseMenuMainPage;
 
 namespace PEAKLib.UI.Hooks;
 
-[MonoDetourTargets(typeof(PauseOptionsMenu))]
+[MonoDetourTargets(typeof(PauseMenuMainPage))]
 static class PauseMenuHooks
 {
     [MonoDetourHookInitialize]
     static void Init()
     {
-        Initialize.Prefix(Prefix_Initialize);
+        Start.Prefix(Prefix_Start);
     }
 
-    static void Prefix_Initialize(PauseOptionsMenu self)
+    static void Prefix_Start(PauseMenuMainPage self)
     {
         var transform = self.transform.Find("MainPage/Options");
 

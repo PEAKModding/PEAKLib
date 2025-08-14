@@ -2,8 +2,18 @@
 
 namespace PEAKLib.UI.Elements;
 
-internal static class Templates
+/// <summary>
+/// UI Prefab templates to instantiate.
+/// </summary>
+public static class Templates
 {
-    internal static GameObject? ButtonTemplate { get; set; }
-    internal static GameObject? SettingsCellPrefab { get; set; }
+    /// <summary>
+    /// Template for a button.
+    /// </summary>
+    public static GameObject? ButtonTemplate { get; internal set; }
+
+    /// <summary>
+    /// Template for a settings cell.
+    /// </summary>
+    public static GameObject? SettingsCellPrefab { get; internal set; }
 }

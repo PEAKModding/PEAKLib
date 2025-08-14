@@ -15,6 +15,7 @@ using System;
 using System.Linq;
 using PEAKLib.ModConfig.Components;
 using Language = LocalizedText.Language;
+using Zorro.UI;
 
 namespace PEAKLib.ModConfig;
 
@@ -42,13 +43,16 @@ public partial class ModConfigPlugin : BaseUnityPlugin
         void builderDelegate(Transform parent)
         {
             var isTitleScreen = SceneManager.GetActiveScene().name == "Title";
-            MenuWindow settingMenu = isTitleScreen
-                ? parent.GetComponentInParent<PauseMainMenu>()
-                : parent.GetComponentInParent<PauseSettingsMenu>();
 
             var modSettingsPage = MenuAPI.CreatePage("ModSettings")
-                .CreateBackground(isTitleScreen ? new Color(0, 0, 0, 0.8667f) : null)
-                .SetOnClose(settingMenu.Open);
+                .CreateBackground(isTitleScreen ? new Color(0, 0, 0, 0.8667f) : null);
+
+            UIPage uiPage = isTitleScreen
+                ? parent.GetComponentInParent<MainMenuSettingsPage>()
+                : parent.GetComponentInParent<PauseMenuSettingsMenuPage>();
+
+            // TODO: This should open the old page.
+            modSettingsPage.SetOnClose(uiPage.OnPageEnter);
 
             var modSettingsLocalization = MenuAPI.CreateLocalization("MOD SETTINGS")
                 .AddLocalization("MOD SETTINGS", Language.English)
@@ -146,11 +150,12 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                 .OnClick(() =>
                 {
                     UIInputHandler.SetSelectedObject(null);
-                    settingMenu?.Close();
+                    // TODO: figure out how to close page.
+                    // uiPage?.Close();
 
-                    if (!isTitleScreen && settingMenu is PauseSettingsMenu pauseSettingsMenu)
-                        pauseSettingsMenu.optionsMenu?.Close();
-                    
+                    if (!isTitleScreen && uiPage is PauseMenuSettingsMenuPage pauseSettingsMenu)
+                        // pauseSettingsMenu.Close();
+
                     modSettingsPage.Open();
                 });
 
