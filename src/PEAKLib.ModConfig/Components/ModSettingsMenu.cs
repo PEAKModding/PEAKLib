@@ -1,5 +1,4 @@
-﻿//using PEAKLib.ModConfig.Hooks;
-using PEAKLib.UI;
+﻿using PEAKLib.UI.Elements;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,7 +62,7 @@ internal class ModdedSettingsMenu : MonoBehaviour
                                          select setting)
 
         {
-            if (MenuAPI.SettingsCellPrefab == null)
+            if (Templates.SettingsCellPrefab == null)
             {
                 ModConfigPlugin.Log.LogError("SettingsCellPrefab has not been loaded.");
                 return;
@@ -75,7 +74,7 @@ internal class ModdedSettingsMenu : MonoBehaviour
                 return;
             }
 
-            SettingsUICell component = Instantiate(MenuAPI.SettingsCellPrefab, Content).GetComponent<SettingsUICell>();
+            SettingsUICell component = Instantiate(Templates.SettingsCellPrefab, Content).GetComponent<SettingsUICell>();
             m_spawnedCells.Add(component);
             // component.Setup(item as Setting);
 

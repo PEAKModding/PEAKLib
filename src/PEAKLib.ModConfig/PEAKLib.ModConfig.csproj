@@ -13,8 +13,4 @@
     <ProjectReference Include="../PEAKLib.UI/PEAKLib.UI.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Hooks\" />
-  </ItemGroup>
-
 </Project>
