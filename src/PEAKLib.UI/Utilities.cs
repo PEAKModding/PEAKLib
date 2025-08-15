@@ -1,5 +1,5 @@
-﻿using System;
-using PEAKLib.Core;
+﻿using PEAKLib.Core;
+using System;
 using UnityEngine;
 
 namespace PEAKLib.UI;

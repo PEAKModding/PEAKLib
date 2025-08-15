@@ -1,23 +1,21 @@
 ﻿using BepInEx;
+using BepInEx.Bootstrap;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using MonoDetour;
 using PEAKLib.Core;
-using TMPro;
-using UnityEngine.SceneManagement;
-using UnityEngine;
+using PEAKLib.ModConfig.Components;
 using PEAKLib.UI;
 using PEAKLib.UI.Elements;
-using BepInEx.Bootstrap;
-using BepInEx.Configuration;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using System;
-using System.Linq;
-using PEAKLib.ModConfig.Components;
-using Language = LocalizedText.Language;
-using System.Collections;
 using pworld.Scripts.Extensions;
-//using PEAKLib.ModConfig.Hooks;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using TMPro;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using Language = LocalizedText.Language;
 
 namespace PEAKLib.ModConfig;
 
@@ -48,27 +46,22 @@ public partial class ModConfigPlugin : BaseUnityPlugin
         void builderDelegate(Transform parent)
         {
             var isTitleScreen = SceneManager.GetActiveScene().name == "Title";
-            Log.LogDebug($"Builder delegate started for {parent.name}, isTitleScreen = {isTitleScreen}");
             var pauseMenu = parent.GetComponentInParent<PauseMenuHandler>();
-            MainMenuSettingsPage mainMenuSettings = parent.GetComponentInParent<MainMenuSettingsPage>();
-            MainMenuPageSelector pageSelector = parent.GetComponentInParent<MainMenuPageSelector>();
+            var mainMenuSettings = parent.GetComponentInParent<MainMenuSettingsPage>();
+            var pageSelector = parent.GetComponentInParent<MainMenuPageSelector>();
 
             var modSettingsPage = MenuAPI.CreatePage("ModSettings")
                 .CreateBackground(isTitleScreen ? new Color(0, 0, 0, 0.8667f) : null);
-
-            if (isTitleScreen)
-                modSettingsPage.SetOnClose(pageSelector.mainPage.m_settingsButton.onClick.Invoke);
-            else
-            {
                 modSettingsPage.SetOnClose(() =>
                 {
+                    //main menu stuff
+                    pageSelector?.mainPage.m_settingsButton.onClick.Invoke();
+                    
+                    //pause menu stuff
                     pauseMenu?.transform.GetChild(0).gameObject.SetActive(true); //background
                     pauseMenu?.transform.GetChild(2).gameObject.SetActive(true); //settings page
                 });
-            }
                 
-                
-
             modSettingsPage.SetOnOpen(() =>
             {
                 //Double check if any config items have been created since initialization
@@ -177,9 +170,7 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                     modSettingsPage.Open();
                 });
 
-            if (modSettingsButton != null)
-                modSettingsButton
-                .SetPosition(new Vector2(171, -230))
+            modSettingsButton?.SetPosition(new Vector2(171, -230))
                 .SetWidth(220);
         }
 

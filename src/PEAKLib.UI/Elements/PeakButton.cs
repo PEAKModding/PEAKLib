@@ -1,7 +1,7 @@
-﻿using UnityEngine.UI;
+﻿using PEAKLib.Core;
 using UnityEngine;
-using PEAKLib.Core;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace PEAKLib.UI.Elements;
 

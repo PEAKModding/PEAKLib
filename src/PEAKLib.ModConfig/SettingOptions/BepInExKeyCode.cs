@@ -1,12 +1,12 @@
-﻿using System;
+﻿using PEAKLib.ModConfig.SettingOptions.SettingUI;
+using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Zorro.Core;
 using Zorro.Settings;
 using Zorro.Settings.UI;
 using Object = UnityEngine.Object;
-using UnityEngine.UI;
-using PEAKLib.ModConfig.SettingOptions.SettingUI;
 
 namespace PEAKLib.ModConfig.SettingOptions;
 

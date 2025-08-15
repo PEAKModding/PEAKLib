@@ -1,11 +1,11 @@
-﻿using System;
+﻿using PEAKLib.Core;
+using System;
+using System.Collections;
+using System.Linq;
 using TMPro;
 using UnityEngine;
-using Zorro.Settings;
-using System.Collections;
 using UnityEngine.UI;
-using System.Linq;
-using PEAKLib.Core;
+using Zorro.Settings;
 
 namespace PEAKLib.ModConfig.SettingOptions.SettingUI;
 

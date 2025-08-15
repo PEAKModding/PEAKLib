@@ -1,10 +1,10 @@
-﻿using System.Collections;
+﻿//using PEAKLib.ModConfig.Hooks;
+using PEAKLib.UI;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Zorro.Settings;
-using System.Linq;
-//using PEAKLib.ModConfig.Hooks;
-using PEAKLib.UI;
 
 namespace PEAKLib.ModConfig.Components;
 

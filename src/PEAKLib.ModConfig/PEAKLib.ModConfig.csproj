@@ -4,13 +4,17 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>com.github.PEAKModding.PEAKLib.ModConfig</AssemblyName>
     <AssemblyTitle>PEAKLib.ModConfig</AssemblyTitle>
-    <Version>1.3.0</Version>
+    <Version>1.3.1</Version>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="../PEAKLib.Core/PEAKLib.Core.csproj" />
     <ProjectReference Include="../PEAKLib.UI/PEAKLib.UI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Hooks\" />
   </ItemGroup>
 
 </Project>

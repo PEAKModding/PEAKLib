@@ -1,9 +1,9 @@
 ﻿using MonoDetour;
 using MonoDetour.HookGen;
-using System.Linq;
-using UnityEngine;
 using On.MainMenu;
 using PEAKLib.Core;
+using System.Linq;
+using UnityEngine;
 
 namespace PEAKLib.UI.Hooks;
 

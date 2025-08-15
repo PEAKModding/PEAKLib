@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace PEAKLib.UI.Elements;
+﻿namespace PEAKLib.UI.Elements;
 
 internal static class Templates
 {
