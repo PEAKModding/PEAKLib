@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.2] - 2025-08-12
+
+### Fixed
+
+- Recompiled against the latest game assembly references as `CharacterData.currentItem` was changed from a field to a property which was a breaking change.
+- If a registered item doesn't have a particle system, PEAKLib won't explode anymore.
+
+## [1.4.1] - 2025-07-25
+
+### Fixed
+
+- All shaders in an item's material will be replaced with the real shader from the game, instead of just one.
+
 ## [1.4.0] - 2025-07-18
 
 ### Added
