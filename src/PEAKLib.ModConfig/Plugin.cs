@@ -15,6 +15,8 @@ using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using Zorro.UI;
 using Language = LocalizedText.Language;
 
 namespace PEAKLib.ModConfig;
@@ -46,25 +48,23 @@ public partial class ModConfigPlugin : BaseUnityPlugin
         void builderDelegate(Transform parent)
         {
             var isTitleScreen = SceneManager.GetActiveScene().name == "Title";
-            var pauseMenu = parent.GetComponentInParent<PauseMenuHandler>();
+
+            var mainMenuHandler = parent.GetComponentInParent<MainMenuPageHandler>();
+            var pauseMenuHandler = parent.GetComponentInParent<PauseMenuHandler>();
+
             var mainMenuSettings = parent.GetComponentInParent<MainMenuSettingsPage>();
             var pageSelector = parent.GetComponentInParent<MainMenuPageSelector>();
 
-            var modSettingsPage = MenuAPI.CreatePage("ModSettings")
-                .CreateBackground(isTitleScreen ? new Color(0, 0, 0, 0.8667f) : null);
-                modSettingsPage.SetOnClose(() =>
-                {
-                    //main menu stuff
-                    pageSelector?.mainPage.m_settingsButton.onClick.Invoke();
-                    
-                    //pause menu stuff
-                    pauseMenu?.transform.GetChild(0).gameObject.SetActive(true); //background
-                    pauseMenu?.transform.GetChild(2).gameObject.SetActive(true); //settings page
-                });
-                
+            var parentPage = isTitleScreen ? mainMenuHandler.GetPage<MainMenuSettingsPage>() : pauseMenuHandler.GetPage<PauseMenuSettingsMenuPage>();
+
+            var modSettingsPage = MenuAPI.CreateParentPage("ModSettings", parentPage);
+
+            if (isTitleScreen) 
+                modSettingsPage.CreateBackground(new Color(0, 0, 0, 0.8667f));
+
             modSettingsPage.SetOnOpen(() =>
             {
-                //Double check if any config items have been created since initialization
+                //Double check if any config items have been created since initializatio
                 ProcessModEntries();
             });
 
@@ -102,13 +102,15 @@ public partial class ModConfigPlugin : BaseUnityPlugin
             newText.Text.enableAutoSizing = true;
             newText.Text.alignment = TextAlignmentOptions.Center;
 
-            MenuAPI.CreateMenuButton("Back")
+            var backButton = MenuAPI.CreateMenuButton("Back")
                 .SetLocalizationIndex("BACK") // Peak already have a "BACK" official translation, so let's just use it
                 .SetColor(new Color(1, 0.5f, 0.2f))
                 .ParentTo(modSettingsPage)
                 .SetPosition(new Vector2(225, -180))
-                .SetWidth(200)
-                .OnClick(modSettingsPage.Close);
+                .SetWidth(200);
+
+
+            modSettingsPage.SetBackButton(backButton.GetComponent<Button>()); // sadly backButton.Button doesn't work cause Awake have not being called yet
 
             MenuAPI.CreateText("Search")
                 .ParentTo(modSettingsPage)
@@ -163,15 +165,16 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                 .ParentTo(parent)
                 .OnClick(() =>
                 {
-                    UIInputHandler.SetSelectedObject(null);
-                    pauseMenu?.transform.GetChild(0).gameObject.SetActive(false); //background
-                    pauseMenu?.transform.GetChild(2).gameObject.SetActive(false); //settings page
-                    mainMenuSettings?.backButton.onClick.Invoke();
-                    modSettingsPage.Open();
+                    UIPageHandler handler = isTitleScreen ? mainMenuHandler : pauseMenuHandler;
+
+                    handler.TransistionToPage(modSettingsPage, new SetActivePageTransistion());
                 });
 
             modSettingsButton?.SetPosition(new Vector2(171, -230))
                 .SetWidth(220);
+
+
+            modSettingsPage.gameObject.SetActive(false);
         }
 
         MenuAPI.AddToSettingsMenu(builderDelegate);

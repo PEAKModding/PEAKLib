@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Zorro.UI;
 using Object = UnityEngine.Object;
 
 namespace PEAKLib.UI;
@@ -53,6 +54,22 @@ public static class MenuAPI
     {
         ThrowHelper.ThrowIfArgumentNullOrWhiteSpace(pageName);
         return new GameObject(pageName).AddComponent<PeakCustomPage>();
+    }
+
+    /// <summary>
+    /// Creates a parent page to store your elements
+    /// </summary>
+    /// <param name="pageName">Name of the GameObject</param>
+    /// <param name="parentPage">Parent to go back to when back button is pressed</param>
+    /// <returns></returns>
+    public static PeakParentPage CreateParentPage(string pageName, UIPage parentPage)
+    {
+        ThrowHelper.ThrowIfArgumentNullOrWhiteSpace(pageName);
+
+        return new GameObject(pageName)
+            .ParentTo(parentPage.transform.parent) // this assumes parent page is inside a UIPageHandler
+            .AddComponent<PeakParentPage>()
+            .SetParentPage(parentPage);
     }
 
     /// <summary>
