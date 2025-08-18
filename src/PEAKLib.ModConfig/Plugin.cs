@@ -47,8 +47,6 @@ public partial class ModConfigPlugin : BaseUnityPlugin
 
         void builderDelegate(Transform parent)
         {
-            //var isTitleScreen = SceneManager.GetActiveScene().name == "Title";
-
             var mainMenuHandler = parent.GetComponentInParent<MainMenuPageHandler>();
             var pauseMenuHandler = parent.GetComponentInParent<PauseMenuHandler>();
 
