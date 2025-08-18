@@ -47,19 +47,22 @@ public partial class ModConfigPlugin : BaseUnityPlugin
 
         void builderDelegate(Transform parent)
         {
-            var isTitleScreen = SceneManager.GetActiveScene().name == "Title";
+            //var isTitleScreen = SceneManager.GetActiveScene().name == "Title";
 
             var mainMenuHandler = parent.GetComponentInParent<MainMenuPageHandler>();
             var pauseMenuHandler = parent.GetComponentInParent<PauseMenuHandler>();
 
-            var mainMenuSettings = parent.GetComponentInParent<MainMenuSettingsPage>();
-            var pageSelector = parent.GetComponentInParent<MainMenuPageSelector>();
+            if (mainMenuHandler == null && pauseMenuHandler == null)
+                throw new Exception("Failed to get a UIPageHandler");
 
-            var parentPage = isTitleScreen ? mainMenuHandler.GetPage<MainMenuSettingsPage>() : pauseMenuHandler.GetPage<PauseMenuSettingsMenuPage>();
+            var parentPage = mainMenuHandler?.GetPage<MainMenuSettingsPage>() ??pauseMenuHandler?.GetPage<PauseMenuSettingsMenuPage>();
+
+            if (parentPage == null)
+                throw new Exception("Failed to get the parent page");
 
             var modSettingsPage = MenuAPI.CreateParentPage("ModSettings", parentPage);
 
-            if (isTitleScreen) 
+            if (mainMenuHandler != null) // we are on main menu, create a background
                 modSettingsPage.CreateBackground(new Color(0, 0, 0, 0.8667f));
 
             modSettingsPage.SetOnOpen(() =>
@@ -165,9 +168,9 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                 .ParentTo(parent)
                 .OnClick(() =>
                 {
-                    UIPageHandler handler = isTitleScreen ? mainMenuHandler : pauseMenuHandler;
+                    var handler = mainMenuHandler as UIPageHandler ?? pauseMenuHandler;
 
-                    handler.TransistionToPage(modSettingsPage, new SetActivePageTransistion());
+                    handler?.TransistionToPage(modSettingsPage, new SetActivePageTransistion());
                 });
 
             modSettingsButton?.SetPosition(new Vector2(171, -230))
