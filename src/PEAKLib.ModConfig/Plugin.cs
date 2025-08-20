@@ -58,7 +58,7 @@ public partial class ModConfigPlugin : BaseUnityPlugin
             if (parentPage == null)
                 throw new Exception("Failed to get the parent page");
 
-            var modSettingsPage = MenuAPI.CreateParentPage("ModSettings", parentPage);
+            var modSettingsPage = MenuAPI.CreateChildPage("ModSettings", parentPage);
 
             if (mainMenuHandler != null) // we are on main menu, create a background
                 modSettingsPage.CreateBackground(new Color(0, 0, 0, 0.8667f));

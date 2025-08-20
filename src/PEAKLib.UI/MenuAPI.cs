@@ -62,13 +62,13 @@ public static class MenuAPI
     /// <param name="pageName">Name of the GameObject</param>
     /// <param name="parentPage">Parent to go back to when back button is pressed</param>
     /// <returns></returns>
-    public static PeakParentPage CreateParentPage(string pageName, UIPage parentPage)
+    public static PeakChildPage CreateChildPage(string pageName, UIPage parentPage)
     {
         ThrowHelper.ThrowIfArgumentNullOrWhiteSpace(pageName);
 
         return new GameObject(pageName)
             .ParentTo(parentPage.transform.parent) // this assumes parent page is inside a UIPageHandler
-            .AddComponent<PeakParentPage>()
+            .AddComponent<PeakChildPage>()
             .SetParentPage(parentPage);
     }
 

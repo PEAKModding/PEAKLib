@@ -9,22 +9,22 @@ namespace PEAKLib.UI.Elements;
 /// Class that can be used to create pages that have a parent (back button).
 /// </summary>
 [RequireComponent(typeof(RectTransform))]
-public class PeakParentPage : UIPage, IHaveParentPage
+public class PeakChildPage : UIPage, IHaveParentPage
 {
     /// <summary>
-    /// 
+    /// The back button of this UI page that transitions to <see cref="ParentPage"/>.
     /// </summary>
-    public Button? backButton = null;
+    public Button? BackButton { get; set; }
 
     /// <summary>
-    /// 
+    /// The parent page of this UI page.
     /// </summary>
-    public UIPage? parentPage;
+    public UIPage? ParentPage { get; set; }
 
     // Background is optional, so can be null
     private Image? Background { get; set; }
 
-    private void Start() => backButton?.onClick.AddListener(new UnityAction(this.BackClicked));
+    private void Start() => BackButton?.onClick.AddListener(new UnityAction(this.BackClicked));
     private void Awake()
     {
         var rectTransform = GetComponent<RectTransform>();
@@ -42,9 +42,9 @@ public class PeakParentPage : UIPage, IHaveParentPage
     /// </summary>
     /// <param name="parent">The page that it should go back to</param>
     /// <returns></returns>
-    public PeakParentPage SetParentPage(UIPage parent)
+    public PeakChildPage SetParentPage(UIPage parent)
     {
-        parentPage = parent;
+        ParentPage = parent;
         return this;
     }
 
@@ -53,9 +53,9 @@ public class PeakParentPage : UIPage, IHaveParentPage
     /// </summary>
     /// <param name="button"></param>
     /// <returns></returns>
-    public PeakParentPage SetBackButton(Button button)
+    public PeakChildPage SetBackButton(Button button)
     {
-        backButton = button; 
+        BackButton = button; 
         return this;
     }
 
@@ -65,10 +65,10 @@ public class PeakParentPage : UIPage, IHaveParentPage
     /// <returns></returns>
     public (UIPage, PageTransistion) GetParentPage()
     {
-        if (parentPage == null)
+        if (ParentPage == null)
             throw new System.Exception("You haven't set a parent page. Please set a parent page or the back button will not work properly. | myPage.SetParentPage(parentPage)");
 
-        return (parentPage, new SetActivePageTransistion());
+        return (ParentPage, new SetActivePageTransistion());
     }
 
     private void BackClicked() 
@@ -88,7 +88,7 @@ public class PeakParentPage : UIPage, IHaveParentPage
     /// </summary>
     /// <param name="backgroundColor">Set a custom background color (<b>optional</b>)</param>
     /// <returns></returns>
-    public PeakParentPage CreateBackground(Color? backgroundColor = null)
+    public PeakChildPage CreateBackground(Color? backgroundColor = null)
     {
         if (Background == null)
         {
@@ -129,7 +129,7 @@ public class PeakParentPage : UIPage, IHaveParentPage
     /// </summary>
     /// <param name="onCloseEvent"></param>
     /// <returns></returns>
-    public PeakParentPage SetOnClose(UnityAction onCloseEvent)
+    public PeakChildPage SetOnClose(UnityAction onCloseEvent)
     {
         onCloseAction = onCloseEvent;
         return this;
@@ -140,7 +140,7 @@ public class PeakParentPage : UIPage, IHaveParentPage
     /// </summary>
     /// <param name="onOpenEvent"></param>
     /// <returns></returns>
-    public PeakParentPage SetOnOpen(UnityAction onOpenEvent)
+    public PeakChildPage SetOnOpen(UnityAction onOpenEvent)
     {
         onOpenAction = onOpenEvent;
         return this;
