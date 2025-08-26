@@ -35,6 +35,7 @@ public partial class CorePlugin : BaseUnityPlugin
         };
 
         BundleLoader.LoadAllBundles(Paths.PluginPath, ".autoload.peakbundle");
+        BundleLoader.LoadAllBundles(Paths.PluginPath, ".autoload_peakbundle");
 
         Log.LogInfo($"Plugin {Name} is loaded!");
     }

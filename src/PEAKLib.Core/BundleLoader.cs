@@ -98,7 +98,11 @@ public static class BundleLoader
         this BaseUnityPlugin baseUnityPlugin,
         string fileName,
         Action<PeakBundle> onLoaded
-    ) => LoadBundleWithNameInternal(baseUnityPlugin, fileName, onLoaded, loadContents: false);
+    )
+    {
+        ThrowHelper.ThrowIfArgumentNull(onLoaded);
+        LoadBundleWithNameInternal(baseUnityPlugin, fileName, onLoaded, loadContents: false);
+    }
 
     /// <summary>
     /// Load an AssetBundle async and get a callback for when it's loaded.
@@ -108,7 +112,7 @@ public static class BundleLoader
     public static void LoadBundleAndContentsWithName(
         this BaseUnityPlugin baseUnityPlugin,
         string fileName,
-        Action<PeakBundle> onLoaded
+        Action<PeakBundle>? onLoaded = null
     ) => LoadBundleWithNameInternal(baseUnityPlugin, fileName, onLoaded, loadContents: true);
 
     /// <summary></summary>
@@ -123,13 +127,12 @@ public static class BundleLoader
     private static void LoadBundleWithNameInternal(
         this BaseUnityPlugin baseUnityPlugin,
         string fileName,
-        Action<PeakBundle> onLoaded,
+        Action<PeakBundle>? onLoaded,
         bool loadContents
     )
     {
         ThrowHelper.ThrowIfArgumentNull(baseUnityPlugin);
         ThrowHelper.ThrowIfArgumentNullOrWhiteSpace(fileName);
-        ThrowHelper.ThrowIfArgumentNull(onLoaded);
 
         var root = Path.GetDirectoryName(baseUnityPlugin.Info.Location);
         string[] files = Directory.GetFiles(root, fileName, SearchOption.AllDirectories);
@@ -314,7 +317,7 @@ public static class BundleLoader
         public Action<PeakBundle>? OnBundleLoaded { get; }
         public AssetBundleCreateRequest BundleRequest { get; }
         public TimeSpan ElapsedTime => DateTime.Now - StartTime;
-        public string FileName => System.IO.Path.GetFileNameWithoutExtension(Path);
+        public string FileName { get; }
 
         public enum State
         {
@@ -333,6 +336,7 @@ public static class BundleLoader
             OnBundleLoaded = onBundleLoaded;
             LoadContents = loadContents;
             ModDefinition = modDefinition;
+            FileName = System.IO.Path.GetFileName(Path);
             BundleRequest = AssetBundle.LoadFromFileAsync(path);
             BundleRequest.completed += OnLoaded;
         }
@@ -399,6 +403,10 @@ public static class BundleLoader
                 mod.Content.Add(content);
             }
 
+            var peakBundle = new PeakBundle(bundle, mod);
+
+            operation.OnBundleLoaded?.SafeInvoke(peakBundle);
+
             if (operation.LoadContents)
             {
                 foreach (var content in contents)
@@ -424,10 +432,6 @@ public static class BundleLoader
                     }
                 }
             }
-
-            var peakBundle = new PeakBundle(bundle, mod);
-
-            operation.OnBundleLoaded?.SafeInvoke(peakBundle);
             BundleLoader.OnBundleLoaded?.SafeInvoke(peakBundle);
 
             // if (ConfigManager.ExtendedLogging.Value)
