@@ -39,30 +39,55 @@ static class CharacterXHooks
 
         ILLabel elseBlock = null!;
 
+        Instruction rightIk = null!;
+        Instruction leftIk = null!;
+
         w.MatchRelaxed(
-            x => x.MatchLdarg(0),
-            x => x.MatchLdfld<CharacterAnimations>(nameof(CharacterAnimations.character)),
-            x => x.MatchLdfld<Character>(nameof(Character.data)),
-            x => x.MatchLdfld<CharacterData>(nameof(CharacterData.overrideIKForSeconds)),
-            x => x.MatchLdcR4(out _),
-            x => x.MatchBgtUn(out elseBlock)
+                x => x.MatchLdarg(0),
+                x => x.MatchLdfld<CharacterAnimations>(nameof(CharacterAnimations.character)),
+                x => x.MatchLdfld<Character>(nameof(Character.data)),
+                x => x.MatchLdfld<CharacterData>(nameof(CharacterData.overrideIKForSeconds)),
+                x => x.MatchLdcR4(out _),
+                x => x.MatchBgtUn(out elseBlock),
+                x => x.MatchLdarg(0),
+                x => x.MatchLdfld<CharacterAnimations>(nameof(CharacterAnimations.character)),
+                x => x.MatchLdfld<Character>(nameof(Character.refs)),
+                x => x.MatchLdfld<Character.CharacterRefs>(nameof(Character.CharacterRefs.ikRig)),
+                x => x.MatchLdcR4(out _),
+                x => x.MatchCallvirt(out _),
+                x => x.MatchLdarg(0),
+                x => x.MatchLdfld<CharacterAnimations>(nameof(CharacterAnimations.character)),
+                x => x.MatchLdfld<Character>(nameof(Character.refs)),
+                x => x.MatchLdfld<Character.CharacterRefs>(nameof(Character.CharacterRefs.ikRight)),
+                x => x.MatchLdcR4(out _) && w.SetInstructionTo(ref rightIk, x),
+                x => x.MatchCallvirt(out _),
+                x => x.MatchLdarg(0),
+                x => x.MatchLdfld<CharacterAnimations>(nameof(CharacterAnimations.character)),
+                x => x.MatchLdfld<Character>(nameof(Character.refs)),
+                x => x.MatchLdfld<Character.CharacterRefs>(nameof(Character.CharacterRefs.ikLeft)),
+                x => x.MatchLdcR4(out _) && w.SetInstructionTo(ref leftIk, x),
+                x => x.MatchCallvirt(out _)
+            )
+            .ThrowIfFailure();
+
+        w.InsertAfter(
+            rightIk,
+            w.Create(OpCodes.Pop),
+            w.Create(OpCodes.Ldarg_0),
+            w.CreateCall(GetIKWeightsRight)
         );
 
-        w.InsertBefore(elseBlock.Target, w.Create(OpCodes.Ldarg_0), w.CreateCall(SetIKWeights));
+        w.InsertAfter(
+            leftIk,
+            w.Create(OpCodes.Pop),
+            w.Create(OpCodes.Ldarg_0),
+            w.CreateCall(GetIKWeightsLeft)
+        );
     }
 
-    static void SetIKWeights(CharacterAnimations self)
-    {
-        if (!HasHandRight(self))
-        {
-            self.character.refs.ikRight.weight = 0f;
-        }
+    static float GetIKWeightsRight(CharacterAnimations self) => HasHandRight(self) ? 1f : 0f;
 
-        if (!HasHandLeft(self))
-        {
-            self.character.refs.ikLeft.weight = 0f;
-        }
-    }
+    static float GetIKWeightsLeft(CharacterAnimations self) => HasHandLeft(self) ? 1f : 0f;
 
     // Inserts conditional branches over instructions which set hand positions based
     // on item data so that an item doesn't need both left or right hands.
@@ -75,7 +100,7 @@ static class CharacterXHooks
         w.Body.Variables.Add(hasLeft);
         w.Body.Variables.Add(hasRight);
 
-        var infoBody = w.Body.CreateInformationalSnapshotJIT();
+        var infoBody = w.Body.CreateInformationalSnapshotEvaluateAll();
 
         w.MatchRelaxed(x =>
                 x.MatchCallvirt<CharacterItems>(nameof(CharacterItems.GetItemPosLeft))
