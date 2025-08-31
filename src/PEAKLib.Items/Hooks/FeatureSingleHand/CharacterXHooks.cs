@@ -37,8 +37,6 @@ static class CharacterXHooks
     {
         ILWeaver w = new(info);
 
-        ILLabel elseBlock = null!;
-
         Instruction rightIk = null!;
         Instruction leftIk = null!;
 
@@ -48,7 +46,7 @@ static class CharacterXHooks
                 x => x.MatchLdfld<Character>(nameof(Character.data)),
                 x => x.MatchLdfld<CharacterData>(nameof(CharacterData.overrideIKForSeconds)),
                 x => x.MatchLdcR4(out _),
-                x => x.MatchBgtUn(out elseBlock),
+                x => x.MatchBgtUn(out _),
                 x => x.MatchLdarg(0),
                 x => x.MatchLdfld<CharacterAnimations>(nameof(CharacterAnimations.character)),
                 x => x.MatchLdfld<Character>(nameof(Character.refs)),
@@ -245,25 +243,6 @@ static class CharacterXHooks
         return (before, after);
     }
 
-    static ILWeaver InsertBranchOverIfTrue(
-        this ILWeaver weaver,
-        (Instruction start, Instruction end) range,
-        params IEnumerable<Instruction> condition
-    ) => InsertBranchOverIfTrue(weaver, range.start, range.end, condition);
-
-    static ILWeaver InsertBranchOverIfTrue(
-        this ILWeaver weaver,
-        Instruction start,
-        Instruction end,
-        params IEnumerable<Instruction> condition
-    )
-    {
-        var startIndex = weaver.Instructions.IndexOf(start);
-        weaver.InsertBeforeStealLabels(startIndex, condition);
-        weaver.InsertBeforeStealLabels(startIndex, weaver.Create(OpCodes.Brtrue, end.Next));
-        return weaver;
-    }
-
     static ILWeaver InsertBranchOverIfFalse(
         this ILWeaver weaver,
         (Instruction start, Instruction end) range,
@@ -280,18 +259,6 @@ static class CharacterXHooks
         var startIndex = weaver.Instructions.IndexOf(start);
         weaver.InsertBeforeStealLabels(startIndex, weaver.Create(OpCodes.Brfalse, end.Next));
         weaver.InsertBeforeStealLabels(startIndex, condition);
-        return weaver;
-    }
-
-    static ILWeaver InsertBranchOver(
-        this ILWeaver weaver,
-        (Instruction start, Instruction end) range
-    ) => InsertBranchOver(weaver, range.start, range.end);
-
-    static ILWeaver InsertBranchOver(this ILWeaver weaver, Instruction start, Instruction end)
-    {
-        var startIndex = weaver.Instructions.IndexOf(start);
-        weaver.InsertBeforeStealLabels(startIndex, weaver.Create(OpCodes.Br, end.Next));
         return weaver;
     }
 }
