@@ -82,7 +82,8 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                 .AddLocalization("模组设置", Language.SimplifiedChinese)
                 .AddLocalization("模組設定", Language.TraditionalChinese)
                 .AddLocalization("MOD設定", Language.Japanese)
-                .AddLocalization("모드 설정", Language.Korean);
+                .AddLocalization("모드 설정", Language.Korean)
+                .AddLocalization("USTAWIENIA MODÓW", Language.Polish);
 
             var headerContainer = new GameObject("Header")
                 .ParentTo(modSettingsPage)
