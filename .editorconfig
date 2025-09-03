@@ -1,7 +1,0 @@
-[*.cs]
-
-# Non-constant fields should not be visible (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca2211)
-dotnet_diagnostic.CA2211.severity = warning
-
-# Naming rule violation (https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/naming-rules#rule-id-ide1006-naming-rule-violation)
-dotnet_diagnostic.IDE1006.severity = warning
