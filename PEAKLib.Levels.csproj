@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>com.github.PEAKModding.PEAKLib.Levels</AssemblyName>
+    <AssemblyTitle>PEAKLib.Levels</AssemblyTitle>
+    <Version>0.1.0</Version>
+    <!-- Remove once ready for release -->
+    <ThunderstorePackable>false</ThunderstorePackable>
+  </PropertyGroup>
+
+  <!-- NuGet metadata -->
+  <PropertyGroup>
+    <!-- Set to 'true' once ready for release -->
+    <IsPackable>false</IsPackable>
+    <PackageId>PEAKModding.PEAKLib.Levels</PackageId>
+    <Description>Levels module of the PEAKLib community API for the game PEAK.</Description>
+    <Authors>$(Authors)</Authors>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="./README.md" Pack="true" PackagePath="/" />
+    <None Include="$(SolutionRoot)icon.png" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../PEAKLib.Core/PEAKLib.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Core\Compatibility\" />
+  </ItemGroup>
+
+</Project>
