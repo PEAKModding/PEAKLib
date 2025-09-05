@@ -4,15 +4,15 @@ namespace PEAKLib.Levels.Core
 {
     internal static class PatchedContent
     {
-        public static List<ExtendedMod> ExtendedMods { get; set; } = new List<ExtendedMod>();
-        public static void SortExtendedMods()
+        // public static List<ExtendedMod> ExtendedMods { get; set; } = new List<ExtendedMod>();
+        /* public static void SortExtendedMods()
         {
             ExtendedMods.Sort((a, b) => string.Compare(a.ModName, b.ModName, System.StringComparison.OrdinalIgnoreCase));
             foreach (var m in ExtendedMods) m.SortRegisteredContent();
         }
 
         public static Dictionary<string, List<ExtendedTag>> ModDefinedTags { get; internal set; }
-            = new Dictionary<string, List<ExtendedTag>>();
+            = new Dictionary<string, List<ExtendedTag>>(); */
 
         public class SpawnableEntry
         {

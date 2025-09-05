@@ -23,22 +23,15 @@ namespace PEAKLib.Levels.Core
                 }
 
                 bool anyDeferred = false;
-                foreach (var mod in PatchedContent.ExtendedMods.ToArray())
+                foreach (var registeredContent in SegmentContent.s_RegisteredSegments)
                 {
-                    if (mod == null || mod.ExtendedContents == null) continue;
-                    foreach (var content in mod.ExtendedContents)
+                    if (registeredContent.Content.BiomePrefab != null)
                     {
-                        if (content is ExtendedSegment seg)
-                        {
-                            if (seg.BiomePrefab != null)
-                            {
-                                TryApplySegmentToMap(map, seg);
-                            }
-                            else
-                            {
-                                anyDeferred = true;
-                            }
-                        }
+                        TryApplySegmentToMap(map, registeredContent);
+                    }
+                    else
+                    {
+                        anyDeferred = true;
                     }
                 }
 
@@ -60,8 +53,12 @@ namespace PEAKLib.Levels.Core
             }
         }
 
-        public static void TryApplySegmentToMap(MapHandler map, ExtendedSegment seg)
+        public static void TryApplySegmentToMap(
+            MapHandler map,
+            RegisteredContent<SegmentContent> registeredSegment
+        )
         {
+            var seg = registeredSegment.Content;
             try
             {
                 int idx = seg.Index;
@@ -74,13 +71,13 @@ namespace PEAKLib.Levels.Core
                 GameObject? prefab = seg.BiomePrefab;
                 if (prefab == null)
                 {
-                    Debug.LogError($"[PackSystem] No prefab available for '{seg.name}' yet; skipping (will be applied later).");
+                    Debug.LogError($"[PackSystem] No prefab available for '{seg.Name}' yet; skipping (will be applied later).");
                     return;
                 }
 
                 Transform parentContainer = map.globalParent != null ? map.globalParent : map.transform;
                 var instance = UnityEngine.Object.Instantiate(prefab, parentContainer);
-                instance.name = $"{seg.name}_BiomeInstance";
+                instance.name = $"{seg.Name}_BiomeInstance";
 
                 bool isCurrent = (Segment)idx == map.GetCurrentSegment();
                 instance.SetActive(isCurrent);
@@ -114,11 +111,11 @@ namespace PEAKLib.Levels.Core
                 if (campfireField != null)
                     campfireField.SetValue(ms, campfire);
 
-                Debug.Log($"[PackSystem] Applied ExtendedSegment '{seg.name}' to MapHandler.segments[{idx}]");
+                Debug.Log($"[PackSystem] Applied ExtendedSegment '{seg.Name}' to MapHandler.segments[{idx}]");
             }
             catch (Exception ex)
             {
-                Debug.LogError($"[PatchHooks] TryApplySegmentToMap error for '{seg?.name}': {ex}");
+                Debug.LogError($"[PatchHooks] TryApplySegmentToMap error for '{seg?.Name}': {ex}");
             }
         }
 
@@ -131,16 +128,9 @@ namespace PEAKLib.Levels.Core
 
             BundleLoader.OnAllBundlesLoaded -= onAll;
 
-            foreach (var mod in PatchedContent.ExtendedMods.ToArray())
+            foreach (var registeredContent in SegmentContent.s_RegisteredSegments)
             {
-                if (mod == null || mod.ExtendedContents == null) continue;
-                foreach (var c in mod.ExtendedContents)
-                {
-                    if (c is ExtendedSegment s)
-                    {
-                        TryApplySegmentToMap(map, s);
-                    }
-                }
+                TryApplySegmentToMap(map, registeredContent);
             }
 
             try
