@@ -16,4 +16,14 @@ public static class Templates
     /// Reference to PEAK settings cell prefab.
     /// </summary>
     public static GameObject? SettingsCellPrefab { get; internal set; }
+
+    /// <summary>
+    /// Reference to PEAK Reset Bind Button prefab.
+    /// </summary>
+    public static GameObject? ResetBindButton { get; internal set; }
+    /// <summary>
+    /// Reference to PEAK Bind Warning (Controls) Button prefab.
+    /// </summary>
+    public static GameObject? BindWarningButton { get; internal set; }
+
 }

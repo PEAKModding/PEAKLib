@@ -16,7 +16,8 @@ public static class MenuAPI
 {
     internal static BuilderDelegate? pauseMenuBuilderDelegate,
         mainMenuBuilderDelegate,
-        settingsMenuBuilderDelegate;
+        settingsMenuBuilderDelegate,
+        controlsMenuBuilderDelegate;
 
     /// <summary>
     /// Delegate to create elements
@@ -44,6 +45,13 @@ public static class MenuAPI
     /// <param name="builderDelegate"></param>
     public static void AddToSettingsMenu(BuilderDelegate builderDelegate) =>
         settingsMenuBuilderDelegate += builderDelegate;
+
+    /// <summary>
+    /// Add element(s) to Controls Menu
+    /// </summary>
+    /// <param name="builderDelegate"></param>
+    public static void AddToControlsMenu(BuilderDelegate builderDelegate) =>
+        controlsMenuBuilderDelegate += builderDelegate;
 
     /// <summary>
     /// Creates a page to store your elements

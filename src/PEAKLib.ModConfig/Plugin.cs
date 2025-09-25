@@ -14,7 +14,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Zorro.UI;
 using Language = LocalizedText.Language;
@@ -32,6 +31,7 @@ public partial class ModConfigPlugin : BaseUnityPlugin
 {
     internal static ManualLogSource Log { get; } = BepInEx.Logging.Logger.CreateLogSource(Name);
     private static List<ConfigEntryBase> EntriesProcessed = [];
+    internal static Dictionary<ConfigEntry<KeyCode>, string> ModdedKeybinds = [];
     internal static ModConfigPlugin instance = null!;
 
     private void Awake()
@@ -47,6 +47,7 @@ public partial class ModConfigPlugin : BaseUnityPlugin
 
         void builderDelegate(Transform parent)
         {
+            Log.LogDebug("builderDelegate");
             var mainMenuHandler = parent.GetComponentInParent<MainMenuPageHandler>();
             var pauseMenuHandler = parent.GetComponentInParent<PauseMenuHandler>();
 
@@ -172,14 +173,131 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                     handler?.TransistionToPage(modSettingsPage, new SetActivePageTransistion());
                 });
 
+            modSettingsPage.gameObject.SetActive(false);
+
             modSettingsButton?.SetPosition(new Vector2(171, -230))
                 .SetWidth(220);
+        }
 
+        void controlsBuilder(Transform parent)
+        {
+            Log.LogDebug("controlsBuilder");
+            var pauseMenuHandler = parent.GetComponentInParent<PauseMenuHandler>();
 
-            modSettingsPage.gameObject.SetActive(false);
+            if (pauseMenuHandler == null)
+                throw new Exception("Failed to get a UIPageHandler");
+
+            var parentPage = parent.GetComponent<PauseMenuControlsPage>();
+
+            if (parentPage == null)
+                throw new Exception("Failed to get the parent page to create Modded Controls Page");
+
+            var modControlsPage = MenuAPI.CreateChildPage("ModdedControlsPage", parentPage);
+           
+            var controlsMenu = modControlsPage.gameObject.AddComponent<ModdedControlsMenu>();
+
+            modControlsPage.SetOnOpen(() =>
+            {
+                //Double check if any config items have been created since initialization
+                Log.LogDebug("Modded Controls Menu Opened!");
+                ProcessModEntries();
+                controlsMenu.ShowControls();
+            });
+
+            controlsMenu.MainPage = modControlsPage;
+
+            controlsMenu.RebindNotif = MenuAPI.CreateButton("RebindModdedKey")
+                .ParentTo(parentPage.transform.parent)
+                .ExpandToParent();
+
+            controlsMenu.RebindNotif.Text.SetFontSize(48);
+            controlsMenu.RebindNotif.gameObject.SetActive(false);
+
+            var modControlsLocalization = MenuAPI.CreateLocalization("MOD CONTROLS")
+                .AddLocalization("MOD CONTROLS", Language.English);
+
+            var headerContainer = new GameObject("Header")
+                .ParentTo(modControlsPage)
+                .AddComponent<PeakElement>()
+                .SetAnchorMinMax(new Vector2(0, 1))
+                .SetPosition(new Vector2(40, -40))
+                .SetPivot(new Vector2(0, 1))
+                .SetSize(new Vector2(360, 100));
+
+            var newText = MenuAPI.CreateText("Mod Controls", "HeaderText")
+                .SetFontSize(48)
+                .ParentTo(headerContainer)
+                .ExpandToParent()
+                .SetLocalizationIndex(modControlsLocalization);
+
+            newText.Text.fontSizeMax = 48;
+            newText.Text.fontSizeMin = 24;
+            newText.Text.enableAutoSizing = true;
+            newText.Text.alignment = TextAlignmentOptions.Center;
+
+            var backButton = MenuAPI.CreateMenuButton("Back (Controls)")
+                .SetLocalizationIndex("BACK") // Peak already have a "BACK" official translation, so let's just use it
+                .SetColor(new Color(1, 0.5f, 0.2f))
+                .ParentTo(modControlsPage)
+                .SetPosition(new Vector2(225, -230))
+                .SetWidth(200);
+
+            var restoreAllButton = MenuAPI.CreateMenuButton("Restore Defaults")
+                .SetLocalizationIndex("RESTOREDEFAULTS") // Peak has an official translation for this as well
+                .SetColor(new Color(0.3919f, 0.1843f, 0.6235f)) //same as default restore defaults button
+                .ParentTo(modControlsPage)
+                .SetPosition(new Vector2(225, -160))
+                .SetWidth(300);
+
+            restoreAllButton.OnClick(controlsMenu.OnResetClicked);
+
+            modControlsPage.SetBackButton(backButton.GetComponent<Button>()); // sadly backButton.Button doesn't work cause Awake have not being called yet
+
+            MenuAPI.CreateText("Search")
+                .ParentTo(modControlsPage)
+                .SetPosition(new Vector2(55, -255));
+
+            var content = new GameObject("Content")
+                .AddComponent<PeakElement>()
+                .ParentTo(modControlsPage)
+                .SetPivot(new Vector2(0, 1))
+                .SetAnchorMin(new Vector2(0, 1))
+                .SetAnchorMax(new Vector2(0, 1))
+                .SetPosition(new Vector2(428, -70))
+                .SetSize(new Vector2(1360, 980));
+
+            var scrollableContent = MenuAPI.CreateScrollableContent("ScrollableContent")
+                .ParentTo(content)
+                .ExpandToParent()
+                .SetOffsetMax(new Vector2(0, -60f));
+
+            controlsMenu.Content = scrollableContent.Content;
+
+            var textInput = MenuAPI.CreateTextInput("SearchInput")
+                .ParentTo(modControlsPage)
+                .SetSize(new Vector2(300, 70))
+                .SetPosition(new Vector2(200, -340))
+                .SetPlaceholder("Search here")
+                .OnValueChanged(controlsMenu.SetSearch);
+
+            var modControlsButton = MenuAPI.CreatePauseMenuButton("MOD CONTROLS")
+                .SetLocalizationIndex(modControlsLocalization)
+                .SetColor(new Color(0.15f, 0.75f, 0.85f))
+                .ParentTo(parent)
+                .OnClick(() =>
+                {
+                    var handler = pauseMenuHandler as UIPageHandler ?? pauseMenuHandler;
+
+                    handler?.TransistionToPage(modControlsPage, new SetActivePageTransistion());
+                });
+
+            modControlsPage.gameObject.SetActive(false);
+            modControlsButton?.SetPosition(new Vector2(205, -291))
+                .SetWidth(220);  
         }
 
         MenuAPI.AddToSettingsMenu(builderDelegate);
+        MenuAPI.AddToControlsMenu(controlsBuilder);
     }
 
     private static bool modSettingsLoaded = false;
@@ -249,6 +367,9 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                     {
                         var defaultValue = configEntry.DefaultValue is KeyCode cValue ? cValue : KeyCode.None;
                         var currentValue = configEntry.BoxedValue is KeyCode bValue ? bValue : KeyCode.None;
+
+                        if (configEntry is ConfigEntry<KeyCode> entry)
+                            ModdedKeybinds.TryAdd(entry, modName);
 
                         SettingsHandlerUtility.AddKeybindToTab(configEntry.Definition.Key, defaultValue, modName, currentValue, newVal => configEntry.BoxedValue = newVal);
                     }

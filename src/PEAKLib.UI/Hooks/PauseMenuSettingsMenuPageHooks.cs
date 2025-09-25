@@ -17,5 +17,8 @@ static class PauseMenuSettingsMenuPageHooks
     {
         MenuAPI.pauseMenuBuilderDelegate?.Invoke(self.backButton.transform);
         MenuAPI.settingsMenuBuilderDelegate?.Invoke(self.gameObject.transform);
+
+        var controls = self.transform.parent.Find("ControlsPage");
+        MenuAPI.controlsMenuBuilderDelegate?.Invoke(controls);
     }
 }

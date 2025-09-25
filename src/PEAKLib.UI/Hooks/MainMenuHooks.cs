@@ -22,9 +22,9 @@ static class PauseMenuHooks
     {
         var objects = Resources.FindObjectsOfTypeAll<GameObject>();
         Templates.SettingsCellPrefab = objects.First(n => n.name == "SettingsCell");
-        UIPlugin.Log.LogInfo($"SettingsCellPrefab is null - {Templates.SettingsCellPrefab == null}");
+        UIPlugin.Log.LogDebug($"SettingsCellPrefab is null - {Templates.SettingsCellPrefab == null}");
         var button = objects.First(n => n.name == "UI_MainMenuButton_LeaveGame (2)");
-        UIPlugin.Log.LogInfo($"button is null - {button == null}");
+        UIPlugin.Log.LogDebug($"button is null - {button == null}");
 
         if (Templates.SettingsCellPrefab == null || button == null)
         {
@@ -34,7 +34,7 @@ static class PauseMenuHooks
         }
 
         //instantiate as a new object to use as prefab because the reference we are grabbing will be destroyed at some point
-        Templates.ButtonTemplate = Object.Instantiate(button);
+        Templates.ButtonTemplate = Object.Instantiate(button)!;
         Templates.ButtonTemplate.name = "PeakUIButton";
 
         LocalizedText? locText =
