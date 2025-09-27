@@ -30,8 +30,8 @@ namespace PEAKLib.ModConfig;
 public partial class ModConfigPlugin : BaseUnityPlugin
 {
     internal static ManualLogSource Log { get; } = BepInEx.Logging.Logger.CreateLogSource(Name);
-    private static List<ConfigEntryBase> EntriesProcessed = [];
-    internal static Dictionary<ConfigEntry<KeyCode>, string> ModdedKeybinds = [];
+    private static List<ConfigEntryBase> EntriesProcessed { get; set; } = [];
+    internal static List<ModKeyToName> ModdedKeybinds { get; set; } = [];
     internal static ModConfigPlugin instance = null!;
 
     private void Awake()
@@ -344,6 +344,7 @@ public partial class ModConfigPlugin : BaseUnityPlugin
         if (modSettingsLoaded) return;
 
         EntriesProcessed = [];
+        ModdedKeybinds = [];
         modSettingsLoaded = true;
 
         ProcessModEntries();
@@ -407,7 +408,11 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                         var currentValue = configEntry.BoxedValue is KeyCode bValue ? bValue : KeyCode.None;
 
                         if (configEntry is ConfigEntry<KeyCode> entry)
-                            ModdedKeybinds.TryAdd(entry, modName);
+                        {
+                            ModKeyToName item = new(entry, modName);
+                            ModdedKeybinds.Add(item);
+                        }
+                            
 
                         SettingsHandlerUtility.AddKeybindToTab(configEntry.Definition.Key, defaultValue, modName, currentValue, newVal => configEntry.BoxedValue = newVal);
                     }

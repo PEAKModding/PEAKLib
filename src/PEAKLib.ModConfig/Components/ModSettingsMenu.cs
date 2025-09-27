@@ -36,6 +36,7 @@ internal class ModdedSettingsMenu : MonoBehaviour
 
     private void Awake()
     {
+        ModConfigPlugin.Log.LogDebug("ModdedSettingsMenu Awake");
         Instance = this;
     }
 

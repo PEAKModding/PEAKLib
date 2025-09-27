@@ -37,12 +37,13 @@ internal class ModdedControlsMenu : PeakElement
 
     public void Awake()
     {
+        ModConfigPlugin.Log.LogDebug("ModdedControlsMenu Awake");
         Instance = this;
         if (pageHandler == null)
         {
             pageHandler = GetComponentInParent<UIPageHandler>();
         }
-        controlsMenuButtons = [];
+
         InitButtons();
     }
 
@@ -115,13 +116,13 @@ internal class ModdedControlsMenu : PeakElement
         if (controlsMenuButtons.Count > 0)
         {
             foreach(var button in controlsMenuButtons)
-                buttonsToCreate.Remove(button.ConfigEntry);
+                ModKeyToName.RemoveKey(buttonsToCreate, button.ConfigEntry);
         }
 
-        var ordered = buttonsToCreate.OrderBy(x => x.Value);
+        var ordered = buttonsToCreate.OrderBy(x => x.ModName);
 
         foreach (var config in ordered)
-            AddControlMenuButton(config.Key, config.Value);
+            AddControlMenuButton(config.KeyBind, config.ModName);
     }
 
     private void AddControlMenuButton(ConfigEntry<KeyCode> configEntry, string ModName) 
@@ -135,9 +136,8 @@ internal class ModdedControlsMenu : PeakElement
                 .SetFontSize(36f)
                 .SetColor(Color.green)
                 .ParentTo(Content);
-            modText.TextMesh.alignment = TMPro.TextAlignmentOptions.Center;
-            
 
+            modText.TextMesh.alignment = TMPro.TextAlignmentOptions.Center;
             modName = modText.gameObject;
             ModLabels.Add(modName);
         }
