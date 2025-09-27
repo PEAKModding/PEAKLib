@@ -27,21 +27,22 @@ static class PauseMenuControlsPageHooks
             var control = self.transform.FindChildRecursive("UI_Control_KB_MoveForward").gameObject;
             UIPlugin.Log.LogDebug($"control is null - {control == null}");
 
-            var rebind = control?.transform.Find("Rebind").gameObject;
             var reset = control?.transform.Find("ResetButton").gameObject;
             var warning = control?.transform.Find("Warning").gameObject;
+            var inputIcon = control?.gameObject.GetComponentInChildren<InputIcon>();
 
-            List<GameObject> CannotBeNull = [control, rebind, reset, warning];
+            List<GameObject> CannotBeNull = [control, reset, warning];
 
-            if (CannotBeNull.Any(o => o == null!))
+            if (CannotBeNull.Any(o => o == null!) || inputIcon == null)
             {
                 ThrowHelper.ThrowIfArgumentNull(control, "Unable to get valid control gameobject for control button templates!");
-                ThrowHelper.ThrowIfArgumentNull(rebind, "Unable to get rebind button template!");
                 ThrowHelper.ThrowIfArgumentNull(reset, "Unable to get reset button template!");
                 ThrowHelper.ThrowIfArgumentNull(warning, "Unable to get bind warning object for template!");
+                ThrowHelper.ThrowIfArgumentNull(inputIcon, "Unable to get valid inputIcon for template!");
                 return;
             }
 
+            //Control Page Re-Used Buttons
             Templates.ResetBindButton = Object.Instantiate(reset)!;
             Templates.ResetBindButton.name = "PeakUIResetBindButton";
             Object.DontDestroyOnLoad(Templates.ResetBindButton);
@@ -49,9 +50,14 @@ static class PauseMenuControlsPageHooks
             Templates.BindWarningButton = Object.Instantiate(warning)!;
             Templates.BindWarningButton.name = "PeakUIBindWarningButton";
             Object.DontDestroyOnLoad(Templates.BindWarningButton);
+
+            //Sprite Sheets
+            Templates.PS5SpriteSheet = inputIcon!.ps5Sprites;
+            Templates.PS4SpriteSheet = inputIcon!.ps4Sprites;
+            Templates.XboxSpriteSheet = inputIcon!.xboxSprites;
+            Templates.SwitchSpriteSheet = inputIcon!.switchSprites;
+            Templates.KeyboardSpriteSheet = inputIcon!.keyboardSprites;
             InitComplete = true;
         }
-
-        //MenuAPI.controlsMenuBuilderDelegate?.Invoke(self.gameObject.transform);
     }
 }
