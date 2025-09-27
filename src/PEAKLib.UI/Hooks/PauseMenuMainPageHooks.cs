@@ -18,7 +18,12 @@ static class PauseMenuMainPageHooks
 
     private static void PostfixEnable(PauseMenuMainPage self)
     {
+        MenuAPI.pauseMenuBuilderDelegate?.Invoke(self.transform);
+
         var controls = self.transform.parent.Find("ControlsPage");
         MenuAPI.controlsMenuBuilderDelegate?.Invoke(controls);
+
+        var settings = self.transform.parent.Find("SettingsPage"); 
+        MenuAPI.settingsMenuBuilderDelegate?.Invoke(settings.gameObject.transform);
     }
 }

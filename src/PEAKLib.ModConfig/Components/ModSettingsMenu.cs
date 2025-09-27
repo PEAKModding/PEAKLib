@@ -18,6 +18,8 @@ internal class ModdedSettingsMenu : MonoBehaviour
 
     }
 
+    internal static ModdedSettingsMenu Instance { get; private set; } = null!;
+
     public ModdedSettingsTABS Tabs { get; set; } = null!;
 
     public Transform Content { get; set; } = null!;
@@ -29,6 +31,13 @@ internal class ModdedSettingsMenu : MonoBehaviour
     private Coroutine? m_fadeInCoroutine;
 
     private string search = "";
+
+    internal PeakChildPage MainPage = null!;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     public void SetSearch(string search)
     {

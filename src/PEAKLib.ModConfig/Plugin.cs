@@ -112,13 +112,6 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                 .SetPosition(new Vector2(225, -180))
                 .SetWidth(200);
 
-
-            modSettingsPage.SetBackButton(backButton.GetComponent<Button>()); // sadly backButton.Button doesn't work cause Awake have not being called yet
-
-            MenuAPI.CreateText("Search")
-                .ParentTo(modSettingsPage)
-                .SetPosition(new Vector2(90, -210));
-
             var content = new GameObject("Content")
                 .AddComponent<PeakElement>()
                 .ParentTo(modSettingsPage)
@@ -129,14 +122,49 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                 .SetSize(new Vector2(1360, 980));
 
             var settingsMenu = content.gameObject.AddComponent<ModdedSettingsMenu>();
+            settingsMenu.MainPage = modSettingsPage;
 
+            if (pauseMenuHandler != null)
+            {
+                var controlsButton = MenuAPI.CreateMenuButton("MOD CONTROLS")
+                .SetLocalizationIndex("MOD CONTROLS") //localization should exist from controls page builder
+                .SetColor(new Color(0.3919f, 0.1843f, 0.6235f)) //same purple as default controls button
+                .ParentTo(modSettingsPage)
+                .SetPosition(new Vector2(225, -240))
+                .SetWidth(220);
 
-            var textInput = MenuAPI.CreateTextInput("SearchInput")
+                controlsButton.OnClick(() =>
+                {
+                    pauseMenuHandler.TransistionToPage(ModdedControlsMenu.Instance.MainPage, new SetActivePageTransistion());
+                });
+
+                MenuAPI.CreateText("Search")
+                .ParentTo(modSettingsPage)
+                .SetPosition(new Vector2(90, -275));
+
+                var textInput = MenuAPI.CreateTextInput("SearchInput")
+                .ParentTo(modSettingsPage)
+                .SetSize(new Vector2(300, 70))
+                .SetPosition(new Vector2(230, -360))
+                .SetPlaceholder("Search here")
+                .OnValueChanged(settingsMenu.SetSearch);
+            }
+            else
+            {
+                MenuAPI.CreateText("Search")
+                .ParentTo(modSettingsPage)
+                .SetPosition(new Vector2(90, -210));
+
+                var textInput = MenuAPI.CreateTextInput("SearchInput")
                 .ParentTo(modSettingsPage)
                 .SetSize(new Vector2(300, 70))
                 .SetPosition(new Vector2(230, -300))
                 .SetPlaceholder("Search here")
                 .OnValueChanged(settingsMenu.SetSearch);
+            }
+
+
+            modSettingsPage.SetBackButton(backButton.GetComponent<Button>()); // sadly backButton.Button doesn't work cause Awake have not being called yet
 
             var horizontalTabs = new GameObject("TABS")
                 .ParentTo(content)
@@ -239,23 +267,33 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                 .SetLocalizationIndex("BACK") // Peak already have a "BACK" official translation, so let's just use it
                 .SetColor(new Color(1, 0.5f, 0.2f))
                 .ParentTo(modControlsPage)
-                .SetPosition(new Vector2(225, -230))
+                .SetPosition(new Vector2(225, -280))
                 .SetWidth(200);
+
+            var modSettingsButton = MenuAPI.CreateMenuButton("MOD SETTINGS")
+                .SetLocalizationIndex("MOD SETTINGS") //re-use existing localization from settings builder
+                .SetColor(new Color(0.15f, 0.75f, 0.85f))
+                .ParentTo(modControlsPage)
+                .SetPosition(new Vector2(225, -160))
+                .SetWidth(220)
+                .OnClick(() =>
+                {
+                    pauseMenuHandler.TransistionToPage(ModdedSettingsMenu.Instance.MainPage, new SetActivePageTransistion());
+                });
 
             var restoreAllButton = MenuAPI.CreateMenuButton("Restore Defaults")
                 .SetLocalizationIndex("RESTOREDEFAULTS") // Peak has an official translation for this as well
                 .SetColor(new Color(0.3919f, 0.1843f, 0.6235f)) //same as default restore defaults button
                 .ParentTo(modControlsPage)
-                .SetPosition(new Vector2(225, -160))
-                .SetWidth(300);
-
-            restoreAllButton.OnClick(controlsMenu.OnResetClicked);
+                .SetPosition(new Vector2(225, -220))
+                .SetWidth(300)
+                .OnClick(controlsMenu.OnResetClicked);
 
             modControlsPage.SetBackButton(backButton.GetComponent<Button>()); // sadly backButton.Button doesn't work cause Awake have not being called yet
 
             MenuAPI.CreateText("Search")
                 .ParentTo(modControlsPage)
-                .SetPosition(new Vector2(55, -255));
+                .SetPosition(new Vector2(55, -305));
 
             var content = new GameObject("Content")
                 .AddComponent<PeakElement>()
@@ -276,7 +314,7 @@ public partial class ModConfigPlugin : BaseUnityPlugin
             var textInput = MenuAPI.CreateTextInput("SearchInput")
                 .ParentTo(modControlsPage)
                 .SetSize(new Vector2(300, 70))
-                .SetPosition(new Vector2(200, -340))
+                .SetPosition(new Vector2(200, -390))
                 .SetPlaceholder("Search here")
                 .OnValueChanged(controlsMenu.SetSearch);
 
@@ -286,17 +324,17 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                 .ParentTo(parent)
                 .OnClick(() =>
                 {
-                    var handler = pauseMenuHandler as UIPageHandler ?? pauseMenuHandler;
-
-                    handler?.TransistionToPage(modControlsPage, new SetActivePageTransistion());
+                    pauseMenuHandler.TransistionToPage(modControlsPage, new SetActivePageTransistion());
                 });
 
             modControlsPage.gameObject.SetActive(false);
             modControlsButton?.SetPosition(new Vector2(205, -291))
-                .SetWidth(220);  
+                .SetWidth(220);
         }
 
+        //settings menu builder
         MenuAPI.AddToSettingsMenu(builderDelegate);
+        //controls menu builder
         MenuAPI.AddToControlsMenu(controlsBuilder);
     }
 

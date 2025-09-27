@@ -42,7 +42,8 @@ internal class ModdedControlsMenu : PeakElement
         {
             pageHandler = GetComponentInParent<UIPageHandler>();
         }
-        //Rebinding.LoadRebindingsFromFile();
+        controlsMenuButtons = [];
+        InitButtons();
     }
 
     internal void OnResetClicked()

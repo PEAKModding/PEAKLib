@@ -15,7 +15,6 @@ static class PauseMenuSettingsMenuPageHooks
 
     static void Prefix_Start(PauseMenuSettingsMenuPage self)
     {
-        MenuAPI.pauseMenuBuilderDelegate?.Invoke(self.backButton.transform);
-        MenuAPI.settingsMenuBuilderDelegate?.Invoke(self.gameObject.transform);
+        //moved
     }
 }
