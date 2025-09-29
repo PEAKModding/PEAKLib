@@ -402,7 +402,22 @@ public partial class ModConfigPlugin : BaseUnityPlugin
 
                         SettingsHandlerUtility.AddFloatToTab(configEntry.Definition.Key, defaultValue, modName, minValue, maxValue, currentValue, newVal => configEntry.BoxedValue = newVal);
                     }
+                    else if (configEntry.SettingType == typeof(double))
+                    {
+                        var defaultValue = configEntry.DefaultValue is double cValue ? cValue : 0f;
+                        var currentValue = configEntry.BoxedValue is double bValue ? bValue : 0f;
 
+                        float minValue = 0f;
+                        float maxValue = 1000f;
+
+                        if (configEntry.Description.AcceptableValues is AcceptableValueRange<double> range)
+                        {
+                            minValue = Convert.ToSingle(range.MinValue);
+                            maxValue = Convert.ToSingle(range.MaxValue);
+                        }
+
+                        SettingsHandlerUtility.AddDoubleToTab(configEntry.Definition.Key, defaultValue, modName, minValue, maxValue, currentValue, newVal => configEntry.BoxedValue = newVal);
+                    }
                     else if (configEntry.SettingType == typeof(int))
                     {
                         var defaultValue = configEntry.DefaultValue is int cValue ? cValue : 0;
@@ -415,7 +430,7 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                         var currentValue = configEntry.BoxedValue is string bValue ? bValue : "";
 
                         //checking if default value matches key path pattern
-                        if(defaultValue.Length > 4)
+                        if (defaultValue.Length > 4)
                         {
                             if (IsValidPath(defaultValue))
                             {
@@ -423,8 +438,6 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                                 ModdedKeys.Add(item);
                                 Log.LogDebug($"String config with default - {defaultValue} is detected as InputAction path");
                             }
-                            else
-                                Log.LogDebug($"String config with default - {defaultValue} is NOT detected as InputAction path");
                         }
 
                         //dropdown box for acceptablevalue list
@@ -448,7 +461,7 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                         {
                             ModKeyToName item = new(entry, modName);
                             ModdedKeys.Add(item);
-                        }    
+                        }
 
                         SettingsHandlerUtility.AddKeybindToTab(configEntry.Definition.Key, defaultValue, modName, currentValue, newVal => configEntry.BoxedValue = newVal);
                     }

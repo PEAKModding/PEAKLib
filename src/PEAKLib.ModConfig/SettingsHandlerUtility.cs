@@ -24,6 +24,15 @@ internal static class SettingsHandlerUtility
 
         SettingsHandler.Instance.AddSetting(new BepInExFloat(displayName, defaultValue, tabName, minValue, maxValue, currentValue, applyCallback));
     }
+    internal static void AddDoubleToTab(string displayName, double defaultValue,
+       string tabName, double minValue = 0f, double maxValue = 1f, double currentValue = 0f, Action<double>? applyCallback = null)
+    {
+        if (SettingsHandler.Instance == null)
+            throw new Exception("You're registering options too early! Use the Start() function to create new options!");
+
+
+        SettingsHandler.Instance.AddSetting(new BepInExDouble(displayName, defaultValue, tabName, minValue, maxValue, currentValue, applyCallback));
+    }
 
     internal static void AddIntToTab(string displayName, int defaultValue, string tabName, int currentValue = 0, Action<int>? saveCallback = null)
     {
