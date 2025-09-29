@@ -22,7 +22,7 @@ internal class ModdedControlsMenu : PeakElement
     // ---
 
     public static ModdedControlsMenu Instance = null!;
-    public List<ModdedRebindKeyCode> controlsMenuButtons = [];
+    public List<ModdedRebindKey> controlsMenuButtons = [];
     public List<GameObject> ModLabels = [];
 
     private string search = "";
@@ -32,8 +32,11 @@ internal class ModdedControlsMenu : PeakElement
     internal bool RebindInProgress = false;
     internal PeakChildPage MainPage = null!;
     internal PeakButton RebindNotif = null!;
-    internal ConfigEntry<KeyCode> Selected = null!;
+    internal ConfigEntry<KeyCode> SelectedKeyCode = null!;
+    internal ConfigEntry<string> SelectedKeyString = null!;
     internal Transform Content { get; set; } = null!;
+
+    private static readonly InputAction Dummy = new("ModConfig Dummy InputAction for Rebinding");
 
     public void Awake()
     {
@@ -45,17 +48,19 @@ internal class ModdedControlsMenu : PeakElement
         }
 
         InitButtons();
+        if(Dummy.bindings.Count < 1)
+            Dummy.AddBinding("/Keyboard/anyKey");
     }
 
-    internal void OnResetClicked()
+    internal void OnResetAllClicked()
     {
         ModConfigPlugin.Log.LogMessage("Resetting all modded settings!");
         controlsMenuButtons.ForEach(b => 
         {
-            if (b.ConfigEntry.Value == (KeyCode)b.ConfigEntry.DefaultValue)
+            if (b.IsAlreadyDefault())
                 return;
 
-            b.ConfigEntry.Value = (KeyCode)b.ConfigEntry.DefaultValue;
+            b.SetDefault();
             // triggering the animator to make it look like all the reset buttons were pressed
             b.reset.GetComponent<Button>().animator.SetBool("Pressed", true);
             b.reset.GetComponent<Button>().animator.SetBool("Disabled", true); 
@@ -101,7 +106,7 @@ internal class ModdedControlsMenu : PeakElement
                 }
         }
 
-        InitButtonBindingVisuals(scheme);
+        InitButtonBindingVisuals();
         LayoutRebuilder.ForceRebuildLayoutImmediate(base.transform as RectTransform);
     }
 
@@ -112,24 +117,28 @@ internal class ModdedControlsMenu : PeakElement
             pageHandler = GetComponentInParent<UIPageHandler>();
         }
 
-        var buttonsToCreate = ModConfigPlugin.ModdedKeybinds;
+        //keycodes & keystrings
+        List<ModKeyToName> keysToAdd = [.. ModConfigPlugin.ModdedKeys];
         if (controlsMenuButtons.Count > 0)
         {
             foreach(var button in controlsMenuButtons)
-                ModKeyToName.RemoveKey(buttonsToCreate, button.ConfigEntry);
+            {
+                if (button.ConfigKeyCode != null)
+                    keysToAdd = ModKeyToName.RemoveKey(keysToAdd, button.ConfigKeyCode);
+                if (button.ConfigKeyString != null)
+                    keysToAdd = ModKeyToName.RemoveKey(keysToAdd, button.ConfigKeyString);
+            }
         }
 
-        var ordered = buttonsToCreate.OrderBy(x => x.ModName);
-
-        foreach (var config in ordered)
+        foreach (var config in keysToAdd)
             AddControlMenuButton(config.KeyBind, config.ModName);
     }
 
-    private void AddControlMenuButton(ConfigEntry<KeyCode> configEntry, string ModName) 
+    private void AddControlMenuButton(ConfigEntryBase configEntry, string ModName) 
     {
         if (Content == null)
             return;
-
+        
         if(ModLabels.FirstOrDefault(x => x.name == ModName) is not GameObject modName)
         {
             var modText = MenuAPI.CreateText(ModName, ModName)
@@ -143,7 +152,7 @@ internal class ModdedControlsMenu : PeakElement
         }
 
         GameObject control = new($"({ModName}) {configEntry.Definition.Key}");
-        var item = control.AddComponent<ModdedRebindKeyCode>();
+        var item = control.AddComponent<ModdedRebindKey>();
         item.Label = modName;
         item.Setup(configEntry, ModName);
         control.transform.localPosition = Vector3.zero;
@@ -151,52 +160,51 @@ internal class ModdedControlsMenu : PeakElement
         controlsMenuButtons.Add(item);
     }
 
-    public void InitButtonBindingVisuals(InputScheme scheme)
+    public void InitButtonBindingVisuals()
     {
         //disable labels before refresh
         foreach (var item in ModLabels)
             item.SetActive(false);
+
+        controlsMenuButtons = [.. controlsMenuButtons.OrderBy(x => x.Label.name)];
 
         for (int i = 0; i < controlsMenuButtons.Count; i++)
         {
             var isSearching = !string.IsNullOrEmpty(search);
             if (isSearching)
             {
-                controlsMenuButtons[i].gameObject.SetActive(controlsMenuButtons[i].inputActionName.Contains(search, StringComparison.InvariantCultureIgnoreCase));
+                controlsMenuButtons[i].gameObject.SetActive(controlsMenuButtons[i].inputActionName.Contains(search, StringComparison.InvariantCultureIgnoreCase) || controlsMenuButtons[i].Label.name.Contains(search, StringComparison.InvariantCultureIgnoreCase));
             }
             else if(!controlsMenuButtons[i].gameObject.activeSelf)
                 controlsMenuButtons[i].gameObject.SetActive(true);
 
-            controlsMenuButtons[i].UpdateBindingVisuals(controlsMenuButtons, scheme);
+            controlsMenuButtons[i].UpdateBindingVisuals();
 
             //enable labels for active control items
             if (controlsMenuButtons[i].gameObject.activeSelf)
                 controlsMenuButtons[i].Label.SetActive(true);
         }
 
-        //Below prob not needed
-        /*
-        for (int i = 0; i < ModLabels.Count; i++)
+        //warning game object behavior
+        //done after values have been updated to avoid issues
+        DuplicatesCheck();
+    }
+
+    public void DuplicatesCheck()
+    {
+        foreach (ModdedRebindKey btn in controlsMenuButtons)
         {
-            if (ModLabels[i].transform.childCount == 0)
+            if (btn.value.Text.text.Equals("None", StringComparison.InvariantCultureIgnoreCase))
             {
-                ModLabels[i].gameObject.SetActive(false);
+                btn.SetWarning(false);
                 continue;
             }
-                
 
-            bool showLabel = false;
-            for (int x = 0; x < ModLabels[i].transform.childCount; i++)
-            {
-                if (ModLabels[i].transform.GetChild(x).gameObject.activeSelf)
-                {
-                    showLabel = true;
-                    break;
-                }    
-            }
-
-            ModLabels[i].gameObject.SetActive(showLabel);
-        }*/
+            if (controlsMenuButtons.Any(x => x.value.Text.text.Equals(btn.value.Text.text, StringComparison.InvariantCultureIgnoreCase) && x != btn))
+                btn.SetWarning(true);
+            else
+                btn.SetWarning(false);
+        } 
     }
 
     public void SetSearch(string search)
@@ -207,6 +215,8 @@ internal class ModdedControlsMenu : PeakElement
 
     public void ShowControls()
     {
+        SelectedKeyCode = null!;
+        SelectedKeyString = null!;
         RebindNotif?.gameObject.SetActive(false);
         InitButtons();
         OnDeviceChange(InputHandler.GetCurrentUsedInputScheme());
@@ -214,42 +224,99 @@ internal class ModdedControlsMenu : PeakElement
 
     public void RebindOperation()
     {
-        if (Selected == null)
+        if (SelectedKeyCode == null && SelectedKeyString == null)
             return;
 
         transform.gameObject.SetActive(false);
         RebindInProgress = true;
-        RebindNotif.Text.TextMesh.text = LocalizedText.GetText("PROMPT_REBIND").Replace("@", Selected.Definition.Key.ToString());
+        
         RebindNotif.gameObject.SetActive(true);
 
-        GUIManager.instance.StartCoroutine(AwaitControl());
+        if(SelectedKeyCode != null)
+        {
+            RebindNotif.Text.TextMesh.text = LocalizedText.GetText("PROMPT_REBIND").Replace("@", SelectedKeyCode.Definition.Key.ToString());
+            GUIManager.instance.StartCoroutine(AwaitKeyCode());
+        }
+            
+        if(SelectedKeyString != null)
+        {
+            RebindNotif.Text.TextMesh.text = LocalizedText.GetText("PROMPT_REBIND").Replace("@", SelectedKeyString.Definition.Key.ToString());
+            GUIManager.instance.StartCoroutine(AwaitKeyPath());
+        }
     }
 
-    public IEnumerator AwaitControl()
+    public IEnumerator AwaitKeyCode()
     {
-        var action_pause = InputSystem.actions.FindAction("Pause");
+        //needed to stop modded controls page from closing on cancel rebind
+        InputActionRebindingExtensions.RebindingOperation rebindOperation = Dummy.PerformInteractiveRebinding(0);
+        rebindOperation.Start();
         while (RebindInProgress)
         {
-            if(action_pause.WasPressedThisFrame())
+            if(Input.GetKeyDown(KeyCode.Escape))
             {
-                ModConfigPlugin.Log.LogDebug("Exiting new bind operation!");
-                RebindNotif.gameObject.SetActive(false);
-                RebindInProgress = false;
-                pageHandler.TransistionToPage(MainPage, new SetActivePageTransistion());
-                ShowControls();
+                rebindOperation.Cancel();
+                rebindOperation.Dispose();
+                RebindCancel();
                 yield break;
             }
 
             if (Input.anyKeyDown)
             {
+                rebindOperation.Cancel();
+                rebindOperation.Dispose();
                 ModConfigPlugin.Log.LogDebug("Setting new bind value!");
                 KeyCode[] keys = (KeyCode[])Enum.GetValues(typeof(KeyCode));
                 KeyCode key = keys.FirstOrDefault(x => Input.GetKeyDown(x));
-                Selected.Value = key;
+                SelectedKeyCode.Value = key;
                 RebindInProgress = false;
                 RebindNotif.gameObject.SetActive(false);
                 transform.gameObject.SetActive(true);
                 ShowControls();
+                yield break;
+            }
+
+            yield return null;
+        }
+    }
+
+    private void RebindCancel() 
+    {
+        ModConfigPlugin.Log.LogDebug("Exiting new bind operation!");
+        RebindNotif.gameObject.SetActive(false);
+        RebindInProgress = false;
+        transform.gameObject.SetActive(true);
+        ShowControls();
+    }
+
+    public IEnumerator AwaitKeyPath()
+    {
+        var action_pause = InputSystem.actions.FindAction("Pause");
+        InputActionRebindingExtensions.RebindingOperation rebindOperation = Dummy.PerformInteractiveRebinding(0)
+            .WithoutGeneralizingPathOfSelectedControl()
+            .OnComplete(operation =>  
+            {
+                ModConfigPlugin.Log.LogDebug("Setting new bind value!");
+                SelectedKeyString.Value = Dummy.bindings[0].overridePath;
+                RebindInProgress = false;
+                RebindNotif.gameObject.SetActive(false);
+                transform.gameObject.SetActive(true);
+                ShowControls();
+                operation.Dispose();
+            })
+            .OnCancel(operation =>
+            {
+                RebindCancel();
+                operation.Dispose();
+            });
+
+        rebindOperation.Start();
+
+        while (RebindInProgress)
+        {
+            if (action_pause.WasPressedThisFrame() && rebindOperation != null && rebindOperation.started && !rebindOperation.completed)
+            {
+                rebindOperation.Dispose();
+                RebindCancel();
                 yield break;
             }
 

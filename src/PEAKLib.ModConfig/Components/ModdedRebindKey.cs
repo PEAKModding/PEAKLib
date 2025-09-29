@@ -6,10 +6,9 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Zorro.ControllerSupport;
 
 namespace PEAKLib.ModConfig.Components;
-internal class ModdedRebindKeyCode : PeakElement
+internal class ModdedRebindKey : PeakElement
 {
     public string inputActionName = string.Empty;
     internal GameObject warning = null!;
@@ -19,16 +18,25 @@ internal class ModdedRebindKeyCode : PeakElement
     internal Color defaultTextColor = new(0.8745f, 0.8549f, 0.7608f);
     internal Color overriddenTextColor = new(0.8679f, 0.7459f, 0.3316f);
 
-    internal ConfigEntry<KeyCode> ConfigEntry = null!;
+    internal ConfigEntry<KeyCode>? ConfigKeyCode { get; set; } = null!;
+    internal ConfigEntry<string>? ConfigKeyString { get; set; } = null!;
+    internal string ConfigName { get; set; } = string.Empty;
     private PeakButton button = null!;
-    private PeakText value = null!;
+    internal PeakText value = null!;
     internal GameObject Label = null!;
 
     //this shit was a LOT of trial and error to get things looking better in a uniform way
-    internal void Setup(ConfigEntry<KeyCode> entry, string ModName)
+    internal void Setup(ConfigEntryBase entry, string ModName)
     {
-        ConfigEntry = entry;
-        inputActionName = $"({ModName}) {entry.Definition.Key}";
+        if(entry is ConfigEntry<KeyCode> keyCodeEntry)
+            ConfigKeyCode = keyCodeEntry;
+
+        if(entry is ConfigEntry<string> keyString)
+            ConfigKeyString = keyString;
+
+        ConfigName = entry.Definition.Key;
+
+        inputActionName = $"({ModName}) {ConfigName}";
 
         button = MenuAPI.CreateButton(inputActionName)
             .ParentTo(transform)
@@ -47,9 +55,11 @@ internal class ModdedRebindKeyCode : PeakElement
         GameObject rightParent = new($"{ModName} Value");
         rightParent.transform.SetParent(transform);
         rightParent.AddComponent<LayoutElement>();
-        rightParent.GetComponent<RectTransform>().anchoredPosition = new(450f, 0f);
+        rightParent.GetComponent<RectTransform>().anchoredPosition = new(500f, 0f);
         
-        value = MenuAPI.CreateText(ConfigEntry.Value.ToString())
+        string valueText = GetInitialValue(entry);
+
+        value = MenuAPI.CreateText(valueText)
             .ParentTo(rightParent.transform)
             .SetPosition(new(0f, -20f))
             .SetFontSize(34f)
@@ -64,7 +74,7 @@ internal class ModdedRebindKeyCode : PeakElement
         layout.childForceExpandHeight = false;
         layout.childForceExpandWidth = true;
         var layoutelement = value.gameObject.AddComponent<LayoutElement>();
-        layoutelement.preferredWidth = 66f;
+        layoutelement.preferredWidth = 60f;
         var content = value.gameObject.AddComponent<ContentSizeFitter>();
         content.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
         value.TextMesh.horizontalAlignment = HorizontalAlignmentOptions.Right; //IMPORTANT
@@ -99,44 +109,97 @@ internal class ModdedRebindKeyCode : PeakElement
         
     }
 
+    private static string GetInitialValue(ConfigEntryBase entry)
+    {
+        if (entry is ConfigEntry<KeyCode> keyCodeValue)
+            return keyCodeValue.Value.ToString();
+
+        if (entry is ConfigEntry<string> stringValue) 
+            return stringValue.Value;
+
+        ModConfigPlugin.Log.LogWarning("Unexpected config entry type being provided to Modded Controls Menu!");
+
+        return string.Empty;
+    }
+
     //Reset button action, resets the setting to the default value
     private void ResetThis()
     {
-        ConfigEntry.Value = (KeyCode)ConfigEntry.DefaultValue;
-        ModdedControlsMenu.Instance.InitButtonBindingVisuals(InputHandler.GetCurrentUsedInputScheme());
+        //var current = InputHandler.GetCurrentUsedInputScheme();
+
+        if (ConfigKeyCode != null)
+            ConfigKeyCode.Value = GetDefaultValue(ConfigKeyCode);
+
+        if(ConfigKeyString != null)
+            ConfigKeyString.Value = GetDefaultValue(ConfigKeyString);
+
+        ModdedControlsMenu.Instance.InitButtonBindingVisuals();
+    }
+
+    internal void SetWarning(bool active)
+    {
+        if (warning.activeSelf != active)
+            warning.SetActive(active);
+    }
+
+    internal bool IsAlreadyDefault()
+    {
+        if (ConfigKeyCode != null)
+            return ConfigKeyCode.Value == GetDefaultValue(ConfigKeyCode);
+
+        if (ConfigKeyString != null)
+            return ConfigKeyString.Value == GetDefaultValue(ConfigKeyString);
+
+        return false;
+    }
+
+    internal void SetDefault()
+    {
+        if(ConfigKeyCode != null)
+            ConfigKeyCode.Value = GetDefaultValue(ConfigKeyCode);
+
+        if(ConfigKeyString != null)
+            ConfigKeyString.Value = GetDefaultValue(ConfigKeyString);
+    }
+
+    public static T GetDefaultValue<T>(ConfigEntry<T> entry)
+    {
+        return (T)entry.DefaultValue;
     }
 
     //Rebind button action
     internal void RebindOperation()
     {
-        ModdedControlsMenu.Instance.Selected = ConfigEntry;
+        if (ConfigKeyCode != null)
+            ModdedControlsMenu.Instance.SelectedKeyCode = ConfigKeyCode;
+        else if (ConfigKeyString != null)
+            ModdedControlsMenu.Instance.SelectedKeyString = ConfigKeyString;
+        else
+        {
+            ModConfigPlugin.Log.LogWarning($"No associated config item for {inputActionName}!!");
+            return;
+        }
+        
         ModdedControlsMenu.Instance.RebindOperation();
     }
 
     //This refreshes the look of the setting
     //Changes color of setting value & description if not default value
     //Displays warning icon if setting is already bound to another key
-    public void UpdateBindingVisuals(List<ModdedRebindKeyCode> allButtons, InputScheme scheme)
+    public void UpdateBindingVisuals()
     {
-        bool hasOverride = ConfigEntry.Value != (KeyCode)ConfigEntry.DefaultValue;
-        bool warn = false;
-        allButtons.RemoveAll(a => a == null!);
-        foreach (ModdedRebindKeyCode pauseMenuRebindButton in allButtons)
-        {
-            if (pauseMenuRebindButton == this)
-                continue;
+        bool hasOverride = !IsAlreadyDefault();
 
-            if (pauseMenuRebindButton.ConfigEntry.Value == ConfigEntry.Value && pauseMenuRebindButton.ConfigEntry.Value != KeyCode.None)
-            {
-                warn = true;
-            }
+        button.Text.SetText(ConfigName);
+        value.TextMesh.spriteAsset = Templates.KeyboardSpriteSheet; //no controller support currently
+        if (ConfigKeyCode != null)
+        {
+            string key = GetValidKeyValue(ConfigKeyCode.Value);
+            value.SetText($"{key}");
         }
 
-        warning.SetActive(warn);
-        button.Text.SetText(ConfigEntry.Definition.Key);
-        string key = GetValidKeyValue(ConfigEntry.Value);
-        value.TextMesh.spriteAsset = Templates.KeyboardSpriteSheet; //no controller support currently
-        value.SetText($"{key}");
+        if (ConfigKeyString != null)
+            value.SetText(InputSpriteData.Instance.GetSpriteTagFromInputPathKeyboard(ConfigKeyString.Value));
 
         if (hasOverride)
         {

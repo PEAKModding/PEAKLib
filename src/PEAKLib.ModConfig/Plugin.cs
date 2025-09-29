@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Zorro.UI;
 using Language = LocalizedText.Language;
@@ -31,8 +32,20 @@ public partial class ModConfigPlugin : BaseUnityPlugin
 {
     internal static ManualLogSource Log { get; } = BepInEx.Logging.Logger.CreateLogSource(Name);
     private static List<ConfigEntryBase> EntriesProcessed { get; set; } = [];
-    internal static List<ModKeyToName> ModdedKeybinds { get; set; } = [];
+    internal static List<ModKeyToName> ModdedKeys { get; set; } = [];
     internal static ModConfigPlugin instance = null!;
+
+    private static List<string> _validPaths = [];
+    private static List<string> GetValidKeyPaths
+    {
+        get
+        {
+            if (_validPaths.Count < 1)
+                _validPaths = GenerateValidKeyPaths();
+
+            return _validPaths;
+        }
+    }
 
     private void Awake()
     {
@@ -287,7 +300,7 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                 .ParentTo(modControlsPage)
                 .SetPosition(new Vector2(225, -220))
                 .SetWidth(300)
-                .OnClick(controlsMenu.OnResetClicked);
+                .OnClick(controlsMenu.OnResetAllClicked);
 
             modControlsPage.SetBackButton(backButton.GetComponent<Button>()); // sadly backButton.Button doesn't work cause Awake have not being called yet
 
@@ -344,7 +357,7 @@ public partial class ModConfigPlugin : BaseUnityPlugin
         if (modSettingsLoaded) return;
 
         EntriesProcessed = [];
-        ModdedKeybinds = [];
+        ModdedKeys = [];
         modSettingsLoaded = true;
 
         ProcessModEntries();
@@ -400,6 +413,30 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                     {
                         var defaultValue = configEntry.DefaultValue is string cValue ? cValue : "";
                         var currentValue = configEntry.BoxedValue is string bValue ? bValue : "";
+
+                        //checking if default value matches key path pattern
+                        if(defaultValue.Length > 4)
+                        {
+                            if (IsValidPath(defaultValue))
+                            {
+                                ModKeyToName item = new(configEntry, modName);
+                                ModdedKeys.Add(item);
+                                Log.LogDebug($"String config with default - {defaultValue} is detected as InputAction path");
+                            }
+                            else
+                                Log.LogDebug($"String config with default - {defaultValue} is NOT detected as InputAction path");
+                        }
+
+                        //dropdown box for acceptablevalue list
+                        if (configEntry.Description.AcceptableValues is AcceptableValueList<string> stringList)
+                        {
+                            SettingsHandlerUtility.AddEnumToTab(configEntry.Definition.Key, [.. stringList.AcceptableValues], modName, defaultValue, newVal =>
+                            {
+                                configEntry.BoxedValue = newVal;
+                            });
+                            return;
+                        }
+
                         SettingsHandlerUtility.AddStringToTab(configEntry.Definition.Key, defaultValue, modName, currentValue, newVal => configEntry.BoxedValue = newVal);
                     }
                     else if (configEntry.SettingType == typeof(KeyCode))
@@ -410,9 +447,8 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                         if (configEntry is ConfigEntry<KeyCode> entry)
                         {
                             ModKeyToName item = new(entry, modName);
-                            ModdedKeybinds.Add(item);
-                        }
-                            
+                            ModdedKeys.Add(item);
+                        }    
 
                         SettingsHandlerUtility.AddKeybindToTab(configEntry.Definition.Key, defaultValue, modName, currentValue, newVal => configEntry.BoxedValue = newVal);
                     }
@@ -442,6 +478,34 @@ public partial class ModConfigPlugin : BaseUnityPlugin
             }
         }
         
+    }
+
+    private static bool IsValidPath(string path)
+    {
+        path = path.Replace("<", "").Replace(">", "");
+        return GetValidKeyPaths.Any(x => x.Contains(path, StringComparison.InvariantCultureIgnoreCase));
+    }
+
+    //get valid potential keypaths
+    private static List<string> GenerateValidKeyPaths()
+    {
+        List<string> result = [];
+        List<string> doNotAdd = ["/Keyboard/anyKey"];
+        foreach (var device in InputSystem.devices)
+        {
+            if (device == null)
+                continue;
+
+            foreach (var control in device.allControls)
+            {
+                if (doNotAdd.Any(d => d.Equals(control.path, StringComparison.InvariantCultureIgnoreCase)))
+                    continue;
+
+                result.Add(control.path);
+            }
+        }
+
+        return result;
     }
 
     // From https://github.com/IsThatTheRealNick/REPOConfig/blob/main/REPOConfig/ConfigMenu.cs#L453
