@@ -1,17 +1,20 @@
-﻿using System;
+﻿using BepInEx.Configuration;
+using System;
 using Unity.Mathematics;
 using Zorro.Settings;
+using static PEAKLib.ModConfig.SettingsHandlerUtility;
 
 namespace PEAKLib.ModConfig.SettingOptions;
 
-internal class BepInExFloat(string displayName, float defaultValue = 0f, string categoryName = "Mods",
-    float minValue = 0f, float maxValue = 1f, float currentValue = 0f,
+internal class BepInExFloat(ConfigEntryBase entryBase, string categoryName = "Mods",
     Action<float>? saveCallback = null,
     Action<BepInExFloat>? onApply = null) : FloatSetting, IBepInExProperty, IExposedSetting
 {
+    ConfigEntryBase IBepInExProperty.ConfigBase { get => entryBase; }
+
     public override void Load(ISettingsSaveLoad loader)
     {
-        Value = currentValue;
+        Value = GetCurrentValue<float>(entryBase);
 
         float2 minMaxValue = GetMinMaxValue();
         MinValue = minMaxValue.x;
@@ -20,9 +23,16 @@ internal class BepInExFloat(string displayName, float defaultValue = 0f, string 
 
     public override void Save(ISettingsSaveLoad saver) => saveCallback?.Invoke(Value);
     public override void ApplyValue() => onApply?.Invoke(this);
-    public string GetDisplayName() => displayName;
+    public void RefreshValueFromConfig() => Value = GetCurrentValue<float>(entryBase);
+    public string GetDisplayName() => entryBase.Definition.Key;
     public string GetCategory() => categoryName;
-    protected override float GetDefaultValue() => defaultValue;
-    protected override float2 GetMinMaxValue() => new(minValue, maxValue);
+    protected override float GetDefaultValue() => GetDefaultValue<float>(entryBase);
+    protected override float2 GetMinMaxValue()
+    {
+        if (TryGetMinMaxValue(entryBase, out float minValue, out float maxValue))
+            return new(minValue, maxValue);
+
+        return new(0f, 1000f);
+    }
 }
 

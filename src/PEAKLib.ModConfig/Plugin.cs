@@ -120,10 +120,10 @@ public partial class ModConfigPlugin : BaseUnityPlugin
 
             var backButton = MenuAPI.CreateMenuButton("Back")
                 .SetLocalizationIndex("BACK") // Peak already have a "BACK" official translation, so let's just use it
-                .SetColor(new Color(1, 0.5f, 0.2f))
+                .SetColor(new Color(0.5189f, 0.1297f, 0.1718f)) //match vanilla back
                 .ParentTo(modSettingsPage)
-                .SetPosition(new Vector2(225, -180))
-                .SetWidth(200);
+                .SetPosition(new Vector2(120f, -160f))
+                .SetWidth(120f);
 
             var content = new GameObject("Content")
                 .AddComponent<PeakElement>()
@@ -141,40 +141,27 @@ public partial class ModConfigPlugin : BaseUnityPlugin
             {
                 var controlsButton = MenuAPI.CreateMenuButton("MOD CONTROLS")
                 .SetLocalizationIndex("MOD CONTROLS") //localization should exist from controls page builder
-                .SetColor(new Color(0.3919f, 0.1843f, 0.6235f)) //same purple as default controls button
+                .SetColor(new Color(0.185f, 0.394f, 0.6226f)) //same blue as main menu settings button
                 .ParentTo(modSettingsPage)
-                .SetPosition(new Vector2(225, -240))
-                .SetWidth(220);
+                .SetPosition(new Vector2(285f, -160f))
+                .SetWidth(200);
 
                 controlsButton.OnClick(() =>
                 {
                     pauseMenuHandler.TransistionToPage(ModdedControlsMenu.Instance.MainPage, new SetActivePageTransistion());
                 });
-
-                MenuAPI.CreateText("Search")
-                .ParentTo(modSettingsPage)
-                .SetPosition(new Vector2(90, -275));
-
-                var textInput = MenuAPI.CreateTextInput("SearchInput")
-                .ParentTo(modSettingsPage)
-                .SetSize(new Vector2(300, 70))
-                .SetPosition(new Vector2(230, -360))
-                .SetPlaceholder("Search here")
-                .OnValueChanged(settingsMenu.SetSearch);
             }
-            else
-            {
-                MenuAPI.CreateText("Search")
-                .ParentTo(modSettingsPage)
-                .SetPosition(new Vector2(90, -210));
 
-                var textInput = MenuAPI.CreateTextInput("SearchInput")
+            MenuAPI.CreateText("Search")
                 .ParentTo(modSettingsPage)
-                .SetSize(new Vector2(300, 70))
-                .SetPosition(new Vector2(230, -300))
-                .SetPlaceholder("Search here")
-                .OnValueChanged(settingsMenu.SetSearch);
-            }
+                .SetPosition(new Vector2(65f, -190f));
+
+            var textInput = MenuAPI.CreateTextInput("SearchInput")
+            .ParentTo(modSettingsPage)
+            .SetSize(new Vector2(300, 70))
+            .SetPosition(new Vector2(215, -275))
+            .SetPlaceholder("Search here")
+            .OnValueChanged(settingsMenu.SetSearch);
 
 
             modSettingsPage.SetBackButton(backButton.GetComponent<Button>()); // sadly backButton.Button doesn't work cause Awake have not being called yet
@@ -182,14 +169,34 @@ public partial class ModConfigPlugin : BaseUnityPlugin
             var horizontalTabs = new GameObject("TABS")
                 .ParentTo(content)
                 .AddComponent<PeakHorizontalTabs>();
+            horizontalTabs.RectTransform.anchoredPosition = new(110f, 0f);
+            horizontalTabs.RectTransform.anchorMax = new(0.92f, 1f); //give space for labels
+
+            var modTabsLabel = MenuAPI.CreateText("MODS")
+                .ParentTo(content)
+                .SetPosition(new(4, 10));
+
+            var sectionTabsLabel = MenuAPI.CreateText("SECTIONS")
+                .ParentTo(content)
+                .SetPosition(new(4, -50));
+
+            var sectionTabs = new GameObject("SectionTabs")
+                .ParentTo(content)
+                .AddComponent<PeakHorizontalTabs>();
+            sectionTabs.RectTransform.anchoredPosition = new(175f, -55f);
+            sectionTabs.RectTransform.anchorMax = new(0.87f, 1f);
 
             var moddedSettingsTABS = horizontalTabs.gameObject.AddComponent<ModdedSettingsTABS>();
             moddedSettingsTABS.SettingsMenu = settingsMenu;
 
+            var modSectionTABS = sectionTabs.gameObject.AddComponent<ModdedSettingsSectionTABS>();
+            modSectionTABS.SettingsMenu = settingsMenu;
+            settingsMenu.SectionTabController = sectionTabs;
+
             var tabContent = MenuAPI.CreateScrollableContent("TabContent")
                 .ParentTo(content)
                 .ExpandToParent()
-                .SetOffsetMax(new Vector2(0, -60f));
+                .SetOffsetMax(new Vector2(0, -110f));
 
             settingsMenu.Content = tabContent.Content;
             settingsMenu.Tabs = moddedSettingsTABS;
@@ -278,16 +285,16 @@ public partial class ModConfigPlugin : BaseUnityPlugin
 
             var backButton = MenuAPI.CreateMenuButton("Back (Controls)")
                 .SetLocalizationIndex("BACK") // Peak already have a "BACK" official translation, so let's just use it
-                .SetColor(new Color(1, 0.5f, 0.2f))
+                .SetColor(new Color(0.5189f, 0.1297f, 0.1718f)) //match vanilla back
                 .ParentTo(modControlsPage)
-                .SetPosition(new Vector2(225, -280))
-                .SetWidth(200);
+                .SetPosition(new Vector2(120f, -160f))
+                .SetWidth(120f);
 
             var modSettingsButton = MenuAPI.CreateMenuButton("MOD SETTINGS")
                 .SetLocalizationIndex("MOD SETTINGS") //re-use existing localization from settings builder
-                .SetColor(new Color(0.15f, 0.75f, 0.85f))
+                .SetColor(new Color(0.185f, 0.394f, 0.6226f)) //same blue as main menu settings button
                 .ParentTo(modControlsPage)
-                .SetPosition(new Vector2(225, -160))
+                .SetPosition(new Vector2(285f, -160f))
                 .SetWidth(220)
                 .OnClick(() =>
                 {
@@ -306,7 +313,7 @@ public partial class ModConfigPlugin : BaseUnityPlugin
 
             MenuAPI.CreateText("Search")
                 .ParentTo(modControlsPage)
-                .SetPosition(new Vector2(55, -305));
+                .SetPosition(new Vector2(65f, -245f));
 
             var content = new GameObject("Content")
                 .AddComponent<PeakElement>()
@@ -327,7 +334,7 @@ public partial class ModConfigPlugin : BaseUnityPlugin
             var textInput = MenuAPI.CreateTextInput("SearchInput")
                 .ParentTo(modControlsPage)
                 .SetSize(new Vector2(300, 70))
-                .SetPosition(new Vector2(200, -390))
+                .SetPosition(new Vector2(215f, -330f))
                 .SetPlaceholder("Search here")
                 .OnValueChanged(controlsMenu.SetSearch);
 
@@ -369,6 +376,8 @@ public partial class ModConfigPlugin : BaseUnityPlugin
     {
         foreach (var (modName, configEntryBases) in GetModConfigEntries())
         {
+            ModSectionNames sectionTracker = ModSectionNames.SetMod(modName);
+
             foreach (var configEntry in configEntryBases)
             {
                 try
@@ -379,55 +388,25 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                     else
                         EntriesProcessed.Add(configEntry);
 
-                    if (configEntry.SettingType == typeof(bool))
-                    {
-                        var defaultValue = configEntry.DefaultValue is bool dValue && dValue;
-                        var currentValue = configEntry.BoxedValue is bool bValue && bValue;
+                    sectionTracker.CheckSectionName(configEntry.Definition.Section);
 
-                        SettingsHandlerUtility.AddBoolToTab(configEntry.Definition.Key, defaultValue, modName, currentValue, newVal => configEntry.BoxedValue = newVal);
-                    }
+                    if (configEntry.SettingType == typeof(bool))
+                        SettingsHandlerUtility.AddBoolToTab(configEntry, modName, newVal => configEntry.BoxedValue = newVal);
                     else if (configEntry.SettingType == typeof(float))
                     {
-                        var defaultValue = configEntry.DefaultValue is float cValue ? cValue : 0f;
-                        var currentValue = configEntry.BoxedValue is float bValue ? bValue : 0f;
-
-                        float minValue = 0f;
-                        float maxValue = 1000f;
-
-                        if (configEntry.Description.AcceptableValues is AcceptableValueRange<float> range)
-                        {
-                            minValue = range.MinValue;
-                            maxValue = range.MaxValue;
-                        }
-
-                        SettingsHandlerUtility.AddFloatToTab(configEntry.Definition.Key, defaultValue, modName, minValue, maxValue, currentValue, newVal => configEntry.BoxedValue = newVal);
+                        SettingsHandlerUtility.AddFloatToTab(configEntry, modName, newVal => configEntry.BoxedValue = newVal);
                     }
                     else if (configEntry.SettingType == typeof(double))
                     {
-                        var defaultValue = configEntry.DefaultValue is double cValue ? cValue : 0f;
-                        var currentValue = configEntry.BoxedValue is double bValue ? bValue : 0f;
-
-                        float minValue = 0f;
-                        float maxValue = 1000f;
-
-                        if (configEntry.Description.AcceptableValues is AcceptableValueRange<double> range)
-                        {
-                            minValue = Convert.ToSingle(range.MinValue);
-                            maxValue = Convert.ToSingle(range.MaxValue);
-                        }
-
-                        SettingsHandlerUtility.AddDoubleToTab(configEntry.Definition.Key, defaultValue, modName, minValue, maxValue, currentValue, newVal => configEntry.BoxedValue = newVal);
+                        SettingsHandlerUtility.AddDoubleToTab(configEntry, modName, newVal => configEntry.BoxedValue = newVal);
                     }
                     else if (configEntry.SettingType == typeof(int))
                     {
-                        var defaultValue = configEntry.DefaultValue is int cValue ? cValue : 0;
-                        var currentValue = configEntry.BoxedValue is int bValue ? bValue : 0;
-                        SettingsHandlerUtility.AddIntToTab(configEntry.Definition.Key, defaultValue, modName, currentValue, newVal => configEntry.BoxedValue = newVal);
+                        SettingsHandlerUtility.AddIntToTab(configEntry, modName, newVal => configEntry.BoxedValue = newVal);
                     }
                     else if (configEntry.SettingType == typeof(string))
                     {
                         var defaultValue = configEntry.DefaultValue is string cValue ? cValue : "";
-                        var currentValue = configEntry.BoxedValue is string bValue ? bValue : "";
 
                         //checking if default value matches key path pattern
                         if (defaultValue.Length > 4)
@@ -443,38 +422,28 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                         //dropdown box for acceptablevalue list
                         if (configEntry.Description.AcceptableValues is AcceptableValueList<string> stringList)
                         {
-                            SettingsHandlerUtility.AddEnumToTab(configEntry.Definition.Key, [.. stringList.AcceptableValues], modName, defaultValue, newVal =>
+                            SettingsHandlerUtility.AddEnumToTab(configEntry, modName, false, newVal =>
                             {
                                 configEntry.BoxedValue = newVal;
                             });
                             return;
                         }
 
-                        SettingsHandlerUtility.AddStringToTab(configEntry.Definition.Key, defaultValue, modName, currentValue, newVal => configEntry.BoxedValue = newVal);
+                        SettingsHandlerUtility.AddStringToTab(configEntry, modName, newVal => configEntry.BoxedValue = newVal);
                     }
                     else if (configEntry.SettingType == typeof(KeyCode))
                     {
-                        var defaultValue = configEntry.DefaultValue is KeyCode cValue ? cValue : KeyCode.None;
-                        var currentValue = configEntry.BoxedValue is KeyCode bValue ? bValue : KeyCode.None;
-
                         if (configEntry is ConfigEntry<KeyCode> entry)
                         {
                             ModKeyToName item = new(entry, modName);
                             ModdedKeys.Add(item);
                         }
 
-                        SettingsHandlerUtility.AddKeybindToTab(configEntry.Definition.Key, defaultValue, modName, currentValue, newVal => configEntry.BoxedValue = newVal);
+                        SettingsHandlerUtility.AddKeybindToTab(configEntry, modName, newVal => configEntry.BoxedValue = newVal);
                     }
                     else if (configEntry.SettingType.IsEnum)
                     {
-                        var defaultValue = configEntry.DefaultValue is object cValue ? cValue : Enum.ToObject(configEntry.SettingType, 0);
-                        var currentValue = configEntry.BoxedValue is object bValue ? bValue : Enum.ToObject(configEntry.SettingType, 0);
-
-                        var defaultValueName = Enum.GetName(configEntry.SettingType, defaultValue);
-                        var currentValueName = Enum.GetName(configEntry.SettingType, currentValue);
-                        var options = new List<string>(Enum.GetNames(configEntry.SettingType));
-
-                        SettingsHandlerUtility.AddEnumToTab(configEntry.Definition.Key, options, modName, currentValueName, newVal =>
+                        SettingsHandlerUtility.AddEnumToTab(configEntry, modName, true, newVal =>
                         {
                             if (Enum.TryParse(configEntry.SettingType, newVal, out var value))
                                 configEntry.BoxedValue = value;

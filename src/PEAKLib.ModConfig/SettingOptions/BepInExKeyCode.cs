@@ -1,4 +1,5 @@
-﻿using PEAKLib.ModConfig.SettingOptions.SettingUI;
+﻿using BepInEx.Configuration;
+using PEAKLib.ModConfig.SettingOptions.SettingUI;
 using System;
 using TMPro;
 using UnityEngine;
@@ -7,13 +8,15 @@ using Zorro.Core;
 using Zorro.Settings;
 using Zorro.Settings.UI;
 using Object = UnityEngine.Object;
+using static PEAKLib.ModConfig.SettingsHandlerUtility;
 
 namespace PEAKLib.ModConfig.SettingOptions;
 
-internal class BepInExKeyCode(string displayName, string category, KeyCode defaultValue = KeyCode.None, KeyCode currentValue = KeyCode.None,
+internal class BepInExKeyCode(ConfigEntryBase entryBase, string category = "Mods",
     Action<KeyCode>? saveCallback = null,
     Action<BepInExKeyCode>? onApply = null) : Setting, IBepInExProperty, IExposedSetting
 {
+    ConfigEntryBase IBepInExProperty.ConfigBase { get => entryBase; }
     public KeyCode Value { get; set; }
 
     private static GameObject? _settingUICell = null;
@@ -59,13 +62,13 @@ internal class BepInExKeyCode(string displayName, string category, KeyCode defau
         }
     }
 
-    public override void Load(ISettingsSaveLoad loader) => Value = currentValue;
+    public override void Load(ISettingsSaveLoad loader) => Value = GetCurrentValue<KeyCode>(entryBase);
     public override void Save(ISettingsSaveLoad saver) => saveCallback?.Invoke(Value);
     public override void ApplyValue() => onApply?.Invoke(this);
     public override GameObject? GetSettingUICell() => SettingUICell;
     public string GetCategory() => category;
-    public string GetDisplayName() => displayName;
-    protected KeyCode GetDefaultValue() => defaultValue;
+    public string GetDisplayName() => entryBase.Definition.Key;
+    protected KeyCode GetDefaultValue() => GetDefaultValue<KeyCode>(entryBase);
 
     public override Zorro.Settings.DebugUI.SettingUI GetDebugUI(ISettingHandler settingHandler)
     {

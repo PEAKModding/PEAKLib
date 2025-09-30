@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static PEAKLib.ModConfig.SettingsHandlerUtility;
 
 namespace PEAKLib.ModConfig.Components;
 internal class ModdedRebindKey : PeakElement
@@ -160,11 +161,6 @@ internal class ModdedRebindKey : PeakElement
 
         if(ConfigKeyString != null)
             ConfigKeyString.Value = GetDefaultValue(ConfigKeyString);
-    }
-
-    public static T GetDefaultValue<T>(ConfigEntry<T> entry)
-    {
-        return (T)entry.DefaultValue;
     }
 
     //Rebind button action

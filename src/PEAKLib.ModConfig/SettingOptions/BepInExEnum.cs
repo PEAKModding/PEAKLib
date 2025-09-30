@@ -1,40 +1,54 @@
-﻿using System;
+﻿using BepInEx.Configuration;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Localization;
 using Zorro.Core;
 using Zorro.Settings;
+using static PEAKLib.ModConfig.SettingsHandlerUtility;
 
 namespace PEAKLib.ModConfig.SettingOptions;
 
-internal class BepInExEnum(string displayName, List<string> options, string currentValue, string category = "Mods", Action<string>? saveCallback = null, Action<BepInExEnum>? onApply = null) : Setting, IEnumSetting, IExposedSetting, IBepInExProperty
+internal class BepInExEnum(ConfigEntryBase entryBase, string category = "Mods", bool isEnum = true, Action<string>? saveCallback = null, Action<BepInExEnum>? onApply = null) : Setting, IEnumSetting, IExposedSetting, IBepInExProperty
 {
-    public string GetDisplayName() => displayName;
+    ConfigEntryBase IBepInExProperty.ConfigBase { get => entryBase; }
+    public string GetDisplayName() => entryBase.Definition.Key;
     public string GetCategory() => category;
 
     public string Value { get; protected set; } = "";
 
     public override void Load(ISettingsSaveLoad loader)
     {
-        Value = currentValue;
+        if (isEnum)
+            Value = Enum.GetName(entryBase.SettingType, entryBase.BoxedValue is object bValue ? bValue : Enum.ToObject(entryBase.SettingType, 0));
+        else
+            Value = GetCurrentValue<string>(entryBase);
     }
 
     public override void Save(ISettingsSaveLoad saver) => saveCallback?.Invoke(Value);
 
     public override GameObject GetSettingUICell() => SingletonAsset<InputCellMapper>.Instance.EnumSettingCell;
 
-    public virtual List<string> GetUnlocalizedChoices() => options;
+    public virtual List<string> GetUnlocalizedChoices() 
+    {
+        if(isEnum)
+            return [..Enum.GetNames(entryBase.SettingType)];
+        else
+        {
+            return GetAcceptableValues<string>(entryBase);
+        }
+    } 
 
     public List<LocalizedString> GetLocalizedChoices() => null!;
 
     public int GetValue()
     {
-        return options.IndexOf(Value);
+        return GetUnlocalizedChoices().IndexOf(Value);
     }
 
     public void SetValue(int v, ISettingHandler settingHandler, bool fromUI)
     {
-        Value = options[v];
+        Value = GetUnlocalizedChoices()[v];
 
         ApplyValue();
         settingHandler.SaveSetting(this);

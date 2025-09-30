@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 using UnityEngine.UI;
 using Zorro.UI;
 
@@ -13,9 +15,15 @@ namespace PEAKLib.UI.Elements;
 public class PeakHorizontalTabs : PeakElement
 {
     private RectTransform Content { get; set; } = null!;
+    /// <summary>
+    /// List of all Tabs (game objects) associated with this component
+    /// </summary>
+    public List<GameObject> Tabs = [];
+    private Color backgroundColor = new Color(0.1792453f, 0.1253449f, 0.09046815f, 0.7294118f);
 
     private void Awake()
     {
+        Tabs.Clear();
         RectTransform = GetComponent<RectTransform>();
 
         RectTransform.anchoredPosition = new Vector2(0, 0);
@@ -82,7 +90,7 @@ public class PeakHorizontalTabs : PeakElement
         Utilities.ExpandToParent(imageTransform);
 
         var image = imageTransform.GetComponent<Image>();
-        image.color = new Color(0.1792453f, 0.1253449f, 0.09046815f, 0.7294118f);
+        image.color = backgroundColor;
 
         var selected = new GameObject("Selected", typeof(RectTransform), typeof(Image))
             .ParentTo(gameObject.transform)
@@ -108,6 +116,61 @@ public class PeakHorizontalTabs : PeakElement
         peakText.TextMesh.alignment = TMPro.TextAlignmentOptions.Center;
         peakText.TextMesh.text = tabName;
 
+        Tabs.Add(gameObject);
         return gameObject;
+    }
+
+    private bool DoesTabExist(string tabName, out GameObject match)
+    {
+        match = null!;
+        if (string.IsNullOrEmpty(tabName))
+            return false;
+
+        match = Tabs.FirstOrDefault(x => x.name == tabName);
+
+        if (match == null)
+            UIPlugin.Log.LogWarning($"Unable to find existing tab by name: {tabName}");
+
+        return match != null;
+    }
+
+    /// <summary>
+    /// Deletes a tab from this Horizontal Tab. Needs to add your own component implementation of <see cref="TAB_Button"/>.
+    /// </summary>
+    /// <param name="tabName"></param>
+    /// <returns></returns>
+    public void DeleteTab(string tabName)
+    {
+        if (!DoesTabExist(tabName, out GameObject match))
+            return;
+
+        Destroy(match);
+        Tabs.Remove(match);
+    }
+
+    /// <summary>
+    /// Update name of existing tab from this Horizontal Tab. Needs to add your own component implementation of <see cref="TAB_Button"/>.
+    /// </summary>
+    /// <param currentName="currentName"></param>
+    /// <param newName="newName"></param>
+    /// <returns></returns>
+    public void UpdateName(string currentName, string newName)
+    {
+        if (!DoesTabExist(currentName, out GameObject match))
+            return;
+
+        match.gameObject.name = newName;
+        match.GetComponent<PeakText>().SetText(newName);
+    }
+
+    /// <summary>
+    /// Change background color of your Tab Elements
+    /// This must be defined before calling AddTab
+    /// </summary>
+    /// <param Color="color"></param>
+    /// <returns></returns>
+    public void SetBackgroundColor(Color color)
+    {
+        backgroundColor = color;
     }
 }

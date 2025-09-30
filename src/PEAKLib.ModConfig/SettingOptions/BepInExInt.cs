@@ -1,18 +1,21 @@
-﻿using PEAKLib.ModConfig.SettingOptions.SettingUI;
+﻿using BepInEx.Configuration;
+using PEAKLib.ModConfig.SettingOptions.SettingUI;
 using System;
 using TMPro;
 using UnityEngine;
 using Zorro.Core;
 using Zorro.Settings;
 using Zorro.Settings.UI;
+using static PEAKLib.ModConfig.SettingsHandlerUtility;
 using Object = UnityEngine.Object;
 
 namespace PEAKLib.ModConfig.SettingOptions;
 
-internal class BepInExInt(string displayName, string category, int defaultValue = 0, int currentValue = 0,
+internal class BepInExInt(ConfigEntryBase entryBase, string category = "Mods",
     Action<int>? saveCallback = null,
     Action<BepInExInt>? onApply = null) : IntSetting, IBepInExProperty, IExposedSetting
 {
+    ConfigEntryBase IBepInExProperty.ConfigBase { get => entryBase; }
     private static GameObject? _settingUICell = null;
     public static GameObject? SettingUICell
     {
@@ -46,11 +49,11 @@ internal class BepInExInt(string displayName, string category, int defaultValue 
         }
     }
 
-    public override void Load(ISettingsSaveLoad loader) => Value = currentValue;
+    public override void Load(ISettingsSaveLoad loader) => Value = GetCurrentValue<int>(entryBase);
     public override void Save(ISettingsSaveLoad saver) => saveCallback?.Invoke(Value);
     public override void ApplyValue() => onApply?.Invoke(this);
     public override GameObject? GetSettingUICell() => SettingUICell;
     public string GetCategory() => category;
-    public string GetDisplayName() => displayName;
-    protected override int GetDefaultValue() => defaultValue;
+    public string GetDisplayName() => entryBase.Definition.Key;
+    protected override int GetDefaultValue() => GetDefaultValue<int>(entryBase);
 }

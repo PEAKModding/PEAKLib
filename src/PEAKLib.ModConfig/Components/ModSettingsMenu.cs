@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using Zorro.Settings;
 
@@ -31,6 +32,8 @@ internal class ModdedSettingsMenu : MonoBehaviour
     private Coroutine? m_fadeInCoroutine;
 
     private string search = "";
+    private string selectedSection = "";
+    public PeakHorizontalTabs SectionTabController = null!;
 
     internal PeakChildPage MainPage = null!;
 
@@ -40,9 +43,15 @@ internal class ModdedSettingsMenu : MonoBehaviour
         Instance = this;
     }
 
-    public void SetSearch(string search)
+    public void SetSearch(string query)
     {
-        this.search = search.ToLower();
+        search = query.ToLower();
+        ShowSettings(Tabs.selectedButton.category); // just to update the settings
+    }
+
+    public void SetSection(string section)
+    {
+        selectedSection = section;
         ShowSettings(Tabs.selectedButton.category); // just to update the settings
     }
 
@@ -59,7 +68,7 @@ internal class ModdedSettingsMenu : MonoBehaviour
 
         m_spawnedCells.Clear();
         RefreshSettings();
-
+            
         if (settings == null) return;
 
         var isSearching = !string.IsNullOrEmpty(search);
@@ -82,6 +91,17 @@ internal class ModdedSettingsMenu : MonoBehaviour
             {
                 ModConfigPlugin.Log.LogError("Invalid IExposedSetting");
                 return;
+            }
+
+            if (!string.IsNullOrEmpty(selectedSection)) //skip if selected section is empty/null
+            {
+                if (item is IBepInExProperty bep)
+                {
+                    if (!bep.ConfigBase.Definition.Section.Equals(selectedSection, System.StringComparison.InvariantCultureIgnoreCase))
+                        continue; //skip setting that is not in current selected section
+                }
+                else
+                    continue; //skip setting that is not bepinex base
             }
 
             SettingsUICell component = Instantiate(Templates.SettingsCellPrefab, Content).GetComponent<SettingsUICell>();
@@ -107,6 +127,32 @@ internal class ModdedSettingsMenu : MonoBehaviour
         if (GameHandler.Instance != null)
             settings = GameHandler.Instance.SettingsHandler.GetSettingsThatImplements<IExposedSetting>();
 
+    }
+
+    public void UpdateSectionTabs(string modName)
+    {
+        if(ModSectionNames.TryGetModSections(modName, out List<string> sections))
+        {
+            if(SectionTabController.Tabs.Count > 0)
+            {
+                //Remove existing tabs
+                for(int i = SectionTabController.Tabs.Count - 1; i >= 0; i--)
+                    SectionTabController.DeleteTab(SectionTabController.Tabs[i].name);
+            }
+
+            List<ModdedTABSButton> sectionButtons = [];
+            foreach (string section in sections)
+            {
+                GameObject tab = SectionTabController.AddTab(section);
+                var sectionButton = tab.AddComponent<ModdedTABSButton>();
+                sectionButton.category = section;
+                sectionButton.text = tab.GetComponentInChildren<TextMeshProUGUI>();
+                sectionButton.SelectedGraphic = tab.transform.Find("Selected").gameObject;
+                sectionButtons.Add(sectionButton);      
+            }
+
+            sectionButtons[0].ButtonClicked();
+        }
     }
 
     private IEnumerator FadeInCells()

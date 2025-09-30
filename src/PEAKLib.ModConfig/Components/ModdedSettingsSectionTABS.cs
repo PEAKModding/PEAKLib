@@ -3,13 +3,15 @@ using Zorro.UI;
 
 namespace PEAKLib.ModConfig.Components;
 
-internal class ModdedSettingsTABS : TABS<ModdedTABSButton>
+internal class ModdedSettingsSectionTABS : TABS<ModdedTABSButton>
 {
     public ModdedSettingsMenu? SettingsMenu;
 
     public override void OnSelected(ModdedTABSButton button)
     {
         ThrowHelper.ThrowIfFieldNull(SettingsMenu);
-        SettingsMenu.UpdateSectionTabs(button.category);
+
+        SettingsMenu.SetSection(button.category);
+        
     }
 }
