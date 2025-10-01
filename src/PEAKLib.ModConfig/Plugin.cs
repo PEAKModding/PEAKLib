@@ -212,7 +212,7 @@ public partial class ModConfigPlugin : BaseUnityPlugin
 
             var modSettingsButton = MenuAPI.CreatePauseMenuButton("MOD SETTINGS")
                 .SetLocalizationIndex(modSettingsLocalization)
-                .SetColor(new Color(0.15f, 0.75f, 0.85f))
+                .SetColor(new Color(0.185f, 0.394f, 0.6226f)) //same blue as main menu settings button
                 .ParentTo(parent)
                 .OnClick(() =>
                 {
@@ -340,7 +340,7 @@ public partial class ModConfigPlugin : BaseUnityPlugin
 
             var modControlsButton = MenuAPI.CreatePauseMenuButton("MOD CONTROLS")
                 .SetLocalizationIndex(modControlsLocalization)
-                .SetColor(new Color(0.15f, 0.75f, 0.85f))
+                .SetColor(new Color(0.185f, 0.394f, 0.6226f)) //same blue as main menu settings button
                 .ParentTo(parent)
                 .OnClick(() =>
                 {
