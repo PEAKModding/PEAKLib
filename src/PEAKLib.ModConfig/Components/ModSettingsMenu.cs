@@ -97,6 +97,9 @@ internal class ModdedSettingsMenu : MonoBehaviour
             {
                 if (item is IBepInExProperty bep)
                 {
+                    //update assigned value from configbase
+                    bep.RefreshValueFromConfig();
+
                     if (!bep.ConfigBase.Definition.Section.Equals(selectedSection, System.StringComparison.InvariantCultureIgnoreCase))
                         continue; //skip setting that is not in current selected section
                 }

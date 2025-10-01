@@ -64,6 +64,7 @@ internal class BepInExString(ConfigEntryBase entryBase, string category = "Mods"
     public string GetCategory() => category;
     public string GetDisplayName() => entryBase.Definition.Key;
     protected override string GetDefaultValue() => GetDefaultValue<string>(entryBase);
+    public void RefreshValueFromConfig() => Value = GetCurrentValue<string>(entryBase);
 }
 
 public class StringSettingUI : SettingInputUICell

@@ -65,6 +65,7 @@ internal class BepInExKeyCode(ConfigEntryBase entryBase, string category = "Mods
     public override void Load(ISettingsSaveLoad loader) => Value = GetCurrentValue<KeyCode>(entryBase);
     public override void Save(ISettingsSaveLoad saver) => saveCallback?.Invoke(Value);
     public override void ApplyValue() => onApply?.Invoke(this);
+    public void RefreshValueFromConfig() => Value = GetCurrentValue<KeyCode>(entryBase);
     public override GameObject? GetSettingUICell() => SettingUICell;
     public string GetCategory() => category;
     public string GetDisplayName() => entryBase.Definition.Key;

@@ -49,6 +49,7 @@ internal class BepInExInt(ConfigEntryBase entryBase, string category = "Mods",
         }
     }
 
+    public void RefreshValueFromConfig() => Value = GetCurrentValue<int>(entryBase);
     public override void Load(ISettingsSaveLoad loader) => Value = GetCurrentValue<int>(entryBase);
     public override void Save(ISettingsSaveLoad saver) => saveCallback?.Invoke(Value);
     public override void ApplyValue() => onApply?.Invoke(this);

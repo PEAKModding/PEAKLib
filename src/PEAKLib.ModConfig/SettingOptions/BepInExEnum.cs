@@ -17,12 +17,17 @@ internal class BepInExEnum(ConfigEntryBase entryBase, string category = "Mods", 
 
     public string Value { get; protected set; } = "";
 
-    public override void Load(ISettingsSaveLoad loader)
+    public void RefreshValueFromConfig()
     {
         if (isEnum)
             Value = Enum.GetName(entryBase.SettingType, entryBase.BoxedValue is object bValue ? bValue : Enum.ToObject(entryBase.SettingType, 0));
         else
             Value = GetCurrentValue<string>(entryBase);
+    }
+
+    public override void Load(ISettingsSaveLoad loader)
+    {
+        RefreshValueFromConfig();
     }
 
     public override void Save(ISettingsSaveLoad saver) => saveCallback?.Invoke(Value);
