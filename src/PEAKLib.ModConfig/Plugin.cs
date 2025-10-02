@@ -59,8 +59,6 @@ public partial class ModConfigPlugin : BaseUnityPlugin
     {
         LoadModSettings();
 
-        MenuAPI.AddEnumSetting<Language>("Language Setting", Language.English, Language.English, SettingsCategory.General);
-
         void builderDelegate(Transform parent)
         {
             Log.LogDebug("builderDelegate");
