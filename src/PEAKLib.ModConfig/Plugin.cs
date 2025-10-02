@@ -52,11 +52,14 @@ public partial class ModConfigPlugin : BaseUnityPlugin
         instance = this;
         MonoDetourManager.InvokeHookInitializers(typeof(ModConfigPlugin).Assembly);
         Log.LogInfo($"Plugin {Name} is loaded!");
+
     }
 
     private void Start()
     {
         LoadModSettings();
+
+        MenuAPI.AddEnumSetting<Language>("Language Setting", Language.English, Language.English, SettingsCategory.General);
 
         void builderDelegate(Transform parent)
         {

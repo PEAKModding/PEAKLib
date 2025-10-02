@@ -1,5 +1,6 @@
 ﻿using PEAKLib.Core;
 using PEAKLib.UI.Elements;
+using PEAKLib.UI.Elements.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -216,5 +217,65 @@ public static class MenuAPI
 
 
         return new TranslationKey(index);
+    }
+
+    /// <summary>
+    /// Creates an on/off setting that can be added to any of the vanilla setting tabs
+    /// <param name="displayName">The display name of the setting. You will want to use <see cref="CreateLocalization(string)"/> for your displayName. Without the localization, the text will appear as LOC: displayName </param>
+    /// <param name="defaultValue">Default value of the setting</param>
+    /// <param name="category">determines which tab to display the setting</param>
+    /// <param name="currentValue">Current value of the setting</param>
+    /// <param name="saveCallback">Action called when the value is updated</param>
+    /// </summary>
+    public static GenericBoolSetting AddOnOffSetting(string displayName, bool defaultValue, SettingsCategory category, bool currentValue, Action<bool>? saveCallback = null)
+    {
+        GenericBoolSetting setting = new(displayName, defaultValue, category, currentValue, saveCallback);
+        
+        if (SettingsHandler.Instance == null)
+            UIPlugin.Log.LogWarning($"SettingsHandler.Instance is null! You will need to manually add this setting ({displayName})");
+        else
+            SettingsHandler.Instance.AddSetting(setting);
+
+        return setting;
+    }
+
+    /// <summary>
+    /// Creates a slider setting that can be added to any of the vanilla setting tabs
+    /// <param name="displayName">The display name of the setting. You will want to use <see cref="CreateLocalization(string)"/> for your displayName. Without the localization, the text will appear as LOC: displayName </param>
+    /// <param name="defaultValue">Default value of the setting</param>
+    /// <param name="category">determines which tab to display the setting</param>
+    /// <param name="currentValue">Current value of the setting</param>
+    /// <param name="minValue">Minimum value of the setting</param>
+    /// <param name="maxValue">Maximum value of the setting</param>
+    /// <param name="saveCallback">Action called when the value is updated</param>
+    /// </summary>
+    public static GenericFloatSetting AddSliderSetting(string displayName, float defaultValue, SettingsCategory category, float currentValue, float minValue = 0f, float maxValue = 1000f, Action<float>? saveCallback = null)
+    {
+        GenericFloatSetting setting = new(displayName, defaultValue, category, minValue, maxValue, currentValue, saveCallback);
+        if (SettingsHandler.Instance == null)
+            UIPlugin.Log.LogWarning($"SettingsHandler.Instance is null! You will need to manually add this setting ({displayName})");
+        else
+            SettingsHandler.Instance.AddSetting(setting);
+
+        return setting;
+    }
+
+    /// <summary>
+    /// Creates a slider setting that can be added to any of the vanilla setting tabs
+    /// <param name="displayName">The display name of the setting. You will want to use <see cref="CreateLocalization(string)"/> for your displayName. Without the localization, the text will appear as LOC: displayName </param>
+    /// <param name="defaultValue">Default value of the setting</param>
+    /// <param name="category">determines which tab to display the setting</param>
+    /// <param name="currentValue">Current value of the setting</param>
+    /// <param name="saveCallback">Action called when the value is updated</param>
+    /// </summary>
+    public static GenericEnumSetting<T> AddEnumSetting<T>(string displayName, T currentValue, T defaultValue, SettingsCategory category, Action<T>? saveCallback = null) where T : unmanaged, Enum
+    {
+        GenericEnumSetting<T> setting = new(displayName, currentValue, defaultValue, category, saveCallback);
+        if (SettingsHandler.Instance == null)
+            UIPlugin.Log.LogWarning($"SettingsHandler.Instance is null! You will need to manually add this setting ({displayName})");
+        else
+            SettingsHandler.Instance.AddSetting(setting);
+
+        return setting;
     }
 }
