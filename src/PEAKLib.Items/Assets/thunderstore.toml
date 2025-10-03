@@ -6,22 +6,22 @@ repository = "https://thunderstore.io"
 
 [package]
 namespace = "PEAKModding"
-name = "PEAKLib_Stats"
-description = "Stats module of the PEAKLib community API."
+name = "PEAKLib_Items"
+description = "Items module of the PEAKLib community API."
 websiteUrl = "https://github.com/PEAKModding/PEAKLib/"
 containsNsfwContent = false
 
 [package.dependencies]
 BepInEx-BepInExPack_PEAK = "5.4.2403"
-PEAKModding-PEAKLib_Core = "0.1.0"
+PEAKModding-PEAKLib_Core = "1.6.0"
 
 [build]
-icon = "../../icon.png"
+icon = "./icon.png"
 readme = "./README.md"
-outdir = "../../artifacts/thunderstore/"
+outdir = "../../../artifacts/thunderstore/"
 
 [[build.copy]]
-source = "../../artifacts/bin/PEAKLib.Stats/release/com.github.PEAKModding.PEAKLib.Stats.dll"
+source = "../../../artifacts/bin/PEAKLib.Items/release/com.github.PEAKModding.PEAKLib.Items.dll"
 target = "plugins/"
 
 [[build.copy]]
@@ -29,7 +29,7 @@ source = "./CHANGELOG.md"
 target = "/"
 
 [[build.copy]]
-source = "../../LICENSE"
+source = "../../../LICENSE"
 target = "/"
 
 # The following config options only apply when using TCLI to publish to Thunderstore directly:

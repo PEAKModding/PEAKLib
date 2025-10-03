@@ -4,21 +4,21 @@ The community API for PEAK.
 
 Features:
 
-- [Core Module](/src/PEAKLib.Core/README.md)
+- [Core Module](/src/PEAKLib.Core/Assets/README.md)
   - Network Prefab API
   - Content Registry API
     - Easily find out which content belongs to who!
   - Bundle Loader API
   - [Host Mod List Listener API](./src/PEAKLib.Core/Networking.cs)
-- [Items Module](/src/PEAKLib.Items/README.md)
+- [Items Module](/src/PEAKLib.Items/Assets/README.md)
   - Items API
   - Item Acceptor API (consumable items can be fed objects)
-- [UI Module](/src/PEAKLib.UI/README.md)
-  - UI API (see [ModConfig](/src/PEAKLib.ModConfig/README.md) for reference usage)
-- [Stats Module](/src/PeakLib.Stats/README.md)
+- [UI Module](/src/PEAKLib.UI/Assets/README.md)
+  - UI API (see [ModConfig](/src/PEAKLib.ModConfig/Assets/README.md) for reference usage)
+- [Stats Module](/src/PeakLib.Stats/Assets/README.md)
   - Status Effects API
 
-You can use [PEAKLib.Tests](./tests/PEAKLib.Tests/README.md) as reference for how certain APIs can be used.
+You can use [PEAKLib.Tests](./tests/PEAKLib.Tests/Assets/README.md) as reference for how certain APIs can be used.
 
 ## Contributing
 

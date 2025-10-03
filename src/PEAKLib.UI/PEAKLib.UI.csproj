@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>com.github.PEAKModding.PEAKLib.UI</AssemblyName>
     <AssemblyTitle>PEAKLib.UI</AssemblyTitle>
-    <Version>1.5.0</Version>
+    <Version>1.6.0</Version>
   </PropertyGroup>
 
   <!-- NuGet metadata -->
@@ -12,11 +12,11 @@
     <IsPackable>true</IsPackable>
     <PackageId>PEAKModding.PEAKLib.UI</PackageId>
     <Description>UI module of the PEAKLib community API for the game PEAK.</Description>
-    <Authors>$(Authors), Rafa</Authors>
+    <Authors>$(Authors), Rafa, darmuh</Authors>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="./README.md" Pack="true" PackagePath="/" />
-    <None Include="$(SolutionRoot)icon.png" Pack="true" PackagePath="/" />
+    <None Include="./Assets/README.md" Pack="true" PackagePath="/" />
+    <None Include="./Assets/icon.png" Pack="true" PackagePath="/" />
   </ItemGroup>
 
   <ItemGroup>
