@@ -88,7 +88,7 @@ public static class MenuAPI
     /// <returns></returns>
     public static PeakCustomPage CreatePageWithBackground(string pageName) =>
         CreatePage(pageName).CreateBackground();
-    
+
 
     /// <summary>
     /// Creates a Menu button
@@ -192,11 +192,11 @@ public static class MenuAPI
     {
         index = index.ToUpperInvariant();
 
-        if (!LocalizedText.MAIN_TABLE.TryGetValue(index, out List<string>? currentList))
+        if (!LocalizedText.mainTable.TryGetValue(index, out List<string>? currentList))
         {
             currentList = [];
             currentList.AddRange(from LocalizedText.Language _ in Enum.GetValues(typeof(LocalizedText.Language)) select translation);
-            LocalizedText.MAIN_TABLE.Add(index, currentList);
+            LocalizedText.mainTable.Add(index, currentList);
         }
         else
         {
@@ -230,7 +230,7 @@ public static class MenuAPI
     public static GenericBoolSetting AddOnOffSetting(string displayName, bool defaultValue, SettingsCategory category, bool currentValue, Action<bool>? saveCallback = null)
     {
         GenericBoolSetting setting = new(displayName, defaultValue, category, currentValue, saveCallback);
-        
+
         if (SettingsHandler.Instance == null)
             UIPlugin.Log.LogWarning($"SettingsHandler.Instance is null! You will need to manually add this setting ({displayName})");
         else
