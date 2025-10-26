@@ -24,4 +24,4 @@ jobs:
           dotnet tool restore
 
       - name: Build
-        run: dotnet pack -c Release --no-restore -WarnAsError -target:PackTS -v d
+        run: dotnet pack -c Release --no-restore -WarnAsError -v d

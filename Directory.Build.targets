@@ -49,10 +49,10 @@
   </ItemGroup>
 
   <!--
-    Build Thunderstore package by calling `dotnet build -c Release -target:PackTS -v d` (verbosity detailed).
+    Build Thunderstore package by calling `dotnet build -c Release -v d` (verbosity detailed).
     Publish to Thunderstore by including `-property:PublishTS=true` in the command.
   -->
-  <Target Name="PackTS" DependsOnTargets="Build" Condition="$(ThunderstorePackable) != 'false'">
+  <Target Name="PackTS" AfterTargets="Build" Condition="'$(Configuration)' == 'Release' And '$(ThunderstorePackable)' != 'false'">
     <Error
       Text=" PackTS must be called with Release configuration."
       Condition="'$(Configuration)' != 'Release'"

@@ -25,7 +25,7 @@ jobs:
       - name: Pack and Publish Thunderstore
         env:
           TCLI_AUTH_TOKEN: ${{ secrets.TCLI_AUTH_TOKEN }}
-        run: dotnet pack -c Release --no-restore -target:PackTS -property:PublishTS=true -v d
+        run: dotnet pack -c Release --no-restore -property:PublishTS=true -v d
 
       - name: Publish NuGet
         run: dotnet nuget push ./artifacts/package/release/*.nupkg --skip-duplicate --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json

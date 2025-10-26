@@ -50,7 +50,7 @@ This template comes with Thunderstore packaging built-in, using [TCLI](<https://
 You can build Thunderstore packages by running:
 
 ```sh
-dotnet build -c Release -target:PackTS -v d
+dotnet build -c Release -v d
 ```
 
 > [!NOTE]  
