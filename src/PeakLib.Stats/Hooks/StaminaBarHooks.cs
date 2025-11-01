@@ -1,7 +1,7 @@
 ﻿#if !UNITY_EDITOR
 using MonoDetour;
 using MonoDetour.HookGen;
-using On.StaminaBar;
+using Md.StaminaBar;
 using static CharacterAfflictions;
 using System;
 using UnityEngine;

@@ -2,7 +2,7 @@
 using MonoDetour.DetourTypes;
 using MonoDetour;
 using MonoDetour.HookGen;
-using On.GUIManager;
+using Md.GUIManager;
 
 namespace PEAKLib.Stats.Hooks;
 

@@ -1,7 +1,7 @@
 #if !UNITY_EDITOR
 using MonoDetour;
 using MonoDetour.HookGen;
-using On.GameHandler;
+using Md.GameHandler;
 
 namespace PEAKLib.Core.Hooks;
 

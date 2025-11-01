@@ -21,9 +21,9 @@ static class CharacterXHooks
     {
         try
         {
-            On.CharacterAnimations.ConfigureIK.ILHook(ILHook_CharacterAnimations_ConfigureIK);
-            On.CharacterAnimations.HandleIK.ILHook(ILHook_CharacterAnimations_HandleIK);
-            On.CharacterItems.AttachItem.ILHook(ILHook_CharacterItems_AttachItem);
+            Md.CharacterAnimations.ConfigureIK.ILHook(ILHook_CharacterAnimations_ConfigureIK);
+            Md.CharacterAnimations.HandleIK.ILHook(ILHook_CharacterAnimations_HandleIK);
+            Md.CharacterItems.AttachItem.ILHook(ILHook_CharacterItems_AttachItem);
         }
         catch (Exception ex)
         {

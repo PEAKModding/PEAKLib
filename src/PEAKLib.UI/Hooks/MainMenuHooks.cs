@@ -1,6 +1,6 @@
 ﻿using MonoDetour;
 using MonoDetour.HookGen;
-using On.MainMenu;
+using Md.MainMenu;
 using PEAKLib.Core;
 using PEAKLib.UI.Elements;
 using System.Linq;

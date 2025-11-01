@@ -2,7 +2,7 @@
 using System;
 using MonoDetour;
 using MonoDetour.HookGen;
-using On.CharacterAfflictions;
+using Md.CharacterAfflictions;
 using UnityEngine;
 
 namespace PEAKLib.Stats.Hooks;

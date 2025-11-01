@@ -19,10 +19,10 @@
     <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.3" PrivateAssets="all" />
     <PackageReference Include="Hamunii.BepInEx.AutoPlugin" Version="2.0.*" PrivateAssets="all" />
     <PackageReference Include="PolySharp" Version="1.15.0" PrivateAssets="all" />
-    <PackageReference Include="MonoDetour" Version="0.*" />
+    <PackageReference Include="MonoDetour" Version="(*,2.0)" /> <!-- highest version below 2.0 -->
     <PackageReference
       Include="MonoDetour.HookGen"
-      Version="0.6.*"
+      Version="0.7.*"
       PrivateAssets="all"
       Condition="'$(DefineConstants)' != 'UNITY_EDITOR'"
     />

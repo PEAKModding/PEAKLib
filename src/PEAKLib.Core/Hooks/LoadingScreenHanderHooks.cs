@@ -5,7 +5,7 @@ using MonoDetour;
 using MonoDetour.DetourTypes;
 using MonoDetour.HookGen;
 using MonoDetour.Reflection.Unspeakable;
-using On.LoadingScreenHandler;
+using Md.LoadingScreenHandler;
 
 namespace PEAKLib.Core.Hooks;
 

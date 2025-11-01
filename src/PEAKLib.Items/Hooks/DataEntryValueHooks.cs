@@ -3,7 +3,7 @@ using System;
 using MonoDetour;
 using MonoDetour.DetourTypes;
 using MonoDetour.HookGen;
-using On.DataEntryValue;
+using Md.DataEntryValue;
 
 namespace PEAKLib.Items.Hooks;
 

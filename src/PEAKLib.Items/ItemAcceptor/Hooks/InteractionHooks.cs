@@ -1,6 +1,6 @@
 ﻿using MonoDetour;
 using MonoDetour.HookGen;
-using On.Interaction;
+using Md.Interaction;
 using System.Collections.Generic;
 
 namespace PEAKLib.Items.ItemAcceptor.Hooks;
