@@ -10,7 +10,11 @@ internal class ModdedTABSButton : TAB_Button
 
     private void Update()
     {
-        text.color = Color.Lerp(text.color, Selected ? Color.black : Color.white, Time.unscaledDeltaTime * 7f);
+        text.color = Color.Lerp(
+            text.color,
+            Selected ? Color.black : Color.white,
+            Time.unscaledDeltaTime * 7f
+        );
         if (SelectedGraphic != null)
             SelectedGraphic.gameObject.SetActive(Selected);
     }

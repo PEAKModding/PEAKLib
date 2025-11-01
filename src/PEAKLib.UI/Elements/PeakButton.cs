@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace PEAKLib.UI.Elements;
 
 /// <summary>
-/// Default Button Non-Stylized 
+/// Default Button Non-Stylized
 /// </summary>
 [RequireComponent(typeof(Button))]
 public class PeakButton : PeakElement
@@ -21,11 +21,10 @@ public class PeakButton : PeakElement
     /// </summary>
     public PeakText Text { get; set; } = null!;
 
-
     private void Awake()
     {
         RectTransform = GetComponent<RectTransform>();
-      
+
         var image = new GameObject("Image", typeof(Image))
             .ParentTo(transform)
             .ExpandToParent()
@@ -33,7 +32,8 @@ public class PeakButton : PeakElement
 
         image.color = new Color(0.1792453f, 0.1253449f, 0.09046815f, 0.7294118f);
 
-        Text = MenuAPI.CreateText(name, "Text (TMP)")
+        Text = MenuAPI
+            .CreateText(name, "Text (TMP)")
             .ParentTo(transform)
             .ExpandToParent()
             .SetPosition(Vector2.zero);

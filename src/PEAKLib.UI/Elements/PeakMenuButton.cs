@@ -43,7 +43,6 @@ public class PeakMenuButton : PeakLocalizableElement
         BorderBottom = transform
             .GetChild(BorderTop.transform.GetSiblingIndex() + 1)
             .GetComponent<Image>();
-
     }
 
     /// <summary>

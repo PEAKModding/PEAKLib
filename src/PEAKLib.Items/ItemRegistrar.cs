@@ -121,10 +121,11 @@ internal static class ItemRegistrar
             var particleRenderer = particleSystem.GetComponent<ParticleSystemRenderer>();
             if (particleRenderer != null)
             {
-                var smokeMaterial = Resources.FindObjectsOfTypeAll<Material>()
+                var smokeMaterial = Resources
+                    .FindObjectsOfTypeAll<Material>()
                     .ToList()
                     .Find(x => x.name == "Smoke");
-        
+
                 if (smokeMaterial != null)
                 {
                     particleRenderer.material = smokeMaterial;

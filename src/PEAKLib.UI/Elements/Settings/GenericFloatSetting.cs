@@ -10,10 +10,16 @@ namespace PEAKLib.UI.Elements.Settings;
 /// Use the saveCallback action to use the new value in your code how you see fit.
 /// Can be used by other types than float, just translate your values to float on initialization and back from float on callback methods
 /// </summary>
-public class GenericFloatSetting(string displayName, float defaultValue = 0f, SettingsCategory category = SettingsCategory.General,
-    float minValue = 0f, float maxValue = 1f, float currentValue = 0f,
+public class GenericFloatSetting(
+    string displayName,
+    float defaultValue = 0f,
+    SettingsCategory category = SettingsCategory.General,
+    float minValue = 0f,
+    float maxValue = 1f,
+    float currentValue = 0f,
     Action<float>? saveCallback = null,
-    Action<GenericFloatSetting>? onApply = null) : FloatSetting, IExposedSetting
+    Action<GenericFloatSetting>? onApply = null
+) : FloatSetting, IExposedSetting
 {
     /// <summary>
     /// Override for FloatSetting.Load which is used by PEAK to load the setting.

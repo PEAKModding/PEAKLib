@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using PEAKLib.Core;
-using static CharacterAfflictions;
 using UnityEngine;
+using static CharacterAfflictions;
 
 namespace PEAKLib.Stats;
 
@@ -14,6 +14,7 @@ namespace PEAKLib.Stats;
 public static class CustomStatusManager
 {
     static SortedList<string, Status> registered = new();
+
     /// <summary>
     /// List of registered status effects
     /// </summary>
@@ -29,7 +30,9 @@ public static class CustomStatusManager
         string key = $"{owner.Id}->{status.Name}";
         if (registered.ContainsKey(key))
         {
-            throw new ArgumentException($"Status effect with name {key} already registered. Choose a unique name.");
+            throw new ArgumentException(
+                $"Status effect with name {key} already registered. Choose a unique name."
+            );
         }
         registered.Add(key, status);
         ReIndex();

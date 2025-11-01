@@ -1,20 +1,26 @@
-﻿using BepInEx.Configuration;
-using System;
+﻿using System;
+using BepInEx.Configuration;
 using TMPro;
 using UnityEngine;
 using Zorro.Core;
 using Zorro.Settings;
 using Zorro.Settings.UI;
-using Object = UnityEngine.Object;
 using static PEAKLib.ModConfig.SettingsHandlerUtility;
+using Object = UnityEngine.Object;
 
 namespace PEAKLib.ModConfig.SettingOptions;
 
-internal class BepInExString(ConfigEntryBase entryBase, string category = "Mods",
+internal class BepInExString(
+    ConfigEntryBase entryBase,
+    string category = "Mods",
     Action<string>? saveCallback = null,
-    Action<BepInExString>? onApply = null) : StringSetting, IBepInExProperty, IExposedSetting
+    Action<BepInExString>? onApply = null
+) : StringSetting, IBepInExProperty, IExposedSetting
 {
-    ConfigEntryBase IBepInExProperty.ConfigBase { get => entryBase; }
+    ConfigEntryBase IBepInExProperty.ConfigBase
+    {
+        get => entryBase;
+    }
 
     public string PlaceholderText { get; set; } = GetDefaultValue<string>(entryBase) ?? "";
     private static GameObject? _settingUICell = null;
@@ -24,10 +30,15 @@ internal class BepInExString(ConfigEntryBase entryBase, string category = "Mods"
         {
             if (_settingUICell == null)
             {
-                if (SingletonAsset<InputCellMapper>.Instance == null || SingletonAsset<InputCellMapper>.Instance.FloatSettingCell == null)
+                if (
+                    SingletonAsset<InputCellMapper>.Instance == null
+                    || SingletonAsset<InputCellMapper>.Instance.FloatSettingCell == null
+                )
                     return null;
 
-                _settingUICell = Object.Instantiate(SingletonAsset<InputCellMapper>.Instance.FloatSettingCell);
+                _settingUICell = Object.Instantiate(
+                    SingletonAsset<InputCellMapper>.Instance.FloatSettingCell
+                );
                 _settingUICell.name = "BepInExStringCell";
 
                 var oldFloatSetting = _settingUICell.GetComponent<FloatSettingUI>();
@@ -37,7 +48,9 @@ internal class BepInExString(ConfigEntryBase entryBase, string category = "Mods"
                 Object.DestroyImmediate(oldFloatSetting.slider.gameObject);
                 Object.DestroyImmediate(oldFloatSetting);
 
-                newStringSetting.inputField.characterValidation = TMP_InputField.CharacterValidation.None;
+                newStringSetting.inputField.characterValidation = TMP_InputField
+                    .CharacterValidation
+                    .None;
                 var inputRectTransform = newStringSetting.inputField.GetComponent<RectTransform>();
                 inputRectTransform.pivot = new Vector2(0.5f, 0.5f);
                 inputRectTransform.offsetMin = new Vector2(20, -25);
@@ -57,13 +70,21 @@ internal class BepInExString(ConfigEntryBase entryBase, string category = "Mods"
         }
     }
 
-    public override void Load(ISettingsSaveLoad loader) => Value = GetCurrentValue<string>(entryBase);
+    public override void Load(ISettingsSaveLoad loader) =>
+        Value = GetCurrentValue<string>(entryBase);
+
     public override void Save(ISettingsSaveLoad saver) => saveCallback?.Invoke(Value);
+
     public override void ApplyValue() => onApply?.Invoke(this);
+
     public override GameObject? GetSettingUICell() => SettingUICell;
+
     public string GetCategory() => category;
+
     public string GetDisplayName() => entryBase.Definition.Key;
+
     protected override string GetDefaultValue() => GetDefaultValue<string>(entryBase);
+
     public void RefreshValueFromConfig() => Value = GetCurrentValue<string>(entryBase);
 }
 
@@ -73,11 +94,13 @@ public class StringSettingUI : SettingInputUICell
 
     public override void Setup(Setting setting, ISettingHandler settingHandler)
     {
-        if (setting == null || setting is not BepInExString stringSetting) return;
+        if (setting == null || setting is not BepInExString stringSetting)
+            return;
 
         RegisterSettingListener(setting);
 
-        if (inputField == null) return;
+        if (inputField == null)
+            return;
 
         inputField.SetTextWithoutNotify(stringSetting.Value);
         inputField.onValueChanged.AddListener(OnChanged);
@@ -101,6 +124,5 @@ public class StringSettingUI : SettingInputUICell
 
         if (inputField != null && setting is BepInExString stringSetting)
             inputField.SetTextWithoutNotify(stringSetting.Value);
-
     }
 }

@@ -13,7 +13,9 @@ public class AcceptItem_BingBong : MonoBehaviour, IItemAcceptor
     public void AcceptItem(Item item, Character interactor)
     {
         string thisItemName = GetComponent<Item>()?.GetItemName() ?? "Item";
-        TestsPlugin.Log.LogInfo($"{thisItemName} accepted {item.GetItemName()} from {interactor.characterName}");
+        TestsPlugin.Log.LogInfo(
+            $"{thisItemName} accepted {item.GetItemName()} from {interactor.characterName}"
+        );
         interactor.refs.afflictions.AddStatus(CharacterAfflictions.STATUSTYPE.Poison, 0.1f);
         IItemAcceptor.ConsumeOneUse(item);
     }

@@ -9,4 +9,3 @@ internal interface IBepInExProperty
 
     internal void RefreshValueFromConfig();
 }
-

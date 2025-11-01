@@ -49,6 +49,7 @@ public class Status
     /// <param name="chaf"></param>
     /// <param name="status"></param>
     public delegate void UpdateStatusHandler(CharacterAfflictions chaf, Status status);
+
     /// <summary>
     /// Callback to update status, for custom behavior.
     /// Overrides default behavior for ReductionCooldown and ReductionPerSecond.
@@ -66,6 +67,7 @@ public class Status
     public SFX_Instance? SFX { get; set; }
 
     internal int Index;
+
     /// <summary>
     /// This leads to invalid enums, but that's the point.
     /// </summary>

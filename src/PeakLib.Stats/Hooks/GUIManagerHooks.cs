@@ -6,7 +6,11 @@ using Md.GUIManager;
 
 namespace PEAKLib.Stats.Hooks;
 
-[MonoDetourTargets(typeof(GUIManager), GenerateControlFlowVariants = true, Members = ["AddStatusFX"])]
+[MonoDetourTargets(
+    typeof(GUIManager),
+    GenerateControlFlowVariants = true,
+    Members = ["AddStatusFX"]
+)]
 static class GUIManagerHooks
 {
     [MonoDetourHookInitialize]
@@ -15,7 +19,11 @@ static class GUIManagerHooks
         AddStatusFX.ControlFlowPrefix(Prefix_AddStatusFX);
     }
 
-    static ReturnFlow Prefix_AddStatusFX(GUIManager self, ref CharacterAfflictions.STATUSTYPE type, ref float amount)
+    static ReturnFlow Prefix_AddStatusFX(
+        GUIManager self,
+        ref CharacterAfflictions.STATUSTYPE type,
+        ref float amount
+    )
     {
         if (CustomStatusManager.StatusByType(type) != null)
         {

@@ -15,6 +15,7 @@ namespace PEAKLib.UI.Elements;
 public class PeakHorizontalTabs : PeakElement
 {
     private RectTransform Content { get; set; } = null!;
+
     /// <summary>
     /// List of all Tabs (game objects) associated with this component
     /// </summary>

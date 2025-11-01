@@ -39,7 +39,10 @@ public interface IItemAcceptor
     /// <param name="interactible"></param>
     /// <param name="itemAcceptors"></param>
     /// <returns></returns>
-    public static bool TryGetItemAcceptors(IInteractible? interactible, out IEnumerable<IItemAcceptor> itemAcceptors)
+    public static bool TryGetItemAcceptors(
+        IInteractible? interactible,
+        out IEnumerable<IItemAcceptor> itemAcceptors
+    )
     {
         MonoBehaviour? mb = interactible as MonoBehaviour;
         if (mb != null)
@@ -90,7 +93,9 @@ public interface IItemAcceptor
                 ConsumeEntireItem(item);
                 return;
             }
-            ItemsPlugin.Log.LogWarning($"{item} is multi-use but lacks the Action_ReduceUses component.");
+            ItemsPlugin.Log.LogWarning(
+                $"{item} is multi-use but lacks the Action_ReduceUses component."
+            );
             return;
         }
         for (int i = 0; i < uses; i++)

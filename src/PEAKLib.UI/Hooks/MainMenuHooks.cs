@@ -1,9 +1,9 @@
-﻿using MonoDetour;
-using MonoDetour.HookGen;
+﻿using System.Linq;
 using Md.MainMenu;
+using MonoDetour;
+using MonoDetour.HookGen;
 using PEAKLib.Core;
 using PEAKLib.UI.Elements;
-using System.Linq;
 using UnityEngine;
 
 namespace PEAKLib.UI.Hooks;
@@ -22,14 +22,22 @@ static class PauseMenuHooks
     {
         var objects = Resources.FindObjectsOfTypeAll<GameObject>();
         Templates.SettingsCellPrefab = objects.First(n => n.name == "SettingsCell");
-        UIPlugin.Log.LogDebug($"SettingsCellPrefab is null - {Templates.SettingsCellPrefab == null}");
+        UIPlugin.Log.LogDebug(
+            $"SettingsCellPrefab is null - {Templates.SettingsCellPrefab == null}"
+        );
         var button = objects.First(n => n.name == "UI_MainMenuButton_LeaveGame (2)");
         UIPlugin.Log.LogDebug($"button is null - {button == null}");
 
         if (Templates.SettingsCellPrefab == null || button == null)
         {
-            ThrowHelper.ThrowIfArgumentNull(button, "ButtonTemplate prefab is null! Report as issue to PEAKLib github");
-            ThrowHelper.ThrowIfArgumentNull(Templates.SettingsCellPrefab, "SettingsCellPrefab is null! Report as issue to PEAKLib github");
+            ThrowHelper.ThrowIfArgumentNull(
+                button,
+                "ButtonTemplate prefab is null! Report as issue to PEAKLib github"
+            );
+            ThrowHelper.ThrowIfArgumentNull(
+                Templates.SettingsCellPrefab,
+                "SettingsCellPrefab is null! Report as issue to PEAKLib github"
+            );
             return;
         }
 
@@ -37,8 +45,7 @@ static class PauseMenuHooks
         Templates.ButtonTemplate = Object.Instantiate(button)!;
         Templates.ButtonTemplate.name = "PeakUIButton";
 
-        LocalizedText? locText =
-            Templates.ButtonTemplate.GetComponentInChildren<LocalizedText>();
+        LocalizedText? locText = Templates.ButtonTemplate.GetComponentInChildren<LocalizedText>();
 
         if (locText != null)
             Object.DestroyImmediate(locText);

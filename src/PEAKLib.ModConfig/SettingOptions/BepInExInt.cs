@@ -1,6 +1,6 @@
-﻿using BepInEx.Configuration;
+﻿using System;
+using BepInEx.Configuration;
 using PEAKLib.ModConfig.SettingOptions.SettingUI;
-using System;
 using TMPro;
 using UnityEngine;
 using Zorro.Core;
@@ -11,11 +11,17 @@ using Object = UnityEngine.Object;
 
 namespace PEAKLib.ModConfig.SettingOptions;
 
-internal class BepInExInt(ConfigEntryBase entryBase, string category = "Mods",
+internal class BepInExInt(
+    ConfigEntryBase entryBase,
+    string category = "Mods",
     Action<int>? saveCallback = null,
-    Action<BepInExInt>? onApply = null) : IntSetting, IBepInExProperty, IExposedSetting
+    Action<BepInExInt>? onApply = null
+) : IntSetting, IBepInExProperty, IExposedSetting
 {
-    ConfigEntryBase IBepInExProperty.ConfigBase { get => entryBase; }
+    ConfigEntryBase IBepInExProperty.ConfigBase
+    {
+        get => entryBase;
+    }
     private static GameObject? _settingUICell = null;
     public static GameObject? SettingUICell
     {
@@ -23,10 +29,15 @@ internal class BepInExInt(ConfigEntryBase entryBase, string category = "Mods",
         {
             if (_settingUICell == null)
             {
-                if (SingletonAsset<InputCellMapper>.Instance == null || SingletonAsset<InputCellMapper>.Instance.FloatSettingCell == null)
+                if (
+                    SingletonAsset<InputCellMapper>.Instance == null
+                    || SingletonAsset<InputCellMapper>.Instance.FloatSettingCell == null
+                )
                     return null;
 
-                _settingUICell = Object.Instantiate(SingletonAsset<InputCellMapper>.Instance.FloatSettingCell);
+                _settingUICell = Object.Instantiate(
+                    SingletonAsset<InputCellMapper>.Instance.FloatSettingCell
+                );
                 _settingUICell.name = "BepInExIntCell";
 
                 var oldFloatSetting = _settingUICell.GetComponent<FloatSettingUI>();
@@ -36,7 +47,9 @@ internal class BepInExInt(ConfigEntryBase entryBase, string category = "Mods",
                 Object.DestroyImmediate(oldFloatSetting.slider.gameObject);
                 Object.DestroyImmediate(oldFloatSetting);
 
-                newIntSetting.inputField.characterValidation = TMP_InputField.CharacterValidation.Integer;
+                newIntSetting.inputField.characterValidation = TMP_InputField
+                    .CharacterValidation
+                    .Integer;
                 var inputRectTransform = newIntSetting.inputField.GetComponent<RectTransform>();
                 inputRectTransform.pivot = new Vector2(0.5f, 0.5f);
                 inputRectTransform.offsetMin = new Vector2(20, -25);
@@ -50,11 +63,18 @@ internal class BepInExInt(ConfigEntryBase entryBase, string category = "Mods",
     }
 
     public void RefreshValueFromConfig() => Value = GetCurrentValue<int>(entryBase);
+
     public override void Load(ISettingsSaveLoad loader) => Value = GetCurrentValue<int>(entryBase);
+
     public override void Save(ISettingsSaveLoad saver) => saveCallback?.Invoke(Value);
+
     public override void ApplyValue() => onApply?.Invoke(this);
+
     public override GameObject? GetSettingUICell() => SettingUICell;
+
     public string GetCategory() => category;
+
     public string GetDisplayName() => entryBase.Definition.Key;
+
     protected override int GetDefaultValue() => GetDefaultValue<int>(entryBase);
 }

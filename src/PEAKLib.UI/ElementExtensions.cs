@@ -1,6 +1,6 @@
-﻿using PEAKLib.Core;
+﻿using System;
+using PEAKLib.Core;
 using PEAKLib.UI.Elements;
-using System;
 using UnityEngine;
 
 namespace PEAKLib.UI;
@@ -154,7 +154,7 @@ public static class ElementExtensions
     /// <param name="offsetMin"></param>
     /// <returns></returns>
     public static T SetOffsetMin<T>(this T instance, Vector2 offsetMin)
-      where T : PeakElement
+        where T : PeakElement
     {
         ThrowHelper.ThrowIfArgumentNull(instance);
 
@@ -171,7 +171,7 @@ public static class ElementExtensions
     /// <param name="offsetMax"></param>
     /// <returns></returns>
     public static T SetOffsetMax<T>(this T instance, Vector2 offsetMax)
-      where T : PeakElement
+        where T : PeakElement
     {
         ThrowHelper.ThrowIfArgumentNull(instance);
 
@@ -180,9 +180,8 @@ public static class ElementExtensions
         return instance;
     }
 
-
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="instance"></param>
@@ -199,7 +198,7 @@ public static class ElementExtensions
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="instance"></param>
@@ -216,7 +215,7 @@ public static class ElementExtensions
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="instance"></param>
@@ -234,7 +233,7 @@ public static class ElementExtensions
     }
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="instance"></param>
@@ -258,7 +257,7 @@ public static class ElementExtensions
     /// <param name="alignment"></param>
     /// <returns></returns>
     public static T AlignToParent<T>(this T instance, UIAlignment alignment)
-       where T : PeakElement
+        where T : PeakElement
     {
         ThrowHelper.ThrowIfArgumentNull(instance);
         ThrowHelper.ThrowIfArgumentNull(alignment);
@@ -277,7 +276,7 @@ public static class ElementExtensions
             UIAlignment.BottomCenter => new Vector2(0.5f, 0),
             UIAlignment.BottomRight => new Vector2(1, 0),
 
-            _ => Vector2.zero
+            _ => Vector2.zero,
         };
 
         var rect = instance.RectTransform;
@@ -337,13 +336,19 @@ public static class ElementExtensions
     /// <param name="text"></param>
     /// <param name="language"></param>
     /// <returns></returns>
-    public static T AddLocalization<T>(this T instance, string text, LocalizedText.Language language)
+    public static T AddLocalization<T>(
+        this T instance,
+        string text,
+        LocalizedText.Language language
+    )
         where T : PeakLocalizableElement
     {
         ThrowHelper.ThrowIfArgumentNull(instance);
 
         if (instance.name == "UI_PeakText")
-            throw new Exception("You need to use a unique name to use localization. E.g. MenuAPI.CreateText(\"my cool text\", \"mymod_my_unique_name\")");
+            throw new Exception(
+                "You need to use a unique name to use localization. E.g. MenuAPI.CreateText(\"my cool text\", \"mymod_my_unique_name\")"
+            );
 
         var textComponent = ThrowHelper.ThrowIfFieldNull(instance.Text);
 

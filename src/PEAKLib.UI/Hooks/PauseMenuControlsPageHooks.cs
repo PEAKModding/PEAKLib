@@ -1,10 +1,10 @@
-﻿using MonoDetour;
-using MonoDetour.HookGen;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Md.PauseMenuControlsPage;
+using MonoDetour;
+using MonoDetour.HookGen;
 using PEAKLib.Core;
 using PEAKLib.UI.Elements;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Zorro.Core;
 
@@ -20,6 +20,7 @@ static class PauseMenuControlsPageHooks
     }
 
     internal static bool InitComplete = false;
+
     static void Prefix_Start(PauseMenuControlsPage self)
     {
         if (!InitComplete)
@@ -35,10 +36,19 @@ static class PauseMenuControlsPageHooks
 
             if (CannotBeNull.Any(o => o == null!) || inputIcon == null)
             {
-                ThrowHelper.ThrowIfArgumentNull(control, "Unable to get valid control gameobject for control button templates!");
+                ThrowHelper.ThrowIfArgumentNull(
+                    control,
+                    "Unable to get valid control gameobject for control button templates!"
+                );
                 ThrowHelper.ThrowIfArgumentNull(reset, "Unable to get reset button template!");
-                ThrowHelper.ThrowIfArgumentNull(warning, "Unable to get bind warning object for template!");
-                ThrowHelper.ThrowIfArgumentNull(inputIcon, "Unable to get valid inputIcon for template!");
+                ThrowHelper.ThrowIfArgumentNull(
+                    warning,
+                    "Unable to get bind warning object for template!"
+                );
+                ThrowHelper.ThrowIfArgumentNull(
+                    inputIcon,
+                    "Unable to get valid inputIcon for template!"
+                );
                 return;
             }
 

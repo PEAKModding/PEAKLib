@@ -1,7 +1,7 @@
-﻿using PEAKLib.Core;
-using System;
+﻿using System;
 using System.Collections;
 using System.Linq;
+using PEAKLib.Core;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,7 +19,8 @@ internal class BepInExKeyCode_SettingUI : SettingInputUICell
         ThrowHelper.ThrowIfFieldNull(button);
         ThrowHelper.ThrowIfFieldNull(text);
 
-        if (setting == null || setting is not BepInExKeyCode keyCodeSetting) return;
+        if (setting == null || setting is not BepInExKeyCode keyCodeSetting)
+            return;
 
         RegisterSettingListener(setting);
 
@@ -37,7 +38,6 @@ internal class BepInExKeyCode_SettingUI : SettingInputUICell
 
         if (text != null && setting is BepInExKeyCode keyCode)
             text.text = keyCode.Value.ToString();
-
     }
 
     protected override void OnDestroy()
@@ -66,22 +66,26 @@ internal class BepInExKeyCode_SettingUI : SettingInputUICell
     }
 
     internal static KeyCode[] BlackListed = [KeyCode.Escape];
+
     private void StartKeybindCapture(BepInExKeyCode setting, ISettingHandler settingHandler)
     {
-        if (detectingKey != null) return;
+        if (detectingKey != null)
+            return;
 
         detectingKey = this;
 
         if (text != null)
             text.text = "SELECT A KEY";
 
-        StartCoroutine(WaitForKey(key =>
-        {
-            if (!BlackListed.Contains(key))
-                setting.SetValue(key, settingHandler);
+        StartCoroutine(
+            WaitForKey(key =>
+            {
+                if (!BlackListed.Contains(key))
+                    setting.SetValue(key, settingHandler);
 
-            OnSettingChangedExternal(setting);
-            detectingKey = null;
-        }));
+                OnSettingChangedExternal(setting);
+                detectingKey = null;
+            })
+        );
     }
 }

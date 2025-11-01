@@ -12,8 +12,8 @@ public record TranslationKey(string Index)
     /// <param name="text"></param>
     /// <param name="language"></param>
     /// <returns></returns>
-    public TranslationKey AddLocalization(string text, LocalizedText.Language language) 
-    { 
+    public TranslationKey AddLocalization(string text, LocalizedText.Language language)
+    {
         MenuAPI.CreateLocalizationInternal(Index, text, language);
 
         return this;

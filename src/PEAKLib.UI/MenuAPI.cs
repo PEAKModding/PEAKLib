@@ -1,9 +1,9 @@
-﻿using PEAKLib.Core;
-using PEAKLib.UI.Elements;
-using PEAKLib.UI.Elements.Settings;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using PEAKLib.Core;
+using PEAKLib.UI.Elements;
+using PEAKLib.UI.Elements.Settings;
 using UnityEngine;
 using Zorro.UI;
 using Object = UnityEngine.Object;
@@ -88,7 +88,6 @@ public static class MenuAPI
     /// <returns></returns>
     public static PeakCustomPage CreatePageWithBackground(string pageName) =>
         CreatePage(pageName).CreateBackground();
-
 
     /// <summary>
     /// Creates a Menu button
@@ -188,14 +187,21 @@ public static class MenuAPI
         return textInput;
     }
 
-    internal static void CreateLocalizationInternal(string index, string translation, LocalizedText.Language language)
+    internal static void CreateLocalizationInternal(
+        string index,
+        string translation,
+        LocalizedText.Language language
+    )
     {
         index = index.ToUpperInvariant();
 
         if (!LocalizedText.mainTable.TryGetValue(index, out List<string>? currentList))
         {
             currentList = [];
-            currentList.AddRange(from LocalizedText.Language _ in Enum.GetValues(typeof(LocalizedText.Language)) select translation);
+            currentList.AddRange(
+                from LocalizedText.Language _ in Enum.GetValues(typeof(LocalizedText.Language))
+                select translation
+            );
             LocalizedText.mainTable.Add(index, currentList);
         }
         else
@@ -215,7 +221,6 @@ public static class MenuAPI
         if (string.IsNullOrEmpty(index))
             throw new ArgumentNullException(nameof(index));
 
-
         return new TranslationKey(index);
     }
 
@@ -227,12 +232,26 @@ public static class MenuAPI
     /// <param name="currentValue">Current value of the setting</param>
     /// <param name="saveCallback">Action called when the value is updated</param>
     /// </summary>
-    public static GenericBoolSetting AddOnOffSetting(string displayName, bool defaultValue, SettingsCategory category, bool currentValue, Action<bool>? saveCallback = null)
+    public static GenericBoolSetting AddOnOffSetting(
+        string displayName,
+        bool defaultValue,
+        SettingsCategory category,
+        bool currentValue,
+        Action<bool>? saveCallback = null
+    )
     {
-        GenericBoolSetting setting = new(displayName, defaultValue, category, currentValue, saveCallback);
+        GenericBoolSetting setting = new(
+            displayName,
+            defaultValue,
+            category,
+            currentValue,
+            saveCallback
+        );
 
         if (SettingsHandler.Instance == null)
-            UIPlugin.Log.LogWarning($"SettingsHandler.Instance is null! You will need to manually add this setting ({displayName})");
+            UIPlugin.Log.LogWarning(
+                $"SettingsHandler.Instance is null! You will need to manually add this setting ({displayName})"
+            );
         else
             SettingsHandler.Instance.AddSetting(setting);
 
@@ -249,11 +268,29 @@ public static class MenuAPI
     /// <param name="maxValue">Maximum value of the setting</param>
     /// <param name="saveCallback">Action called when the value is updated</param>
     /// </summary>
-    public static GenericFloatSetting AddSliderSetting(string displayName, float defaultValue, SettingsCategory category, float currentValue, float minValue = 0f, float maxValue = 1000f, Action<float>? saveCallback = null)
+    public static GenericFloatSetting AddSliderSetting(
+        string displayName,
+        float defaultValue,
+        SettingsCategory category,
+        float currentValue,
+        float minValue = 0f,
+        float maxValue = 1000f,
+        Action<float>? saveCallback = null
+    )
     {
-        GenericFloatSetting setting = new(displayName, defaultValue, category, minValue, maxValue, currentValue, saveCallback);
+        GenericFloatSetting setting = new(
+            displayName,
+            defaultValue,
+            category,
+            minValue,
+            maxValue,
+            currentValue,
+            saveCallback
+        );
         if (SettingsHandler.Instance == null)
-            UIPlugin.Log.LogWarning($"SettingsHandler.Instance is null! You will need to manually add this setting ({displayName})");
+            UIPlugin.Log.LogWarning(
+                $"SettingsHandler.Instance is null! You will need to manually add this setting ({displayName})"
+            );
         else
             SettingsHandler.Instance.AddSetting(setting);
 
@@ -268,11 +305,26 @@ public static class MenuAPI
     /// <param name="currentValue">Current value of the setting</param>
     /// <param name="saveCallback">Action called when the value is updated</param>
     /// </summary>
-    public static GenericEnumSetting<T> AddEnumSetting<T>(string displayName, T currentValue, T defaultValue, SettingsCategory category, Action<T>? saveCallback = null) where T : unmanaged, Enum
+    public static GenericEnumSetting<T> AddEnumSetting<T>(
+        string displayName,
+        T currentValue,
+        T defaultValue,
+        SettingsCategory category,
+        Action<T>? saveCallback = null
+    )
+        where T : unmanaged, Enum
     {
-        GenericEnumSetting<T> setting = new(displayName, currentValue, defaultValue, category, saveCallback);
+        GenericEnumSetting<T> setting = new(
+            displayName,
+            currentValue,
+            defaultValue,
+            category,
+            saveCallback
+        );
         if (SettingsHandler.Instance == null)
-            UIPlugin.Log.LogWarning($"SettingsHandler.Instance is null! You will need to manually add this setting ({displayName})");
+            UIPlugin.Log.LogWarning(
+                $"SettingsHandler.Instance is null! You will need to manually add this setting ({displayName})"
+            );
         else
             SettingsHandler.Instance.AddSetting(setting);
 

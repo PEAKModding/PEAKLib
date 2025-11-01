@@ -27,6 +27,7 @@ public static class Templates
     /// Reference grabbed at MainMenu.Start
     /// </summary>
     public static GameObject? ResetBindButton { get; internal set; }
+
     /// <summary>
     /// Reference to PEAK Bind Warning (Controls) Button prefab.
     /// Used in ModConfig's Mod Controls Page
@@ -69,5 +70,4 @@ public static class Templates
     /// Reference grabbed at PauseMenuControlsPage.Awake
     /// </summary>
     public static TMP_SpriteAsset? SwitchSpriteSheet { get; internal set; }
-
 }

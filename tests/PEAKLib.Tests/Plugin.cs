@@ -60,6 +60,7 @@ public partial class TestsPlugin : BaseUnityPlugin
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
+
     private void OnDestroy()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
@@ -164,7 +165,9 @@ public partial class TestsPlugin : BaseUnityPlugin
     {
         monolithPrefab = bundle.LoadAsset<GameObject>("Monolith.prefab");
         monolithPrefab.AddComponent<AcceptItem_Monolith>();
-        monolithPrefab.GetComponentInChildren<Renderer>().material.shader = Shader.Find("W/Peak_Standard");
+        monolithPrefab.GetComponentInChildren<Renderer>().material.shader = Shader.Find(
+            "W/Peak_Standard"
+        );
     }
 
     // spawn the Monolith at game start and modify the bingbong to be feedable
@@ -173,9 +176,13 @@ public partial class TestsPlugin : BaseUnityPlugin
         // check for game start: Load single scene, scene name is Level_X,
         // and game is connected
         Match match = new Regex(@"^Level_(\d+)$").Match(scene.name);
-        if (mode == LoadSceneMode.Single && match.Success &&
-            int.TryParse(match.Groups[1].Value, out _) &&
-            PhotonNetwork.IsConnected && PhotonNetwork.InRoom)
+        if (
+            mode == LoadSceneMode.Single
+            && match.Success
+            && int.TryParse(match.Groups[1].Value, out _)
+            && PhotonNetwork.IsConnected
+            && PhotonNetwork.InRoom
+        )
         {
             Log.LogInfo("Game Start detected, spawning Monolith");
             GameObject go = Instantiate(monolithPrefab)!;

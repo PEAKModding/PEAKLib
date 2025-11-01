@@ -9,7 +9,8 @@ internal class BepInExInt_SettingUI : SettingInputUICell
 
     public override void Setup(Setting setting, ISettingHandler settingHandler)
     {
-        if (inputField == null || setting == null || setting is not BepInExInt intSetting) return;
+        if (inputField == null || setting == null || setting is not BepInExInt intSetting)
+            return;
 
         RegisterSettingListener(setting);
         inputField.SetTextWithoutNotify(intSetting.Expose(intSetting.Value));
@@ -31,6 +32,5 @@ internal class BepInExInt_SettingUI : SettingInputUICell
 
         if (inputField != null && setting is BepInExInt intSetting)
             inputField.SetTextWithoutNotify(intSetting.Expose(intSetting.Value));
-
     }
 }

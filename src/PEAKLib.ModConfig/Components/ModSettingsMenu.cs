@@ -1,7 +1,7 @@
-﻿using PEAKLib.UI.Elements;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using PEAKLib.UI.Elements;
 using TMPro;
 using UnityEngine;
 using Zorro.Settings;
@@ -16,7 +16,6 @@ internal class ModdedSettingsMenu : MonoBehaviour
 
         if (Tabs != null && Tabs.selectedButton != null)
             Tabs.Select(Tabs.selectedButton);
-
     }
 
     internal static ModdedSettingsMenu Instance { get; private set; } = null!;
@@ -68,18 +67,23 @@ internal class ModdedSettingsMenu : MonoBehaviour
 
         m_spawnedCells.Clear();
         RefreshSettings();
-            
-        if (settings == null) return;
+
+        if (settings == null)
+            return;
 
         var isSearching = !string.IsNullOrEmpty(search);
-        foreach (IExposedSetting item in from setting in settings
-                                         where setting != null && setting is IBepInExProperty
-                                         let searchCheck = isSearching && setting.GetDisplayName()?.ToLower()?.Contains(search) == true
-                                         let notSearching = !isSearching && setting.GetCategory() == category.ToString()
-                                         where searchCheck || notSearching
-                                         where setting is not IConditionalSetting conditionalSetting || conditionalSetting.ShouldShow()
-                                         select setting)
-
+        foreach (
+            IExposedSetting item in from setting in settings
+            where setting != null && setting is IBepInExProperty
+            let searchCheck = isSearching
+                && setting.GetDisplayName()?.ToLower()?.Contains(search) == true
+            let notSearching = !isSearching && setting.GetCategory() == category.ToString()
+            where searchCheck || notSearching
+            where
+                setting is not IConditionalSetting conditionalSetting
+                || conditionalSetting.ShouldShow()
+            select setting
+        )
         {
             if (Templates.SettingsCellPrefab == null)
             {
@@ -100,14 +104,20 @@ internal class ModdedSettingsMenu : MonoBehaviour
                     //update assigned value from configbase
                     bep.RefreshValueFromConfig();
 
-                    if (!bep.ConfigBase.Definition.Section.Equals(selectedSection, System.StringComparison.InvariantCultureIgnoreCase))
+                    if (
+                        !bep.ConfigBase.Definition.Section.Equals(
+                            selectedSection,
+                            System.StringComparison.InvariantCultureIgnoreCase
+                        )
+                    )
                         continue; //skip setting that is not in current selected section
                 }
                 else
                     continue; //skip setting that is not bepinex base
             }
 
-            SettingsUICell component = Instantiate(Templates.SettingsCellPrefab, Content).GetComponent<SettingsUICell>();
+            SettingsUICell component = Instantiate(Templates.SettingsCellPrefab, Content)
+                .GetComponent<SettingsUICell>();
             m_spawnedCells.Add(component);
             // component.Setup(item as Setting);
 
@@ -118,7 +128,9 @@ internal class ModdedSettingsMenu : MonoBehaviour
             component.m_canvasGroup = component.GetComponent<CanvasGroup>();
             component.m_canvasGroup.alpha = 0f;
 
-            Instantiate(setting.GetSettingUICell(), component.m_settingsContentParent).GetComponent<SettingInputUICell>().Setup(setting, GameHandler.Instance.SettingsHandler);
+            Instantiate(setting.GetSettingUICell(), component.m_settingsContentParent)
+                .GetComponent<SettingInputUICell>()
+                .Setup(setting, GameHandler.Instance.SettingsHandler);
             #endregion
         }
 
@@ -128,18 +140,18 @@ internal class ModdedSettingsMenu : MonoBehaviour
     public void RefreshSettings()
     {
         if (GameHandler.Instance != null)
-            settings = GameHandler.Instance.SettingsHandler.GetSettingsThatImplements<IExposedSetting>();
-
+            settings =
+                GameHandler.Instance.SettingsHandler.GetSettingsThatImplements<IExposedSetting>();
     }
 
     public void UpdateSectionTabs(string modName)
     {
-        if(ModSectionNames.TryGetModSections(modName, out List<string> sections))
+        if (ModSectionNames.TryGetModSections(modName, out List<string> sections))
         {
-            if(SectionTabController.Tabs.Count > 0)
+            if (SectionTabController.Tabs.Count > 0)
             {
                 //Remove existing tabs
-                for(int i = SectionTabController.Tabs.Count - 1; i >= 0; i--)
+                for (int i = SectionTabController.Tabs.Count - 1; i >= 0; i--)
                     SectionTabController.DeleteTab(SectionTabController.Tabs[i].name);
             }
 
@@ -151,7 +163,7 @@ internal class ModdedSettingsMenu : MonoBehaviour
                 sectionButton.category = section;
                 sectionButton.text = tab.GetComponentInChildren<TextMeshProUGUI>();
                 sectionButton.SelectedGraphic = tab.transform.Find("Selected").gameObject;
-                sectionButtons.Add(sectionButton);      
+                sectionButtons.Add(sectionButton);
             }
 
             sectionButtons[0].ButtonClicked();

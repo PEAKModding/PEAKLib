@@ -25,6 +25,7 @@ public class PeakChildPage : UIPage, IHaveParentPage
     private Image? Background { get; set; }
 
     private void Start() => BackButton?.onClick.AddListener(new UnityAction(this.BackClicked));
+
     private void Awake()
     {
         var rectTransform = GetComponent<RectTransform>();
@@ -32,7 +33,11 @@ public class PeakChildPage : UIPage, IHaveParentPage
         rectTransform.anchorMax = Vector2.one;
         rectTransform.anchorMin = rectTransform.offsetMin = rectTransform.offsetMax = Vector2.zero;
 
-        var uiPageHandler = gameObject.GetComponentInParent<UIPageHandler>(true) ?? throw new System.Exception("UIPageHandler not found in the object parent. Make sure to put your page object inside a UIPageHandler. (e.g. MainMenuPageHandler or PauseMenuHandler)");
+        var uiPageHandler =
+            gameObject.GetComponentInParent<UIPageHandler>(true)
+            ?? throw new System.Exception(
+                "UIPageHandler not found in the object parent. Make sure to put your page object inside a UIPageHandler. (e.g. MainMenuPageHandler or PauseMenuHandler)"
+            );
 
         pageHandler = uiPageHandler;
     }
@@ -55,7 +60,7 @@ public class PeakChildPage : UIPage, IHaveParentPage
     /// <returns></returns>
     public PeakChildPage SetBackButton(Button button)
     {
-        BackButton = button; 
+        BackButton = button;
         return this;
     }
 
@@ -66,12 +71,14 @@ public class PeakChildPage : UIPage, IHaveParentPage
     public (UIPage, PageTransistion) GetParentPage()
     {
         if (ParentPage == null)
-            throw new System.Exception("You haven't set a parent page. Please set a parent page or the back button will not work properly. | myPage.SetParentPage(parentPage)");
+            throw new System.Exception(
+                "You haven't set a parent page. Please set a parent page or the back button will not work properly. | myPage.SetParentPage(parentPage)"
+            );
 
         return (ParentPage, new SetActivePageTransistion());
     }
 
-    private void BackClicked() 
+    private void BackClicked()
     {
         var result = GetParentPage();
 
@@ -111,8 +118,8 @@ public class PeakChildPage : UIPage, IHaveParentPage
         return this;
     }
 
-
-    private UnityAction? onCloseAction, onOpenAction;
+    private UnityAction? onCloseAction,
+        onOpenAction;
 
     private void OnDisable()
     {

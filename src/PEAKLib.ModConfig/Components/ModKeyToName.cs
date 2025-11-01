@@ -1,6 +1,6 @@
-﻿using BepInEx.Configuration;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using BepInEx.Configuration;
 
 namespace PEAKLib.ModConfig.Components;
 
@@ -18,4 +18,3 @@ internal class ModKeyToName(ConfigEntryBase key, string name)
         return keys;
     }
 }
-

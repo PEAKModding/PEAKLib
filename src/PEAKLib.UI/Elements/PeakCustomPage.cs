@@ -141,7 +141,8 @@ public class PeakCustomPage : MenuWindow
         return this;
     }
 
-    private UnityAction? onCloseAction, onOpenAction;
+    private UnityAction? onCloseAction,
+        onOpenAction;
 
     /// <summary>
     /// </summary>

@@ -1,14 +1,15 @@
-﻿using BepInEx.Configuration;
+﻿using System;
+using System.Collections.Generic;
+using BepInEx.Configuration;
 using PEAKLib.UI;
 using PEAKLib.UI.Elements;
-using System;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using static PEAKLib.ModConfig.SettingsHandlerUtility;
 
 namespace PEAKLib.ModConfig.Components;
+
 internal class ModdedRebindKey : PeakElement
 {
     public string inputActionName = string.Empty;
@@ -29,17 +30,18 @@ internal class ModdedRebindKey : PeakElement
     //this shit was a LOT of trial and error to get things looking better in a uniform way
     internal void Setup(ConfigEntryBase entry, string ModName)
     {
-        if(entry is ConfigEntry<KeyCode> keyCodeEntry)
+        if (entry is ConfigEntry<KeyCode> keyCodeEntry)
             ConfigKeyCode = keyCodeEntry;
 
-        if(entry is ConfigEntry<string> keyString)
+        if (entry is ConfigEntry<string> keyString)
             ConfigKeyString = keyString;
 
         ConfigName = entry.Definition.Key;
 
         inputActionName = $"({ModName}) {ConfigName}";
 
-        button = MenuAPI.CreateButton(inputActionName)
+        button = MenuAPI
+            .CreateButton(inputActionName)
             .ParentTo(transform)
             .SetSize(new(1025f, 60f))
             .OnClick(RebindOperation);
@@ -57,16 +59,17 @@ internal class ModdedRebindKey : PeakElement
         rightParent.transform.SetParent(transform);
         rightParent.AddComponent<LayoutElement>();
         rightParent.GetComponent<RectTransform>().anchoredPosition = new(500f, 0f);
-        
+
         string valueText = GetInitialValue(entry);
 
-        value = MenuAPI.CreateText(valueText)
+        value = MenuAPI
+            .CreateText(valueText)
             .ParentTo(rightParent.transform)
             .SetPosition(new(0f, -20f))
             .SetFontSize(34f)
             .SetColor(defaultTextColor);
 
-        //Below is the setup necessary for the text to behave in a way that it does 
+        //Below is the setup necessary for the text to behave in a way that it does
         //not overlap the reset button and will instead position itself further left
         var layout = value.gameObject.AddComponent<HorizontalLayoutGroup>();
         layout.childAlignment = TextAnchor.MiddleLeft;
@@ -93,7 +96,7 @@ internal class ModdedRebindKey : PeakElement
         reset = GameObject.Instantiate(Templates.ResetBindButton!, rightParent.transform);
         reset.GetComponent<Button>().onClick.RemoveAllListeners();
         reset.GetComponent<Button>().onClick.AddListener(ResetThis);
-        
+
         //Reset button needs the below so it maintains a consistent size
         var layoutElement = reset.AddComponent<LayoutElement>();
         layoutElement.preferredWidth = 32f;
@@ -107,7 +110,6 @@ internal class ModdedRebindKey : PeakElement
         rect.anchorMax = new(1f, 0.5f);
         rect.pivot = new(1f, 0.5f);
         rect.anchoredPosition = Vector2.zero;
-        
     }
 
     private static string GetInitialValue(ConfigEntryBase entry)
@@ -115,10 +117,12 @@ internal class ModdedRebindKey : PeakElement
         if (entry is ConfigEntry<KeyCode> keyCodeValue)
             return keyCodeValue.Value.ToString();
 
-        if (entry is ConfigEntry<string> stringValue) 
+        if (entry is ConfigEntry<string> stringValue)
             return stringValue.Value;
 
-        ModConfigPlugin.Log.LogWarning("Unexpected config entry type being provided to Modded Controls Menu!");
+        ModConfigPlugin.Log.LogWarning(
+            "Unexpected config entry type being provided to Modded Controls Menu!"
+        );
 
         return string.Empty;
     }
@@ -131,7 +135,7 @@ internal class ModdedRebindKey : PeakElement
         if (ConfigKeyCode != null)
             ConfigKeyCode.Value = GetDefaultValue(ConfigKeyCode);
 
-        if(ConfigKeyString != null)
+        if (ConfigKeyString != null)
             ConfigKeyString.Value = GetDefaultValue(ConfigKeyString);
 
         ModdedControlsMenu.Instance.InitButtonBindingVisuals();
@@ -156,10 +160,10 @@ internal class ModdedRebindKey : PeakElement
 
     internal void SetDefault()
     {
-        if(ConfigKeyCode != null)
+        if (ConfigKeyCode != null)
             ConfigKeyCode.Value = GetDefaultValue(ConfigKeyCode);
 
-        if(ConfigKeyString != null)
+        if (ConfigKeyString != null)
             ConfigKeyString.Value = GetDefaultValue(ConfigKeyString);
     }
 
@@ -175,7 +179,7 @@ internal class ModdedRebindKey : PeakElement
             ModConfigPlugin.Log.LogWarning($"No associated config item for {inputActionName}!!");
             return;
         }
-        
+
         ModdedControlsMenu.Instance.RebindOperation();
     }
 
@@ -195,7 +199,9 @@ internal class ModdedRebindKey : PeakElement
         }
 
         if (ConfigKeyString != null)
-            value.SetText(InputSpriteData.Instance.GetSpriteTagFromInputPathKeyboard(ConfigKeyString.Value));
+            value.SetText(
+                InputSpriteData.Instance.GetSpriteTagFromInputPathKeyboard(ConfigKeyString.Value)
+            );
 
         if (hasOverride)
         {
@@ -206,16 +212,37 @@ internal class ModdedRebindKey : PeakElement
         {
             value.TextMesh.color = defaultTextColor;
             button.Text.TextMesh.color = defaultTextColor;
-        }         
+        }
     }
 
     //Translation for KeyCode to valid sprite tag
     private static string GetValidKeyValue(KeyCode key)
     {
         string search = key.ToString();
-        List<KeyCode> Numbers = [KeyCode.Alpha0, KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6, KeyCode.Alpha7, KeyCode.Alpha8, KeyCode.Alpha9];
+        List<KeyCode> Numbers =
+        [
+            KeyCode.Alpha0,
+            KeyCode.Alpha1,
+            KeyCode.Alpha2,
+            KeyCode.Alpha3,
+            KeyCode.Alpha4,
+            KeyCode.Alpha5,
+            KeyCode.Alpha6,
+            KeyCode.Alpha7,
+            KeyCode.Alpha8,
+            KeyCode.Alpha9,
+        ];
 
-        List<KeyCode> MouseKeys = [KeyCode.Mouse0, KeyCode.Mouse1, KeyCode.Mouse2, KeyCode.Mouse3, KeyCode.Mouse4, KeyCode.Mouse5, KeyCode.Mouse6];
+        List<KeyCode> MouseKeys =
+        [
+            KeyCode.Mouse0,
+            KeyCode.Mouse1,
+            KeyCode.Mouse2,
+            KeyCode.Mouse3,
+            KeyCode.Mouse4,
+            KeyCode.Mouse5,
+            KeyCode.Mouse6,
+        ];
 
         if (MouseKeys.Contains(key))
         {
@@ -253,7 +280,12 @@ internal class ModdedRebindKey : PeakElement
         search = Char.ToLower(search.ToString()[0]) + search.ToString()[1..];
 
         //get the actual sprite tag or return original key string if no matching sprite tag
-        if (InputSpriteData.Instance.inputPathToSpriteTagKeyboard.TryGetValue(search, out string sprite))
+        if (
+            InputSpriteData.Instance.inputPathToSpriteTagKeyboard.TryGetValue(
+                search,
+                out string sprite
+            )
+        )
             return sprite;
         else
             return key.ToString();
@@ -262,6 +294,5 @@ internal class ModdedRebindKey : PeakElement
         //"<sprite=124 tint=1>"
         //it's basically just a key with ?? on it
         //We could provide this instead of the string, but I think the string works better in our case
-
     }
 }

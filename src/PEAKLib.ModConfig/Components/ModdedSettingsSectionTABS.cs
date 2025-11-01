@@ -12,6 +12,5 @@ internal class ModdedSettingsSectionTABS : TABS<ModdedTABSButton>
         ThrowHelper.ThrowIfFieldNull(SettingsMenu);
 
         SettingsMenu.SetSection(button.category);
-        
     }
 }

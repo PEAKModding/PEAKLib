@@ -1,22 +1,28 @@
-﻿using BepInEx.Configuration;
+﻿using System;
+using BepInEx.Configuration;
 using PEAKLib.ModConfig.SettingOptions.SettingUI;
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Zorro.Core;
 using Zorro.Settings;
 using Zorro.Settings.UI;
-using Object = UnityEngine.Object;
 using static PEAKLib.ModConfig.SettingsHandlerUtility;
+using Object = UnityEngine.Object;
 
 namespace PEAKLib.ModConfig.SettingOptions;
 
-internal class BepInExKeyCode(ConfigEntryBase entryBase, string category = "Mods",
+internal class BepInExKeyCode(
+    ConfigEntryBase entryBase,
+    string category = "Mods",
     Action<KeyCode>? saveCallback = null,
-    Action<BepInExKeyCode>? onApply = null) : Setting, IBepInExProperty, IExposedSetting
+    Action<BepInExKeyCode>? onApply = null
+) : Setting, IBepInExProperty, IExposedSetting
 {
-    ConfigEntryBase IBepInExProperty.ConfigBase { get => entryBase; }
+    ConfigEntryBase IBepInExProperty.ConfigBase
+    {
+        get => entryBase;
+    }
     public KeyCode Value { get; set; }
 
     private static GameObject? _settingUICell = null;
@@ -26,10 +32,15 @@ internal class BepInExKeyCode(ConfigEntryBase entryBase, string category = "Mods
         {
             if (_settingUICell == null)
             {
-                if (SingletonAsset<InputCellMapper>.Instance == null || SingletonAsset<InputCellMapper>.Instance.FloatSettingCell == null)
+                if (
+                    SingletonAsset<InputCellMapper>.Instance == null
+                    || SingletonAsset<InputCellMapper>.Instance.FloatSettingCell == null
+                )
                     return null;
 
-                _settingUICell = Object.Instantiate(SingletonAsset<InputCellMapper>.Instance.FloatSettingCell);
+                _settingUICell = Object.Instantiate(
+                    SingletonAsset<InputCellMapper>.Instance.FloatSettingCell
+                );
                 _settingUICell.name = "BepInExKeyCodeCell";
 
                 var oldFloatSetting = _settingUICell.GetComponent<FloatSettingUI>();
@@ -49,7 +60,6 @@ internal class BepInExKeyCode(ConfigEntryBase entryBase, string category = "Mods
                 Object.DestroyImmediate(oldFloatSetting.slider.gameObject);
                 Object.DestroyImmediate(oldFloatSetting);
 
-
                 var text = newKeyCodeSetting.button.GetComponentInChildren<TextMeshProUGUI>();
                 text.fontSize = text.fontSizeMin = text.fontSizeMax = 22;
                 text.alignment = TextAlignmentOptions.Center;
@@ -62,13 +72,21 @@ internal class BepInExKeyCode(ConfigEntryBase entryBase, string category = "Mods
         }
     }
 
-    public override void Load(ISettingsSaveLoad loader) => Value = GetCurrentValue<KeyCode>(entryBase);
+    public override void Load(ISettingsSaveLoad loader) =>
+        Value = GetCurrentValue<KeyCode>(entryBase);
+
     public override void Save(ISettingsSaveLoad saver) => saveCallback?.Invoke(Value);
+
     public override void ApplyValue() => onApply?.Invoke(this);
+
     public void RefreshValueFromConfig() => Value = GetCurrentValue<KeyCode>(entryBase);
+
     public override GameObject? GetSettingUICell() => SettingUICell;
+
     public string GetCategory() => category;
+
     public string GetDisplayName() => entryBase.Definition.Key;
+
     protected KeyCode GetDefaultValue() => GetDefaultValue<KeyCode>(entryBase);
 
     public override Zorro.Settings.DebugUI.SettingUI GetDebugUI(ISettingHandler settingHandler)

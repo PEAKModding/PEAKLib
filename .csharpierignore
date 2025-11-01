@@ -3,3 +3,5 @@
 *.csproj
 *.props
 *.targets
+
+/tests/UnityTestProject/

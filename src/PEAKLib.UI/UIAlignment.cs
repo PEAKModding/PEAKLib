@@ -1,7 +1,7 @@
 ﻿namespace PEAKLib.UI;
 
 /// <summary>
-/// Used by <see cref="ElementExtensions.AlignToParent{T}(T, UIAlignment)"/> 
+/// Used by <see cref="ElementExtensions.AlignToParent{T}(T, UIAlignment)"/>
 /// </summary>
 public enum UIAlignment
 {
@@ -48,5 +48,5 @@ public enum UIAlignment
     /// <summary>
     /// Aligns to Bottom Right
     /// </summary>
-    BottomRight
+    BottomRight,
 }

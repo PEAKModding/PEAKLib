@@ -9,7 +9,7 @@ namespace PEAKLib.UI.Elements;
 public class PeakElement : MonoBehaviour
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public RectTransform RectTransform { get; internal set; } = null!;
 

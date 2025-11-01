@@ -14,7 +14,9 @@ public class AcceptItem_BingBong2 : MonoBehaviour, IItemAcceptor
     public void AcceptItem(Item item, Character interactor)
     {
         string thisItemName = GetComponent<Item>()?.GetItemName() ?? "Item";
-        TestsPlugin.Log.LogInfo($"{thisItemName} second handler accepted {item.GetItemName()} from {interactor.characterName}");
+        TestsPlugin.Log.LogInfo(
+            $"{thisItemName} second handler accepted {item.GetItemName()} from {interactor.characterName}"
+        );
         interactor.refs.afflictions.AddStatus(CharacterAfflictions.STATUSTYPE.Drowsy, 0.1f);
         // do not consume item because AcceptItem_BingBong already handled it
     }
@@ -28,7 +30,10 @@ public class AcceptItem_BingBong2 : MonoBehaviour, IItemAcceptor
         Item item = Character.localCharacter.data.currentItem;
         if (item?.canUseOnFriend ?? false)
         {
-            string prompt = item.UIData.secondaryInteractPrompt.Replace("#targetChar", "").Trim().ToLower();
+            string prompt = item
+                .UIData.secondaryInteractPrompt.Replace("#targetChar", "")
+                .Trim()
+                .ToLower();
             return prompt.Contains("heal");
         }
         return false;

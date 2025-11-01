@@ -1,6 +1,6 @@
-﻿using MonoDetour;
+﻿using Md.MainMenuSettingsPage;
+using MonoDetour;
 using MonoDetour.HookGen;
-using Md.MainMenuSettingsPage;
 
 namespace PEAKLib.UI.Hooks;
 
@@ -19,6 +19,8 @@ static class MainMenuSettingsPageHooks
 
         var selector = self.GetComponentInParent<MainMenuPageSelector>();
         if (selector != null)
-            MenuAPI.mainMenuBuilderDelegate?.Invoke(selector.mainPage.m_playButton.transform.parent);
+            MenuAPI.mainMenuBuilderDelegate?.Invoke(
+                selector.mainPage.m_playButton.transform.parent
+            );
     }
 }

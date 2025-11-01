@@ -1,6 +1,6 @@
-﻿using MonoDetour;
+﻿using Md.PauseMenuSettingsMenuPage;
+using MonoDetour;
 using MonoDetour.HookGen;
-using Md.PauseMenuSettingsMenuPage;
 
 namespace PEAKLib.UI.Hooks;
 

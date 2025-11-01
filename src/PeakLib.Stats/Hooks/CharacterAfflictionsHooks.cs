@@ -24,7 +24,10 @@ static class CharacterAfflictionsHooks
     // make space in the status array for custom status effects
     static void Postfix_InitStatusArrays(CharacterAfflictions self)
     {
-        self.currentStatuses = new float[Enum.GetNames(typeof(CharacterAfflictions.STATUSTYPE)).Length + CustomStatusManager.Length];
+        self.currentStatuses = new float[
+            Enum.GetNames(typeof(CharacterAfflictions.STATUSTYPE)).Length
+                + CustomStatusManager.Length
+        ];
         self.currentIncrementalStatuses = new float[self.currentStatuses.Length];
         self.currentDecrementalStatuses = new float[self.currentStatuses.Length];
         self.lastAddedStatus = new float[self.currentStatuses.Length];
@@ -43,16 +46,26 @@ static class CharacterAfflictionsHooks
                 }
                 else
                 {
-                    if (self.GetCurrentStatus(status.Type) > 0f && Time.time - self.LastAddedStatus(status.Type) > status.ReductionCooldown)
+                    if (
+                        self.GetCurrentStatus(status.Type) > 0f
+                        && Time.time - self.LastAddedStatus(status.Type) > status.ReductionCooldown
+                    )
                     {
-                        self.SubtractStatus(status.Type, status.ReductionPerSecond * Time.deltaTime);
+                        self.SubtractStatus(
+                            status.Type,
+                            status.ReductionPerSecond * Time.deltaTime
+                        );
                     }
                 }
             }
         }
     }
 
-    static void Postfix_StatusSFX(CharacterAfflictions self, ref CharacterAfflictions.STATUSTYPE status, ref float amount)
+    static void Postfix_StatusSFX(
+        CharacterAfflictions self,
+        ref CharacterAfflictions.STATUSTYPE status,
+        ref float amount
+    )
     {
         Status statusObj = CustomStatusManager.StatusByType(status);
         if (statusObj?.SFX != null)
@@ -61,7 +74,10 @@ static class CharacterAfflictionsHooks
         }
     }
 
-    static void Postfix_PlayParticle(CharacterAfflictions self, ref CharacterAfflictions.STATUSTYPE status)
+    static void Postfix_PlayParticle(
+        CharacterAfflictions self,
+        ref CharacterAfflictions.STATUSTYPE status
+    )
     {
         Status statusObj = CustomStatusManager.StatusByType(status);
         if (statusObj != null)
@@ -70,7 +86,11 @@ static class CharacterAfflictionsHooks
         }
     }
 
-    static void Postfix_GetStatusCap(CharacterAfflictions self, ref CharacterAfflictions.STATUSTYPE status, ref float returnValue)
+    static void Postfix_GetStatusCap(
+        CharacterAfflictions self,
+        ref CharacterAfflictions.STATUSTYPE status,
+        ref float returnValue
+    )
     {
         returnValue = CustomStatusManager.StatusByType(status)?.MaxAmount ?? returnValue;
     }
@@ -83,7 +103,9 @@ static class CharacterAfflictionsHooks
             StatsPlugin.Log.LogInfo("Clearing status: " + status.Type);
             if (status.AllowClear)
             {
-                StatsPlugin.Log.LogInfo($"Current: {status.Type}, amount {self.character.refs.afflictions.GetCurrentStatus(status.Type)}");
+                StatsPlugin.Log.LogInfo(
+                    $"Current: {status.Type}, amount {self.character.refs.afflictions.GetCurrentStatus(status.Type)}"
+                );
                 StatsPlugin.Log.LogInfo($"SetStatus status: {status.Type}");
                 self.character.refs.afflictions.SetStatus(status.Type, 0f);
             }

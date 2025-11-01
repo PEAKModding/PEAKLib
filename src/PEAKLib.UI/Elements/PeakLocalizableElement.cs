@@ -11,7 +11,7 @@ namespace PEAKLib.UI.Elements;
 public class PeakLocalizableElement : PeakElement
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public TMP_Text Text { get; internal set; } = null!;
 

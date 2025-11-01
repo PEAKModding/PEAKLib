@@ -31,10 +31,13 @@ public class PeakTextInput : PeakElement
                     );
                 }
 
-                _textInputPrefab = Instantiate(SingletonAsset<InputCellMapper>.Instance.FloatSettingCell);
+                _textInputPrefab = Instantiate(
+                    SingletonAsset<InputCellMapper>.Instance.FloatSettingCell
+                );
                 _textInputPrefab.name = "PeakTextInput";
 
-                if (_textInputPrefab.transform is RectTransform rectTransform) {
+                if (_textInputPrefab.transform is RectTransform rectTransform)
+                {
                     rectTransform.anchorMin = new Vector2(0, 1);
                     rectTransform.anchorMax = new Vector2(0, 1);
                     rectTransform.offsetMin = Vector2.zero;
@@ -69,13 +72,13 @@ public class PeakTextInput : PeakElement
         }
     }
 
-    internal static PeakTextInput Create() => Instantiate(TextInputPrefab).AddComponent<PeakTextInput>();
+    internal static PeakTextInput Create() =>
+        Instantiate(TextInputPrefab).AddComponent<PeakTextInput>();
 
     /// <summary>
     /// TMP_InputField component
     /// </summary>
     public TMP_InputField InputField { get; private set; } = null!;
-
 
     private TextMeshProUGUI Placeholder { get; set; } = null!;
 
@@ -107,7 +110,8 @@ public class PeakTextInput : PeakElement
     /// </summary>
     /// <param name="placeholder"></param>
     /// <returns></returns>
-    public PeakTextInput SetPlaceholder(string placeholder) { 
+    public PeakTextInput SetPlaceholder(string placeholder)
+    {
         Placeholder.text = placeholder;
 
         return this;

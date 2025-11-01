@@ -1,5 +1,5 @@
-﻿using PEAKLib.Core;
-using System.Linq;
+﻿using System.Linq;
+using PEAKLib.Core;
 using TMPro;
 using UnityEngine;
 
@@ -32,7 +32,7 @@ public class PeakText : PeakLocalizableElement
     /// <summary>
     /// Controls font, color, font size, style and many other text related properties
     /// </summary>
-    public TextMeshProUGUI TextMesh => (TextMeshProUGUI) Text;
+    public TextMeshProUGUI TextMesh => (TextMeshProUGUI)Text;
 
     private void Awake()
     {
@@ -54,7 +54,7 @@ public class PeakText : PeakLocalizableElement
     public PeakText SetText(string text)
     {
         SetTextInternal(text);
-       
+
         ThrowHelper.ThrowIfFieldNull(RectTransform).sizeDelta = TextMesh.GetPreferredValues();
 
         return this;

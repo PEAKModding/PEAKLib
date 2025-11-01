@@ -1,10 +1,10 @@
-﻿using BepInEx.Configuration;
-using PEAKLib.UI;
-using PEAKLib.UI.Elements;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using BepInEx.Configuration;
+using PEAKLib.UI;
+using PEAKLib.UI.Elements;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -15,10 +15,10 @@ namespace PEAKLib.ModConfig.Components;
 
 internal class ModdedControlsMenu : PeakElement
 {
-
     //original unused stuff
     public GameObject[] keyboardOnlyObjects = [];
     public GameObject[] controllerOnlyObjects = [];
+
     // ---
 
     public static ModdedControlsMenu Instance = null!;
@@ -48,14 +48,14 @@ internal class ModdedControlsMenu : PeakElement
         }
 
         InitButtons();
-        if(Dummy.bindings.Count < 1)
+        if (Dummy.bindings.Count < 1)
             Dummy.AddBinding("/Keyboard/anyKey");
     }
 
     internal void OnResetAllClicked()
     {
         ModConfigPlugin.Log.LogMessage("Resetting all modded settings!");
-        controlsMenuButtons.ForEach(b => 
+        controlsMenuButtons.ForEach(b =>
         {
             if (b.IsAlreadyDefault())
                 return;
@@ -63,7 +63,7 @@ internal class ModdedControlsMenu : PeakElement
             b.SetDefault();
             // triggering the animator to make it look like all the reset buttons were pressed
             b.reset.GetComponent<Button>().animator.SetBool("Pressed", true);
-            b.reset.GetComponent<Button>().animator.SetBool("Disabled", true); 
+            b.reset.GetComponent<Button>().animator.SetBool("Disabled", true);
         });
         ShowControls();
     }
@@ -73,37 +73,37 @@ internal class ModdedControlsMenu : PeakElement
         switch (scheme)
         {
             case InputScheme.KeyboardMouse:
+            {
+                GameObject[] array = keyboardOnlyObjects;
+                for (int i = 0; i < array.Length; i++)
                 {
-                    GameObject[] array = keyboardOnlyObjects;
-                    for (int i = 0; i < array.Length; i++)
-                    {
-                        array[i].SetActive(value: true);
-                    }
-
-                    array = controllerOnlyObjects;
-                    for (int i = 0; i < array.Length; i++)
-                    {
-                        array[i].SetActive(value: false);
-                    }
-
-                    break;
+                    array[i].SetActive(value: true);
                 }
+
+                array = controllerOnlyObjects;
+                for (int i = 0; i < array.Length; i++)
+                {
+                    array[i].SetActive(value: false);
+                }
+
+                break;
+            }
             case InputScheme.Gamepad:
+            {
+                GameObject[] array = keyboardOnlyObjects;
+                for (int i = 0; i < array.Length; i++)
                 {
-                    GameObject[] array = keyboardOnlyObjects;
-                    for (int i = 0; i < array.Length; i++)
-                    {
-                        array[i].SetActive(value: false);
-                    }
-
-                    array = controllerOnlyObjects;
-                    for (int i = 0; i < array.Length; i++)
-                    {
-                        array[i].SetActive(value: true);
-                    }
-
-                    break;
+                    array[i].SetActive(value: false);
                 }
+
+                array = controllerOnlyObjects;
+                for (int i = 0; i < array.Length; i++)
+                {
+                    array[i].SetActive(value: true);
+                }
+
+                break;
+            }
         }
 
         InitButtonBindingVisuals();
@@ -121,7 +121,7 @@ internal class ModdedControlsMenu : PeakElement
         List<ModKeyToName> keysToAdd = [.. ModConfigPlugin.ModdedKeys];
         if (controlsMenuButtons.Count > 0)
         {
-            foreach(var button in controlsMenuButtons)
+            foreach (var button in controlsMenuButtons)
             {
                 if (button.ConfigKeyCode != null)
                     keysToAdd = ModKeyToName.RemoveKey(keysToAdd, button.ConfigKeyCode);
@@ -134,14 +134,15 @@ internal class ModdedControlsMenu : PeakElement
             AddControlMenuButton(config.KeyBind, config.ModName);
     }
 
-    private void AddControlMenuButton(ConfigEntryBase configEntry, string ModName) 
+    private void AddControlMenuButton(ConfigEntryBase configEntry, string ModName)
     {
         if (Content == null)
             return;
-        
-        if(ModLabels.FirstOrDefault(x => x.name == ModName) is not GameObject modName)
+
+        if (ModLabels.FirstOrDefault(x => x.name == ModName) is not GameObject modName)
         {
-            var modText = MenuAPI.CreateText(ModName, ModName)
+            var modText = MenuAPI
+                .CreateText(ModName, ModName)
                 .SetFontSize(36f)
                 .SetColor(Color.green)
                 .ParentTo(Content);
@@ -173,9 +174,21 @@ internal class ModdedControlsMenu : PeakElement
             var isSearching = !string.IsNullOrEmpty(search);
             if (isSearching)
             {
-                controlsMenuButtons[i].gameObject.SetActive(controlsMenuButtons[i].inputActionName.Contains(search, StringComparison.InvariantCultureIgnoreCase) || controlsMenuButtons[i].Label.name.Contains(search, StringComparison.InvariantCultureIgnoreCase));
+                controlsMenuButtons[i]
+                    .gameObject.SetActive(
+                        controlsMenuButtons[i]
+                            .inputActionName.Contains(
+                                search,
+                                StringComparison.InvariantCultureIgnoreCase
+                            )
+                            || controlsMenuButtons[i]
+                                .Label.name.Contains(
+                                    search,
+                                    StringComparison.InvariantCultureIgnoreCase
+                                )
+                    );
             }
-            else if(!controlsMenuButtons[i].gameObject.activeSelf)
+            else if (!controlsMenuButtons[i].gameObject.activeSelf)
                 controlsMenuButtons[i].gameObject.SetActive(true);
 
             controlsMenuButtons[i].UpdateBindingVisuals();
@@ -200,11 +213,19 @@ internal class ModdedControlsMenu : PeakElement
                 continue;
             }
 
-            if (controlsMenuButtons.Any(x => x.value.Text.text.Equals(btn.value.Text.text, StringComparison.InvariantCultureIgnoreCase) && x != btn))
+            if (
+                controlsMenuButtons.Any(x =>
+                    x.value.Text.text.Equals(
+                        btn.value.Text.text,
+                        StringComparison.InvariantCultureIgnoreCase
+                    )
+                    && x != btn
+                )
+            )
                 btn.SetWarning(true);
             else
                 btn.SetWarning(false);
-        } 
+        }
     }
 
     public void SetSearch(string search)
@@ -229,18 +250,22 @@ internal class ModdedControlsMenu : PeakElement
 
         transform.gameObject.SetActive(false);
         RebindInProgress = true;
-        
+
         RebindNotif.gameObject.SetActive(true);
 
-        if(SelectedKeyCode != null)
+        if (SelectedKeyCode != null)
         {
-            RebindNotif.Text.TextMesh.text = LocalizedText.GetText("PROMPT_REBIND").Replace("@", SelectedKeyCode.Definition.Key.ToString());
+            RebindNotif.Text.TextMesh.text = LocalizedText
+                .GetText("PROMPT_REBIND")
+                .Replace("@", SelectedKeyCode.Definition.Key.ToString());
             GUIManager.instance.StartCoroutine(AwaitKeyCode());
         }
-            
-        if(SelectedKeyString != null)
+
+        if (SelectedKeyString != null)
         {
-            RebindNotif.Text.TextMesh.text = LocalizedText.GetText("PROMPT_REBIND").Replace("@", SelectedKeyString.Definition.Key.ToString());
+            RebindNotif.Text.TextMesh.text = LocalizedText
+                .GetText("PROMPT_REBIND")
+                .Replace("@", SelectedKeyString.Definition.Key.ToString());
             GUIManager.instance.StartCoroutine(AwaitKeyPath());
         }
     }
@@ -248,11 +273,12 @@ internal class ModdedControlsMenu : PeakElement
     public IEnumerator AwaitKeyCode()
     {
         //needed to stop modded controls page from closing on cancel rebind
-        InputActionRebindingExtensions.RebindingOperation rebindOperation = Dummy.PerformInteractiveRebinding(0);
+        InputActionRebindingExtensions.RebindingOperation rebindOperation =
+            Dummy.PerformInteractiveRebinding(0);
         rebindOperation.Start();
         while (RebindInProgress)
         {
-            if(Input.GetKeyDown(KeyCode.Escape))
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
                 rebindOperation.Cancel();
                 rebindOperation.Dispose();
@@ -279,7 +305,7 @@ internal class ModdedControlsMenu : PeakElement
         }
     }
 
-    private void RebindCancel() 
+    private void RebindCancel()
     {
         ModConfigPlugin.Log.LogDebug("Exiting new bind operation!");
         RebindNotif.gameObject.SetActive(false);
@@ -291,9 +317,10 @@ internal class ModdedControlsMenu : PeakElement
     public IEnumerator AwaitKeyPath()
     {
         var action_pause = InputSystem.actions.FindAction("Pause");
-        InputActionRebindingExtensions.RebindingOperation rebindOperation = Dummy.PerformInteractiveRebinding(0)
+        InputActionRebindingExtensions.RebindingOperation rebindOperation = Dummy
+            .PerformInteractiveRebinding(0)
             .WithoutGeneralizingPathOfSelectedControl()
-            .OnComplete(operation =>  
+            .OnComplete(operation =>
             {
                 ModConfigPlugin.Log.LogDebug("Setting new bind value!");
                 SelectedKeyString.Value = Dummy.bindings[0].overridePath;
@@ -313,7 +340,12 @@ internal class ModdedControlsMenu : PeakElement
 
         while (RebindInProgress)
         {
-            if (action_pause.WasPressedThisFrame() && rebindOperation != null && rebindOperation.started && !rebindOperation.completed)
+            if (
+                action_pause.WasPressedThisFrame()
+                && rebindOperation != null
+                && rebindOperation.started
+                && !rebindOperation.completed
+            )
             {
                 rebindOperation.Dispose();
                 RebindCancel();

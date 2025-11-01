@@ -1,8 +1,8 @@
-﻿using MonoDetour;
+﻿using System.Linq;
+using Md.Item;
+using MonoDetour;
 using MonoDetour.HookGen;
 using Photon.Pun;
-using Md.Item;
-using System.Linq;
 
 namespace PEAKLib.Items.ItemAcceptor.Hooks;
 
@@ -34,10 +34,19 @@ internal class ItemHooks
     {
         if (!self.isUsingPrimary && !self.isUsingSecondary)
         {
-            if ((bool)self.holderCharacter && self.canUseOnFriend && InteractionHooks.itemAcceptors.Any())
+            if (
+                (bool)self.holderCharacter
+                && self.canUseOnFriend
+                && InteractionHooks.itemAcceptors.Any()
+            )
             {
                 // start interaction
-                GameUtils.instance.StartFeed(self.holderCharacter.photonView.ViewID, self.holderCharacter.photonView.ViewID, self.itemID, self.totalSecondaryUsingTime);
+                GameUtils.instance.StartFeed(
+                    self.holderCharacter.photonView.ViewID,
+                    self.holderCharacter.photonView.ViewID,
+                    self.itemID,
+                    self.totalSecondaryUsingTime
+                );
             }
         }
     }
@@ -50,7 +59,11 @@ internal class ItemHooks
             {
                 FeedItem(itemAcceptor, self, self.holderCharacter);
             }
-            self.photonView.RPC(nameof(RemoveFeedDataRPC), RpcTarget.All, self.holderCharacter.photonView.ViewID);
+            self.photonView.RPC(
+                nameof(RemoveFeedDataRPC),
+                RpcTarget.All,
+                self.holderCharacter.photonView.ViewID
+            );
         }
     }
 }

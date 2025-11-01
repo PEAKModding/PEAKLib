@@ -1,7 +1,7 @@
-﻿using MonoDetour;
-using MonoDetour.HookGen;
+﻿using System.Collections.Generic;
 using Md.Interaction;
-using System.Collections.Generic;
+using MonoDetour;
+using MonoDetour.HookGen;
 
 namespace PEAKLib.Items.ItemAcceptor.Hooks;
 
