@@ -1,7 +1,7 @@
 ﻿using PEAKLib.Items.ItemAcceptor;
 using UnityEngine;
 
-namespace PEAKLib.Items;
+namespace PEAKLib.Tests;
 
 /// <summary>
 /// Second bingbong item acceptor, for testing

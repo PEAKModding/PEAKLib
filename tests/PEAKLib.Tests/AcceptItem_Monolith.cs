@@ -1,7 +1,7 @@
 ﻿using PEAKLib.Items.ItemAcceptor;
 using UnityEngine;
 
-namespace PEAKLib.Items;
+namespace PEAKLib.Tests;
 
 /// <summary>
 /// Monolith accepts items and grants some bonus stamina

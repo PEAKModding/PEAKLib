@@ -2,14 +2,14 @@
 using BepInEx;
 using BepInEx.Logging;
 using PEAKLib.Core;
+using PEAKLib.Items;
 using PEAKLib.Stats;
-using PEAKLib.Tests;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zorro.Core;
 
-namespace PEAKLib.Items;
+namespace PEAKLib.Tests;
 
 [BepInAutoPlugin]
 [BepInDependency(CorePlugin.Id)]
