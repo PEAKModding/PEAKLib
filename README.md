@@ -30,9 +30,10 @@ Feel free to chat in [`#peak-lib`](<https://discord.com/channels/136317962643570
    - Configure the paths to point to your game path and your `BepInEx/plugins/`
    - Game assembly references should work if the path to the game is valid
 3. Create a new feature branch
-4. Do your changes
-5. If you're adding a new module, make sure to add tests for it in the test project! *(currently the test project doesn't exist)*
-6. Open a PR
+4. Implement your changes
+5. If you're adding a new module, make sure to add tests for it in the test project! It can be found at [./tests/](./tests/)
+6. Format your code with [CSharpier](<https://csharpier.com/>) (optionally can be formatted by whoever is reviewing your code)
+7. Open a PR
 
 ### Contributing Guidelines
 
