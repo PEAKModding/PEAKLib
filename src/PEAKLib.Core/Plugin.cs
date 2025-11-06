@@ -3,6 +3,7 @@ using System;
 using BepInEx;
 using BepInEx.Logging;
 using MonoDetour;
+using PEAKLib.Core.Hooks;
 using UnityEngine;
 
 namespace PEAKLib.Core;
@@ -29,7 +30,7 @@ public partial class CorePlugin : BaseUnityPlugin
         _instance = this;
         MonoDetourManager.InvokeHookInitializers(typeof(CorePlugin).Assembly);
 
-        PlayerHandler.OnCharacterRegistered += (Character character) =>
+        CharacterRegistrationHooks.OnCharacterAdded += (Character character) =>
         {
             Networking.s_NetworkManager = character.gameObject.AddComponent<NetworkManager>();
         };
