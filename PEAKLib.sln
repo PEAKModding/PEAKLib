@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PEAKLib.Tests", "tests\PEAK
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PEAKLib.Stats", "src\PeakLib.Stats\PEAKLib.Stats.csproj", "{3ABD2ED7-E00A-4A84-AB54-652E0AB8EEBA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PEAKLib.Networking", "src\PeakLib.Networking\PEAKLib.Networking.csproj", "{E0D7CABA-4D81-43CA-91CD-4265B8CC8BAC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{3ABD2ED7-E00A-4A84-AB54-652E0AB8EEBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3ABD2ED7-E00A-4A84-AB54-652E0AB8EEBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3ABD2ED7-E00A-4A84-AB54-652E0AB8EEBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0D7CABA-4D81-43CA-91CD-4265B8CC8BAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0D7CABA-4D81-43CA-91CD-4265B8CC8BAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0D7CABA-4D81-43CA-91CD-4265B8CC8BAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0D7CABA-4D81-43CA-91CD-4265B8CC8BAC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,6 +66,7 @@ Global
 		{A7947D04-E496-4815-98AB-ED2E1C8A67B5} = {DF51CA60-0705-47C1-8005-AE0A0A924F84}
 		{43FC1634-7AEA-4877-975C-F4B32121596B} = {74A6796A-CABF-419A-894A-041B196C2C6A}
 		{3ABD2ED7-E00A-4A84-AB54-652E0AB8EEBA} = {DF51CA60-0705-47C1-8005-AE0A0A924F84}
+		{E0D7CABA-4D81-43CA-91CD-4265B8CC8BAC} = {DF51CA60-0705-47C1-8005-AE0A0A924F84}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {92F6D475-68F0-44D6-A1AF-A28F5948E381}
