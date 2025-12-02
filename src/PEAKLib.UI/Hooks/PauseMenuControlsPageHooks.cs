@@ -32,9 +32,9 @@ static class PauseMenuControlsPageHooks
             var warning = control?.transform.Find("Warning").gameObject;
             var inputIcon = control?.gameObject.GetComponentInChildren<InputIcon>();
 
-            List<GameObject> CannotBeNull = [control, reset, warning];
+            List<GameObject?> CannotBeNull = [control, reset, warning];
 
-            if (CannotBeNull.Any(o => o == null!) || inputIcon == null)
+            if (CannotBeNull.Any(o => o == null) || inputIcon == null)
             {
                 ThrowHelper.ThrowIfArgumentNull(
                     control,
