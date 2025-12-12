@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using PEAKLib.Core;
+using PEAKLib.Core.Extensions;
 using UnityEngine;
 
 namespace PEAKLib.Items;
@@ -14,49 +15,6 @@ namespace PEAKLib.Items;
 internal static class ItemRegistrar
 {
     internal static ItemDatabase? ItemDatabaseLoaded;
-
-    private static Dictionary<string, Shader> _peakShaders = null!;
-    internal static Dictionary<string, Shader> PeakShaders
-    {
-        get
-        {
-            if (_peakShaders == null)
-            {
-                var shaders = new List<string>
-                {
-                    "W/Peak_Standard",
-                    "W/Character",
-                    "W/Peak_Transparent",
-                    "W/Peak_Glass",
-                    "W/Peak_Clip",
-                    "W/Peak_glass_liquid",
-                    "W/Peak_GroundTransition",
-                    "W/Peak_Guidebook",
-                    "W/Peak_Honey",
-                    "W/Peak_Ice",
-                    "W/Peak_Rock",
-                    "W/Peak_Rope",
-                    "W/Peak_Splash",
-                    "W/Peak_Waterfall",
-                    "W/Vine",
-                };
-                _peakShaders = new();
-                foreach (var sh in shaders)
-                {
-                    var shader = Shader.Find(sh);
-                    if (shader == null)
-                    {
-                        ItemsPlugin.Log.LogWarning(
-                            $"{nameof(PeakShaders)}: Shader {sh} was not found."
-                        );
-                        continue;
-                    }
-                    _peakShaders[sh] = shader;
-                }
-            }
-            return _peakShaders;
-        }
-    }
 
     internal static void RegisterIfTooLate(RegisteredContent<ItemContent> registeredItem)
     {
@@ -100,19 +58,7 @@ internal static class ItemRegistrar
             }
         }
 
-        foreach (Renderer renderer in item.GetComponentsInChildren<Renderer>())
-        {
-            foreach (Material mat in renderer.materials)
-            {
-                if (!PeakShaders.TryGetValue(mat.shader.name, out var peakShader))
-                {
-                    continue;
-                }
-
-                // Replace dummy shader
-                mat.shader = peakShader;
-            }
-        }
+        registeredItem.ReplaceShaders();
 
         // Fix smoke
         var particleSystem = item.gameObject.GetComponentInChildren<ParticleSystem>();
