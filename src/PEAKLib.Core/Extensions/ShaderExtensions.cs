@@ -50,5 +50,22 @@ internal static class ShaderExtensions
             return _peakShaders;
         }
     }
+
+    public static void ReplaceShaders(this IComponentContent content) 
+    {
+        foreach (Renderer renderer in content.Component.GetComponentsInChildren<Renderer>())
+        {
+            foreach (Material mat in renderer.materials)
+            {
+                if (!PeakShaders.TryGetValue(mat.shader.name, out var peakShader))
+                {
+                    continue;
+                }
+
+                // Replace dummy shader
+                mat.shader = peakShader;
+            }
+        }
+    }
 }
 
