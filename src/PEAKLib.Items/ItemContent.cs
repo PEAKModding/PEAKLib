@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 using PEAKLib.Core;
 
 namespace PEAKLib.Items;
@@ -13,6 +14,9 @@ public class ItemContent(Item item) : IContent<ItemContent>, IItemContent
 
     /// <inheritdoc/>
     public Item Item { get; } = ThrowHelper.ThrowIfArgumentNull(item);
+
+    /// <inheritdoc/>
+    public Component Component { get { return Item; } }
     internal static List<RegisteredContent<ItemContent>> s_RegisteredItems = [];
 
     /// <inheritdoc/>

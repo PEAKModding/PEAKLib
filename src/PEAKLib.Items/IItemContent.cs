@@ -5,7 +5,7 @@ namespace PEAKLib.Items;
 /// <summary>
 /// Interface for mod items.
 /// </summary>
-public interface IItemContent : IContent
+public interface IItemContent : IContent, IComponentContent
 {
     /// <summary>
     /// The <see cref="global::Item"/> type from Vanilla.
