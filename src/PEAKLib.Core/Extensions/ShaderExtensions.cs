@@ -39,12 +39,8 @@ public static class ShaderExtensions
                 _peakShaders = new();
                 foreach (var sh in shaders)
                 {
-                    var shader = Shader.Find(sh);
-                    if (shader == null)
+                    if (!TryFindShader(sh, out Shader shader))
                     {
-                        CorePlugin.Log.LogWarning(
-                            $"{nameof(PeakShaders)}: Shader {sh} was not found."
-                        );
                         continue;
                     }
                     _peakShaders[sh] = shader;
@@ -52,6 +48,20 @@ public static class ShaderExtensions
             }
             return _peakShaders;
         }
+    }
+
+    internal static bool TryFindShader(string name, out Shader shader)
+    {
+        shader = Shader.Find(name);
+        if (shader == null)
+        {
+            CorePlugin.Log.LogWarning(
+                $"{nameof(PeakShaders)}: Shader {name} was not found."
+            );
+            return false;
+        }
+        _peakShaders[name] = shader;
+        return true;
     }
 
     /// <summary>
@@ -63,15 +73,38 @@ public static class ShaderExtensions
     {
         foreach (Renderer renderer in content.Content.Component.GetComponentsInChildren<Renderer>())
         {
+            if (!renderer)
+            {
+                continue;
+            }
+
             foreach (Material mat in renderer.materials)
             {
-                if (!PeakShaders.TryGetValue(mat.shader.name, out var peakShader))
+                if (!mat)
                 {
                     continue;
                 }
 
-                // Replace dummy shader
-                mat.shader = peakShader;
+                if (PeakShaders.TryGetValue(mat.shader.name, out Shader shader))
+                {
+                    mat.shader = shader;
+                    continue;
+                }
+
+                if (!TryFindShader(mat.shader.name, out shader))
+                {
+                    continue;
+                }
+
+                // Ensure shader actually gets applied even if an error occurs with adding to cache dict
+                mat.shader = shader;
+
+                if (!PeakShaders.TryAdd(mat.shader.name, shader))
+                {
+                    CorePlugin.Log.LogWarning(
+                        $"{nameof(PeakShaders)}: Could not add new shader {mat.shader.name} to dictionary."
+                    );
+                }
             }
         }
     }
