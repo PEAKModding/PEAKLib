@@ -6,7 +6,10 @@ using UnityEngine;
 
 namespace PEAKLib.Core.Extensions;
 
-internal static class ShaderExtensions
+/// <summary>
+/// Shader extensions for component-oriented operations within corelib/dependencies.
+/// </summary>
+public static class ShaderExtensions
 {
     private static Dictionary<string, Shader> _peakShaders = null!;
     internal static Dictionary<string, Shader> PeakShaders
@@ -51,9 +54,14 @@ internal static class ShaderExtensions
         }
     }
 
-    public static void ReplaceShaders(this IComponentContent content) 
+    /// <summary>
+    /// Corelib-level shader replacement operation. WIP.
+    /// </summary>
+    /// <typeparam name="T">IComponentContent-implementing generic type, without which no component access is available.</typeparam>
+    /// <param name="content">RegisteredContent instance using the extension.</param>
+    public static void ReplaceShaders<T>(this RegisteredContent<T> content) where T : IContent<T>, IComponentContent
     {
-        foreach (Renderer renderer in content.Component.GetComponentsInChildren<Renderer>())
+        foreach (Renderer renderer in content.Content.Component.GetComponentsInChildren<Renderer>())
         {
             foreach (Material mat in renderer.materials)
             {
