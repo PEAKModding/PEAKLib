@@ -69,41 +69,48 @@ public static class ShaderExtensions
     /// </summary>
     /// <typeparam name="T">IComponentContent-implementing generic type, without which no component access is available.</typeparam>
     /// <param name="content">RegisteredContent instance using the extension.</param>
-    public static void ReplaceShaders<T>(this RegisteredContent<T> content) where T : IContent<T>, IComponentContent
+    public static void ReplaceShaders<T>(this RegisteredContent<T> content) where T : IContent<T>, IGameObjectContent
     {
-        foreach (Renderer renderer in content.Content.Component.GetComponentsInChildren<Renderer>())
+        foreach (GameObject gameObject in content.Content.EnumerateGameObjects())
         {
-            if (!renderer)
+            if (!gameObject)
             {
                 continue;
             }
-
-            foreach (Material mat in renderer.materials)
+            foreach (Renderer renderer in gameObject.GetComponentsInChildren<Renderer>())
             {
-                if (!mat)
+                if (!renderer)
                 {
                     continue;
                 }
 
-                if (PeakShaders.TryGetValue(mat.shader.name, out Shader shader))
+                foreach (Material mat in renderer.materials)
                 {
+                    if (!mat)
+                    {
+                        continue;
+                    }
+
+                    if (PeakShaders.TryGetValue(mat.shader.name, out Shader shader))
+                    {
+                        mat.shader = shader;
+                        continue;
+                    }
+
+                    if (!TryFindShader(mat.shader.name, out shader))
+                    {
+                        continue;
+                    }
+
+                    // Ensure shader actually gets applied even if an error occurs with adding to cache dict
                     mat.shader = shader;
-                    continue;
-                }
 
-                if (!TryFindShader(mat.shader.name, out shader))
-                {
-                    continue;
-                }
-
-                // Ensure shader actually gets applied even if an error occurs with adding to cache dict
-                mat.shader = shader;
-
-                if (!PeakShaders.TryAdd(mat.shader.name, shader))
-                {
-                    CorePlugin.Log.LogWarning(
-                        $"{nameof(PeakShaders)}: Could not add new shader {mat.shader.name} to dictionary."
-                    );
+                    if (!PeakShaders.TryAdd(mat.shader.name, shader))
+                    {
+                        CorePlugin.Log.LogWarning(
+                            $"{nameof(PeakShaders)}: Could not add new shader {mat.shader.name} to dictionary."
+                        );
+                    }
                 }
             }
         }
