@@ -9,6 +9,9 @@ namespace PEAKLib.Items;
 /// </summary>
 public class ItemContent(Item item) : IContent<ItemContent>, IItemContent
 {
+
+    internal static List<RegisteredContent<ItemContent>> s_RegisteredItems = [];
+
     /// <inheritdoc/>
     public string Name => Item.name;
 
@@ -16,8 +19,7 @@ public class ItemContent(Item item) : IContent<ItemContent>, IItemContent
     public Item Item { get; } = ThrowHelper.ThrowIfArgumentNull(item);
 
     /// <inheritdoc/>
-    public Component Component { get { return Item; } }
-    internal static List<RegisteredContent<ItemContent>> s_RegisteredItems = [];
+    public Component Component { get { return Item; } } 
 
     /// <inheritdoc/>
     public RegisteredContent<ItemContent> Register(ModDefinition owner)
@@ -40,4 +42,10 @@ public class ItemContent(Item item) : IContent<ItemContent>, IItemContent
 
     /// <inheritdoc/>
     public IContent Resolve() => this;
+
+    /// <inheritdoc/>
+    IEnumerable<GameObject> IGameObjectContent.EnumerateGameObjects()
+    {
+        yield return Item.gameObject;
+    }
 }

@@ -11,6 +11,8 @@ namespace PEAKLib.Items.UnityEditor;
 [CreateAssetMenu(fileName = "ItemContent", menuName = "PEAKLib/ItemContent", order = 1)]
 public class UnityItemContent : ScriptableObject, IItemContent
 {
+    internal static readonly Dictionary<UnityItemContent, ItemContent> s_UnityToModItem = [];
+
     /// <inheritdoc/>
     public string Name
     {
@@ -39,8 +41,6 @@ public class UnityItemContent : ScriptableObject, IItemContent
     [field: SerializeField]
     public GameObject ItemPrefab { get; private set; } = null!;
 
-    internal static readonly Dictionary<UnityItemContent, ItemContent> s_UnityToModItem = [];
-
     /// <inheritdoc/>
     public IRegisteredContent Register(ModDefinition owner) => Resolve().Register(owner);
 
@@ -65,4 +65,10 @@ public class UnityItemContent : ScriptableObject, IItemContent
     }
 
     IContent IContent.Resolve() => Resolve();
+
+    /// <inheritdoc/>
+    IEnumerable<GameObject> IGameObjectContent.EnumerateGameObjects()
+    {
+        yield return Item.gameObject;
+    }
 }
