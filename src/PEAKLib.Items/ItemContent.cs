@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 using PEAKLib.Core;
 
 namespace PEAKLib.Items;
@@ -8,12 +9,17 @@ namespace PEAKLib.Items;
 /// </summary>
 public class ItemContent(Item item) : IContent<ItemContent>, IItemContent
 {
+
+    internal static List<RegisteredContent<ItemContent>> s_RegisteredItems = [];
+
     /// <inheritdoc/>
     public string Name => Item.name;
 
     /// <inheritdoc/>
     public Item Item { get; } = ThrowHelper.ThrowIfArgumentNull(item);
-    internal static List<RegisteredContent<ItemContent>> s_RegisteredItems = [];
+
+    /// <inheritdoc/>
+    public Component Component { get { return Item; } } 
 
     /// <inheritdoc/>
     public RegisteredContent<ItemContent> Register(ModDefinition owner)
@@ -36,4 +42,10 @@ public class ItemContent(Item item) : IContent<ItemContent>, IItemContent
 
     /// <inheritdoc/>
     public IContent Resolve() => this;
+
+    /// <inheritdoc/>
+    IEnumerable<GameObject> IGameObjectContent.EnumerateGameObjects()
+    {
+        yield return Item.gameObject;
+    }
 }
