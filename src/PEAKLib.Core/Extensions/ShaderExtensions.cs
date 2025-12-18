@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace PEAKLib.Core.Extensions;
 
 /// <summary>
-/// Shader extensions for component-oriented operations within corelib/dependencies.
+/// Shader extensions for component-oriented operations within PEAKLib.Core/dependencies.
 /// </summary>
 public static class ShaderExtensions
 {
@@ -63,53 +61,76 @@ public static class ShaderExtensions
     }
 
     /// <summary>
-    /// Corelib-level shader replacement operation. WIP.
+    /// Replaces shaders within the provided gameObject(s) with the real ones from the game at runtime.
     /// </summary>
-    /// <typeparam name="T">IComponentContent-implementing generic type, without which no component access is available.</typeparam>
-    /// <param name="content">RegisteredContent instance using the extension.</param>
+    /// <typeparam name="T"><see cref="IGameObjectContent"/>-implementing generic type,
+    /// without which no component access is available.</typeparam>
+    /// <param name="content">RegisteredContent instance to replace its GameObjects' shaders.</param>
     public static void ReplaceShaders<T>(this RegisteredContent<T> content)
         where T : IContent<T>, IGameObjectContent
     {
+        ThrowHelper.ThrowIfArgumentNull(content);
+
         foreach (GameObject gameObject in content.Content.EnumerateGameObjects())
         {
             if (!gameObject)
             {
                 continue;
             }
-            foreach (Renderer renderer in gameObject.GetComponentsInChildren<Renderer>())
+
+            ReplaceShaders(gameObject);
+        }
+    }
+
+    /// <summary>
+    /// Replaces shaders within the provided GameObject with the real ones from the game at runtime.
+    /// This isn't actually an extension method since it's not likely this will be need to be used often,
+    /// but it exists for if you aren't dealing with PEAKLib content and need to replace shaders.
+    /// </summary>
+    /// <param name="gameObject">The GameObject whose shaders to replace.</param>
+    public static void ReplaceShaders(GameObject gameObject)
+    {
+        if (gameObject == null)
+        {
+            throw new ArgumentNullException(
+                nameof(gameObject),
+                "Can't replace shaders on a null GameObject."
+            );
+        }
+
+        foreach (Renderer renderer in gameObject.GetComponentsInChildren<Renderer>())
+        {
+            if (!renderer)
             {
-                if (!renderer)
+                continue;
+            }
+
+            foreach (Material mat in renderer.materials)
+            {
+                if (!mat)
                 {
                     continue;
                 }
 
-                foreach (Material mat in renderer.materials)
+                if (PeakShaders.TryGetValue(mat.shader.name, out Shader shader))
                 {
-                    if (!mat)
-                    {
-                        continue;
-                    }
-
-                    if (PeakShaders.TryGetValue(mat.shader.name, out Shader shader))
-                    {
-                        mat.shader = shader;
-                        continue;
-                    }
-
-                    if (!TryFindShader(mat.shader.name, out shader))
-                    {
-                        continue;
-                    }
-
-                    // Ensure shader actually gets applied even if an error occurs with adding to cache dict
                     mat.shader = shader;
+                    continue;
+                }
 
-                    if (!PeakShaders.TryAdd(mat.shader.name, shader))
-                    {
-                        CorePlugin.Log.LogWarning(
-                            $"{nameof(PeakShaders)}: Could not add new shader {mat.shader.name} to dictionary."
-                        );
-                    }
+                if (!TryFindShader(mat.shader.name, out shader))
+                {
+                    continue;
+                }
+
+                // Ensure shader actually gets applied even if an error occurs with adding to cache dict
+                mat.shader = shader;
+
+                if (!PeakShaders.TryAdd(mat.shader.name, shader))
+                {
+                    CorePlugin.Log.LogWarning(
+                        $"{nameof(PeakShaders)}: Could not add new shader {mat.shader.name} to dictionary."
+                    );
                 }
             }
         }
