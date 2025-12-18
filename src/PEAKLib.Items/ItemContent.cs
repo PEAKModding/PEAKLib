@@ -18,9 +18,6 @@ public class ItemContent(Item item) : IContent<ItemContent>, IItemContent
     public Item Item { get; } = ThrowHelper.ThrowIfArgumentNull(item);
 
     /// <inheritdoc/>
-    public Component Component => Item;
-
-    /// <inheritdoc/>
     public RegisteredContent<ItemContent> Register(ModDefinition owner)
     {
         var registered = ContentRegistry.Register(this, owner);

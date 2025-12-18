@@ -32,9 +32,6 @@ public class UnityItemContent : ScriptableObject, IItemContent
     /// <inheritdoc/>
     public Item Item => Resolve().Item;
 
-    /// <inheritdoc/>
-    public Component Component => Item;
-
     /// <summary>
     /// The prefab that contains an <see cref="global::Item"/> component.
     /// </summary>
