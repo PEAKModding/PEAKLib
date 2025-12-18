@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 using PEAKLib.Core;
+using UnityEngine;
 
 namespace PEAKLib.Items;
 
@@ -9,7 +9,6 @@ namespace PEAKLib.Items;
 /// </summary>
 public class ItemContent(Item item) : IContent<ItemContent>, IItemContent
 {
-
     internal static List<RegisteredContent<ItemContent>> s_RegisteredItems = [];
 
     /// <inheritdoc/>
@@ -19,7 +18,7 @@ public class ItemContent(Item item) : IContent<ItemContent>, IItemContent
     public Item Item { get; } = ThrowHelper.ThrowIfArgumentNull(item);
 
     /// <inheritdoc/>
-    public Component Component { get { return Item; } } 
+    public Component Component => Item;
 
     /// <inheritdoc/>
     public RegisteredContent<ItemContent> Register(ModDefinition owner)
