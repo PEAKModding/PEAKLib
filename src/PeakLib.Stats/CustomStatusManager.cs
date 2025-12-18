@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using PEAKLib.Core;
-using UnityEngine;
 using static CharacterAfflictions;
 
 namespace PEAKLib.Stats;

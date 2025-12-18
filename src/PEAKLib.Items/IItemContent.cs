@@ -1,6 +1,4 @@
 ﻿using PEAKLib.Core;
-using System.Collections;
-using UnityEngine;
 
 namespace PEAKLib.Items;
 

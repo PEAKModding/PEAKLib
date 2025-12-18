@@ -1,6 +1,4 @@
 #if !UNITY_EDITOR
-using System;
-using HarmonyLib;
 using MonoDetour;
 using MonoDetour.DetourTypes;
 using MonoDetour.HookGen;

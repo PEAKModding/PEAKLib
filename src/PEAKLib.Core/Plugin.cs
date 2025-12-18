@@ -4,7 +4,6 @@ using BepInEx;
 using BepInEx.Logging;
 using MonoDetour;
 using PEAKLib.Core.Hooks;
-using UnityEngine;
 
 namespace PEAKLib.Core;
 
