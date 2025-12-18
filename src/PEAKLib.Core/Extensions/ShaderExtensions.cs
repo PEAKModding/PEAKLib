@@ -55,9 +55,7 @@ public static class ShaderExtensions
         shader = Shader.Find(name);
         if (shader == null)
         {
-            CorePlugin.Log.LogWarning(
-                $"{nameof(PeakShaders)}: Shader {name} was not found."
-            );
+            CorePlugin.Log.LogWarning($"{nameof(PeakShaders)}: Shader {name} was not found.");
             return false;
         }
         _peakShaders[name] = shader;
@@ -69,7 +67,8 @@ public static class ShaderExtensions
     /// </summary>
     /// <typeparam name="T">IComponentContent-implementing generic type, without which no component access is available.</typeparam>
     /// <param name="content">RegisteredContent instance using the extension.</param>
-    public static void ReplaceShaders<T>(this RegisteredContent<T> content) where T : IContent<T>, IGameObjectContent
+    public static void ReplaceShaders<T>(this RegisteredContent<T> content)
+        where T : IContent<T>, IGameObjectContent
     {
         foreach (GameObject gameObject in content.Content.EnumerateGameObjects())
         {
@@ -116,4 +115,3 @@ public static class ShaderExtensions
         }
     }
 }
-
