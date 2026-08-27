@@ -95,7 +95,11 @@ static class CharacterAfflictionsHooks
         returnValue = CustomStatusManager.StatusByType(status)?.MaxAmount ?? returnValue;
     }
 
-    static void Postfix_ClearAllStatus(CharacterAfflictions self, ref bool excludeCurse)
+    static void Postfix_ClearAllStatus(
+        CharacterAfflictions self,
+        ref bool excludeCurse,
+        ref bool excludePetrify
+    )
     {
         foreach (Status status in CustomStatusManager.Statuses)
         {
