@@ -479,14 +479,15 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                                     configEntry.BoxedValue = newVal;
                                 }
                             );
-                            return;
                         }
-
-                        SettingsHandlerUtility.AddStringToTab(
-                            configEntry,
-                            modName,
-                            newVal => configEntry.BoxedValue = newVal
-                        );
+                        else
+                        {
+                            SettingsHandlerUtility.AddStringToTab(
+                                configEntry,
+                                modName,
+                                newVal => configEntry.BoxedValue = newVal
+                            );
+                        }
                     }
                     else if (configEntry.SettingType == typeof(KeyCode))
                     {
