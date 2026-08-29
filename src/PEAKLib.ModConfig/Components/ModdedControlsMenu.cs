@@ -207,19 +207,20 @@ internal class ModdedControlsMenu : PeakElement
                 continue;
             }
 
-            if (
-                controlsMenuButtons.Any(x =>
-                    x.value.Text.text.Equals(
-                        btn.value.Text.text,
-                        StringComparison.InvariantCultureIgnoreCase
-                    )
-                    && x != btn
-                )
-            )
+            if (controlsMenuButtons.Any(x => x != btn && HasSameBindingVisual(x, btn)))
                 btn.SetWarning(true);
             else
                 btn.SetWarning(false);
         }
+    }
+
+    private static bool HasSameBindingVisual(ModdedRebindKey first, ModdedRebindKey second)
+    {
+        return first.value.Text.spriteAsset == second.value.Text.spriteAsset
+            && first.value.Text.text.Equals(
+                second.value.Text.text,
+                StringComparison.InvariantCultureIgnoreCase
+            );
     }
 
     public void SetSearch(string search)
