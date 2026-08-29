@@ -23,11 +23,12 @@ static class StaminaBarHooks
         var afflictions = self.GetComponentsInChildren<BarAffliction>(includeInactive: true);
         GameObject toClone = afflictions[afflictions.Length - 1].gameObject;
 
-        int totalStatuses = Enum.GetValues(typeof(STATUSTYPE)).Length + CustomStatusManager.Length;
+        int VanillaStatusCount = Enum.GetValues(typeof(STATUSTYPE)).Length;
+        int totalStatuses = VanillaStatusCount + CustomStatusManager.Length;
         if (afflictions.Length < totalStatuses)
         {
             // add new status effects
-            for (int i = afflictions.Length; i < totalStatuses; i++)
+            for (int i = VanillaStatusCount; i < totalStatuses; i++)
             {
                 Status status = CustomStatusManager.StatusByType((STATUSTYPE)i);
                 // clone previous entry
