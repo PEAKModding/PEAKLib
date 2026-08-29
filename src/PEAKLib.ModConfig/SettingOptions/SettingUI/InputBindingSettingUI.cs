@@ -76,7 +76,7 @@ internal static class InputBindingSettingCellFactory
 
         TextMeshProUGUI text = settingUI.button.GetComponentInChildren<TextMeshProUGUI>();
         text.fontSize = text.fontSizeMin = text.fontSizeMax = 22;
-        text.alignment = TextAlignmentOptions.Center;
+        text.alignment = TextAlignmentOptions.Midline;
         settingUI.text = text;
 
         Object.DontDestroyOnLoad(cell);
