@@ -1,6 +1,7 @@
 ﻿using Md.PauseMenuMainPage;
 using MonoDetour;
 using MonoDetour.HookGen;
+using PEAKLib.UI.Elements;
 
 namespace PEAKLib.UI.Hooks;
 
@@ -20,6 +21,7 @@ static class PauseMenuMainPageHooks
         MenuAPI.pauseMenuBuilderDelegate?.Invoke(self.transform);
 
         var controls = self.transform.parent.Find("ControlsPage");
+        Templates.InitializeControlsPageTemplates(controls.GetComponent<PauseMenuControlsPage>());
         MenuAPI.controlsMenuBuilderDelegate?.Invoke(controls);
 
         // uncomment when we can get rid of PauseMenuSettingsMenuPageHooks
