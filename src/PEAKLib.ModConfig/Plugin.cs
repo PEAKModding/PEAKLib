@@ -46,10 +46,14 @@ public partial class ModConfigPlugin : BaseUnityPlugin
             return _validPaths;
         }
     }
+    internal InputBindingCaptureService InputBindingCapture { get; private set; } = null!;
 
     private void Awake()
     {
         instance = this;
+        InputBindingCapture =
+            GetComponent<InputBindingCaptureService>()
+            ?? gameObject.AddComponent<InputBindingCaptureService>();
         MonoDetourManager.InvokeHookInitializers(typeof(ModConfigPlugin).Assembly);
         Log.LogInfo($"Plugin {Name} is loaded!");
     }

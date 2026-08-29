@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using BepInEx.Configuration;
 using PEAKLib.UI;
 using PEAKLib.UI.Elements;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Zorro.ControllerSupport;
 using Zorro.UI;
@@ -36,8 +34,6 @@ internal class ModdedControlsMenu : PeakElement
     internal ConfigEntry<string> SelectedKeyString = null!;
     internal Transform Content { get; set; } = null!;
 
-    private static readonly InputAction Dummy = new("ModConfig Dummy InputAction for Rebinding");
-
     public void Awake()
     {
         ModConfigPlugin.Log.LogDebug("ModdedControlsMenu Awake");
@@ -48,8 +44,6 @@ internal class ModdedControlsMenu : PeakElement
         }
 
         InitButtons();
-        if (Dummy.bindings.Count < 1)
-            Dummy.AddBinding("/Keyboard/anyKey");
     }
 
     internal void OnResetAllClicked()
@@ -248,61 +242,63 @@ internal class ModdedControlsMenu : PeakElement
         if (SelectedKeyCode == null && SelectedKeyString == null)
             return;
 
-        transform.gameObject.SetActive(false);
-        RebindInProgress = true;
-
-        RebindNotif.gameObject.SetActive(true);
-
+        bool started;
         if (SelectedKeyCode != null)
         {
+            ConfigEntry<KeyCode> selectedKeyCode = SelectedKeyCode;
+            started = ModConfigPlugin.instance.InputBindingCapture.TryCaptureKeyCode(
+                this,
+                keyCode =>
+                {
+                    try
+                    {
+                        selectedKeyCode.Value = keyCode;
+                    }
+                    finally
+                    {
+                        RebindComplete();
+                    }
+                },
+                RebindCancel
+            );
+
+            if (!started)
+                return;
+
             RebindNotif.Text.TextMesh.text = LocalizedText
                 .GetText("PROMPT_REBIND")
-                .Replace("@", SelectedKeyCode.Definition.Key.ToString());
-            GUIManager.instance.StartCoroutine(AwaitKeyCode());
+                .Replace("@", selectedKeyCode.Definition.Key.ToString());
         }
-
-        if (SelectedKeyString != null)
+        else
         {
+            ConfigEntry<string> selectedKeyString = SelectedKeyString;
+            started = ModConfigPlugin.instance.InputBindingCapture.TryCapturePath(
+                this,
+                path =>
+                {
+                    try
+                    {
+                        selectedKeyString.Value = path;
+                    }
+                    finally
+                    {
+                        RebindComplete();
+                    }
+                },
+                RebindCancel
+            );
+
+            if (!started)
+                return;
+
             RebindNotif.Text.TextMesh.text = LocalizedText
                 .GetText("PROMPT_REBIND")
-                .Replace("@", SelectedKeyString.Definition.Key.ToString());
-            GUIManager.instance.StartCoroutine(AwaitKeyPath());
+                .Replace("@", selectedKeyString.Definition.Key.ToString());
         }
-    }
 
-    public IEnumerator AwaitKeyCode()
-    {
-        //needed to stop modded controls page from closing on cancel rebind
-        InputActionRebindingExtensions.RebindingOperation rebindOperation =
-            Dummy.PerformInteractiveRebinding(0);
-        rebindOperation.Start();
-        while (RebindInProgress)
-        {
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                rebindOperation.Cancel();
-                rebindOperation.Dispose();
-                RebindCancel();
-                yield break;
-            }
-
-            if (Input.anyKeyDown)
-            {
-                rebindOperation.Cancel();
-                rebindOperation.Dispose();
-                ModConfigPlugin.Log.LogDebug("Setting new bind value!");
-                KeyCode[] keys = (KeyCode[])Enum.GetValues(typeof(KeyCode));
-                KeyCode key = keys.FirstOrDefault(x => Input.GetKeyDown(x));
-                SelectedKeyCode.Value = key;
-                RebindInProgress = false;
-                RebindNotif.gameObject.SetActive(false);
-                transform.gameObject.SetActive(true);
-                ShowControls();
-                yield break;
-            }
-
-            yield return null;
-        }
+        transform.gameObject.SetActive(false);
+        RebindInProgress = true;
+        RebindNotif.gameObject.SetActive(true);
     }
 
     private void RebindCancel()
@@ -314,45 +310,21 @@ internal class ModdedControlsMenu : PeakElement
         ShowControls();
     }
 
-    public IEnumerator AwaitKeyPath()
+    private void RebindComplete()
     {
-        var action_pause = InputSystem.actions.FindAction("Pause");
-        InputActionRebindingExtensions.RebindingOperation rebindOperation = Dummy
-            .PerformInteractiveRebinding(0)
-            .WithoutGeneralizingPathOfSelectedControl()
-            .OnComplete(operation =>
-            {
-                ModConfigPlugin.Log.LogDebug("Setting new bind value!");
-                SelectedKeyString.Value = Dummy.bindings[0].overridePath;
-                RebindInProgress = false;
-                RebindNotif.gameObject.SetActive(false);
-                transform.gameObject.SetActive(true);
-                ShowControls();
-                operation.Dispose();
-            })
-            .OnCancel(operation =>
-            {
-                RebindCancel();
-                operation.Dispose();
-            });
+        ModConfigPlugin.Log.LogDebug("Setting new bind value!");
+        RebindInProgress = false;
+        RebindNotif.gameObject.SetActive(false);
+        transform.gameObject.SetActive(true);
+        ShowControls();
+    }
 
-        rebindOperation.Start();
-
-        while (RebindInProgress)
-        {
-            if (
-                action_pause.WasPressedThisFrame()
-                && rebindOperation != null
-                && rebindOperation.started
-                && !rebindOperation.completed
-            )
-            {
-                rebindOperation.Dispose();
-                RebindCancel();
-                yield break;
-            }
-
-            yield return null;
-        }
+    private void OnDestroy()
+    {
+        if (
+            ModConfigPlugin.instance != null
+            && ModConfigPlugin.instance.InputBindingCapture != null
+        )
+            ModConfigPlugin.instance.InputBindingCapture.Cancel(this);
     }
 }
