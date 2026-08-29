@@ -75,7 +75,9 @@ internal static class InputBindingSettingCellFactory
         Object.DestroyImmediate(oldFloatSetting);
 
         TextMeshProUGUI text = settingUI.button.GetComponentInChildren<TextMeshProUGUI>();
-        text.fontSize = text.fontSizeMin = text.fontSizeMax = 22;
+        text.enableAutoSizing = true;
+        text.fontSize = text.fontSizeMax = 28;
+        text.fontSizeMin = 18;
         text.alignment = TextAlignmentOptions.Midline;
         settingUI.text = text;
 
