@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using BepInEx.Configuration;
+﻿using BepInEx.Configuration;
 using PEAKLib.UI;
 using PEAKLib.UI.Elements;
 using TMPro;
@@ -191,17 +189,11 @@ internal class ModdedRebindKey : PeakElement
         bool hasOverride = !IsAlreadyDefault();
 
         button.Text.SetText(ConfigName);
-        value.TextMesh.spriteAsset = Templates.KeyboardSpriteSheet; //no controller support currently
         if (ConfigKeyCode != null)
-        {
-            string key = GetValidKeyValue(ConfigKeyCode.Value);
-            value.SetText($"{key}");
-        }
+            InputBindingDisplay.SetText(value, ConfigKeyCode.Value);
 
         if (ConfigKeyString != null)
-            value.SetText(
-                InputSpriteData.Instance.GetSpriteTagFromInputPathKeyboard(ConfigKeyString.Value)
-            );
+            InputBindingDisplay.SetText(value, ConfigKeyString.Value);
 
         if (hasOverride)
         {
@@ -213,86 +205,5 @@ internal class ModdedRebindKey : PeakElement
             value.TextMesh.color = defaultTextColor;
             button.Text.TextMesh.color = defaultTextColor;
         }
-    }
-
-    //Translation for KeyCode to valid sprite tag
-    private static string GetValidKeyValue(KeyCode key)
-    {
-        string search = key.ToString();
-        List<KeyCode> Numbers =
-        [
-            KeyCode.Alpha0,
-            KeyCode.Alpha1,
-            KeyCode.Alpha2,
-            KeyCode.Alpha3,
-            KeyCode.Alpha4,
-            KeyCode.Alpha5,
-            KeyCode.Alpha6,
-            KeyCode.Alpha7,
-            KeyCode.Alpha8,
-            KeyCode.Alpha9,
-        ];
-
-        List<KeyCode> MouseKeys =
-        [
-            KeyCode.Mouse0,
-            KeyCode.Mouse1,
-            KeyCode.Mouse2,
-            KeyCode.Mouse3,
-            KeyCode.Mouse4,
-            KeyCode.Mouse5,
-            KeyCode.Mouse6,
-        ];
-
-        if (MouseKeys.Contains(key))
-        {
-            if (key == KeyCode.Mouse0)
-                return "<sprite=109 tint=1>";
-
-            if (key == KeyCode.Mouse1)
-                return "<sprite=110 tint=1>";
-
-            if (key == KeyCode.Mouse2)
-                return "<sprite=111 tint=1>";
-
-            return key.ToString();
-        }
-
-        //does not have a sprite (per darmuh's keyboard)
-        //KeyCode.None, KeyCode.Print, KeyCode.ScrollLock, KeyCode.Pause, KeyCode.Numlock, KeyCode.LeftApple (windows key), KeyCode.RightMeta (cmd key)
-
-        if (Numbers.Contains(key))
-            search = search.ToString().Replace("Alpha", "");
-
-        if (search.ToString().Contains("keypad", StringComparison.InvariantCultureIgnoreCase))
-            search = search.ToString().Replace("Keypad", "numpad");
-
-        if (search.ToString().Contains("control", StringComparison.InvariantCultureIgnoreCase))
-            search = search.ToString().Replace("Control", "Ctrl");
-
-        if (search.ToString().Contains("return", StringComparison.InvariantCultureIgnoreCase))
-            search = search.ToString().Replace("Return", "Enter");
-
-        if (search.ToString().Contains("backquote", StringComparison.InvariantCultureIgnoreCase))
-            search = search.ToLowerInvariant();
-
-        //this fixes most conversions that are not covered above
-        search = Char.ToLower(search.ToString()[0]) + search.ToString()[1..];
-
-        //get the actual sprite tag or return original key string if no matching sprite tag
-        if (
-            InputSpriteData.Instance.inputPathToSpriteTagKeyboard.TryGetValue(
-                search,
-                out string sprite
-            )
-        )
-            return sprite;
-        else
-            return key.ToString();
-
-        //base game provides the following sprite tag if an unknown input is provided
-        //"<sprite=124 tint=1>"
-        //it's basically just a key with ?? on it
-        //We could provide this instead of the string, but I think the string works better in our case
     }
 }
