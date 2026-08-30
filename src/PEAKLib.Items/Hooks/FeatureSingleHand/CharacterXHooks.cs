@@ -63,7 +63,16 @@ static class CharacterXHooks
                 x => x.MatchLdfld<CharacterAnimations>(nameof(CharacterAnimations.character)),
                 x => x.MatchLdfld<Character>(nameof(Character.refs)),
                 x => x.MatchLdfld<Character.CharacterRefs>(nameof(Character.CharacterRefs.ikLeft)),
-                x => x.MatchLdcR4(out _) && w.SetInstructionTo(ref leftIk, x),
+                x => x.MatchLdarg(0),
+                x => x.MatchLdfld<CharacterAnimations>(nameof(CharacterAnimations.character)),
+                x => x.MatchLdfld<Character>(nameof(Character.data)),
+                x => x.MatchCallvirt(out _),
+                x => x.MatchLdfld<Item>(nameof(Item.rightHandOnly)),
+                x => x.MatchBrtrue(out _),
+                x => x.MatchLdcI4(1),
+                x => x.MatchBr(out _),
+                x => x.MatchLdcI4(0),
+                x => x.MatchConvR4() && w.SetInstructionTo(ref leftIk, x),
                 x => x.MatchCallvirt(out _)
             )
             .ThrowIfFailure();
@@ -77,7 +86,6 @@ static class CharacterXHooks
 
         w.InsertAfter(
             leftIk,
-            w.Create(OpCodes.Pop),
             w.Create(OpCodes.Ldarg_0),
             w.CreateCall(GetIKWeightsLeft)
         );
@@ -85,7 +93,8 @@ static class CharacterXHooks
 
     static float GetIKWeightsRight(CharacterAnimations self) => HasHandRight(self) ? 1f : 0f;
 
-    static float GetIKWeightsLeft(CharacterAnimations self) => HasHandLeft(self) ? 1f : 0f;
+    static float GetIKWeightsLeft(float Weight, CharacterAnimations Self) =>
+        HasHandLeft(Self) ? Weight : 0f;
 
     // Inserts conditional branches over instructions which set hand positions based
     // on item data so that an item doesn't need both left or right hands.
