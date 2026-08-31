@@ -62,7 +62,10 @@
       <BuildArgument Condition="'$(PublishTS)' == 'true'">publish</BuildArgument>
     </PropertyGroup>
     <Exec Command="dotnet tool restore" />
-    <Exec Command="dotnet tcli $(BuildArgument) --package-version $(Version) --config-path ./Assets/thunderstore.toml" />
+    <Exec
+      Command="dotnet tcli $(BuildArgument) --package-version $(Version) --config-path ./Assets/thunderstore.toml"
+      ContinueOnError="WarnAndContinue"
+    />
   </Target>
 
 </Project>
