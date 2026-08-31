@@ -93,8 +93,8 @@ static class CharacterXHooks
 
     static float GetIKWeightsRight(CharacterAnimations self) => HasHandRight(self) ? 1f : 0f;
 
-    static float GetIKWeightsLeft(float Weight, CharacterAnimations Self) =>
-        HasHandLeft(Self) ? Weight : 0f;
+    static float GetIKWeightsLeft(float weight, CharacterAnimations self) =>
+        HasHandLeft(self) ? weight : 0f;
 
     // Inserts conditional branches over instructions which set hand positions based
     // on item data so that an item doesn't need both left or right hands.
