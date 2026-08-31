@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using PEAKLib.Core;
 using UnityEngine;
 
@@ -26,6 +27,8 @@ public class ItemContent(Item item) : IContent<ItemContent>, IItemContent
         if (modItemComponent != null)
             modItemComponent.InitializeModItem(owner);
 
+        InitTranslations();
+
 #if !UNITY_EDITOR
         NetworkPrefabManager.RegisterNetworkPrefab(owner, "0_Items/", item.gameObject);
         s_RegisteredItems.Add(registered);
@@ -35,6 +38,69 @@ public class ItemContent(Item item) : IContent<ItemContent>, IItemContent
     }
 
     IRegisteredContent IContent.Register(ModDefinition owner) => Register(owner);
+
+    // Without this, item names and stuff will start with "LOC:"
+    void InitTranslations()
+    {
+        var languages = (LocalizedText.Language[])Enum.GetValues(typeof(LocalizedText.Language));
+
+        InitNameTranslations(languages);
+        InitMainInteractTranslations(languages);
+        InitSecondaryInteractTranslations(languages);
+    }
+
+    void InitNameTranslations(LocalizedText.Language[] languages)
+    {
+        var name = Item.UIData.itemName;
+        var nameIndex = LocalizedText.GetNameIndex(name.ToUpperInvariant());
+
+        if (LocalizedText.mainTable.ContainsKey(nameIndex))
+            return;
+
+        List<string> nameList = new(capacity: languages.Length);
+        for (int i = 0; i < languages.Length; i++)
+        {
+            nameList.Add(name);
+        }
+
+        LocalizedText.mainTable.Add(nameIndex, nameList);
+    }
+
+    void InitMainInteractTranslations(LocalizedText.Language[] languages)
+    {
+        var mainInteract = Item.UIData.mainInteractPrompt;
+        var mainInteractUpper = mainInteract.ToUpperInvariant();
+
+        if (LocalizedText.mainTable.ContainsKey(mainInteractUpper))
+            return;
+
+        List<string> mainInteractList = new(capacity: languages.Length);
+
+        for (int i = 0; i < languages.Length; i++)
+        {
+            mainInteractList.Add(mainInteract);
+        }
+
+        LocalizedText.mainTable.Add(mainInteractUpper, mainInteractList);
+    }
+
+    void InitSecondaryInteractTranslations(LocalizedText.Language[] languages)
+    {
+        var secondaryInteract = Item.UIData.secondaryInteractPrompt;
+        var secondaryInteractUpper = secondaryInteract.ToUpperInvariant();
+
+        if (LocalizedText.mainTable.ContainsKey(secondaryInteractUpper))
+            return;
+
+        List<string> secondaryInteractList = new(capacity: languages.Length);
+
+        for (int i = 0; i < languages.Length; i++)
+        {
+            secondaryInteractList.Add(secondaryInteract);
+        }
+
+        LocalizedText.mainTable.Add(secondaryInteractUpper, secondaryInteractList);
+    }
 
     /// <inheritdoc/>
     public IContent Resolve() => this;
