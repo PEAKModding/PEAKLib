@@ -25,28 +25,26 @@ static class StaminaBarHooks
 
         int vanillaStatusCount = Enum.GetValues(typeof(STATUSTYPE)).Length;
         int totalStatuses = vanillaStatusCount + CustomStatusManager.Length;
-        if (afflictions.Length < totalStatuses)
+
+        // add new status effects
+        for (int i = vanillaStatusCount; i < totalStatuses; i++)
         {
-            // add new status effects
-            for (int i = vanillaStatusCount; i < totalStatuses; i++)
-            {
-                Status status = CustomStatusManager.StatusByType((STATUSTYPE)i);
-                // clone previous entry
-                BarAffliction newBar = UnityEngine
-                    .Object.Instantiate(toClone, toClone.transform.parent)
-                    .GetComponent<BarAffliction>();
-                newBar.rtf = newBar.GetComponent<RectTransform>();
-                newBar.afflictionType = status?.Type ?? STATUSTYPE.Injury;
-                newBar.size = 0f;
-                newBar.icon = newBar.transform.Find("Icon").GetComponent<Image>();
-                newBar.icon.sprite = status?.Icon;
-                newBar.icon.color = status?.Color ?? Color.white;
-                newBar.transform.Find("Fill").GetComponent<Image>().color =
-                    status?.Color ?? Color.white;
-                newBar.transform.Find("Outline").GetComponent<Image>().color =
-                    status?.Color ?? Color.white;
-                newBar.gameObject.name = status?.Name;
-            }
+            Status status = CustomStatusManager.StatusByType((STATUSTYPE)i);
+            // clone previous entry
+            BarAffliction newBar = UnityEngine
+                .Object.Instantiate(toClone, toClone.transform.parent)
+                .GetComponent<BarAffliction>();
+            newBar.rtf = newBar.GetComponent<RectTransform>();
+            newBar.afflictionType = status?.Type ?? STATUSTYPE.Injury;
+            newBar.size = 0f;
+            newBar.icon = newBar.transform.Find("Icon").GetComponent<Image>();
+            newBar.icon.sprite = status?.Icon;
+            newBar.icon.color = status?.Color ?? Color.white;
+            newBar.transform.Find("Fill").GetComponent<Image>().color =
+                status?.Color ?? Color.white;
+            newBar.transform.Find("Outline").GetComponent<Image>().color =
+                status?.Color ?? Color.white;
+            newBar.gameObject.name = status?.Name;
         }
     }
 }
