@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0] - 2026-09-01
+
+[Fix/modconfig input path settings - #54](<https://github.com/PEAKModding/PEAKLib/pull/54>)
+
+### Added
+
+- Added interactive rebinding for Input System path-based string settings directly in Mod Settings.
+- Added controller-aware binding icons for keyboard, mouse, Xbox, PlayStation, and Switch inputs across Mod Settings and Mod Controls.
+
+### Changed
+
+- Unified input binding presentation and rebinding behavior between Mod Settings and Mod Controls.
+- Input binding paths are now recognized using registered Input System layouts instead of depending on currently connected devices.
+- Increased the size of input binding values in Mod Settings, with automatic shrinking for longer fallback paths.
+- Bindings without a matching sprite now display their raw input path instead of an unknown icon.
+
+### Fixed
+
+- Fixed false duplicate-binding warnings when different device sprite sheets used the same sprite index.
+- Fixed input binding icons and fallback text appearing vertically misaligned in Mod Settings.
+
 ## [1.6.1] - 2026-08-29
 
 ### Fixed
