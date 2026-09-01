@@ -34,22 +34,14 @@ public partial class ModConfigPlugin : BaseUnityPlugin
     private static List<ConfigEntryBase> EntriesProcessed { get; set; } = [];
     internal static List<ModKeyToName> ModdedKeys { get; set; } = [];
     internal static ModConfigPlugin instance = null!;
-
-    private static List<string> _validPaths = [];
-    private static List<string> GetValidKeyPaths
-    {
-        get
-        {
-            if (_validPaths.Count < 1)
-                _validPaths = GenerateValidKeyPaths();
-
-            return _validPaths;
-        }
-    }
+    internal InputBindingCaptureService InputBindingCapture { get; private set; } = null!;
 
     private void Awake()
     {
         instance = this;
+        InputBindingCapture =
+            GetComponent<InputBindingCaptureService>()
+            ?? gameObject.AddComponent<InputBindingCaptureService>();
         MonoDetourManager.InvokeHookInitializers(typeof(ModConfigPlugin).Assembly);
         Log.LogInfo($"Plugin {Name} is loaded!");
     }
@@ -450,18 +442,19 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                     else if (configEntry.SettingType == typeof(string))
                     {
                         var defaultValue = configEntry.DefaultValue is string cValue ? cValue : "";
+                        bool isInputPath = InputBindingPath.IsValid(defaultValue);
 
                         //checking if default value matches key path pattern
-                        if (defaultValue.Length > 4)
+                        if (isInputPath)
                         {
-                            if (IsValidPath(defaultValue))
-                            {
-                                ModKeyToName item = new(configEntry, modName);
-                                ModdedKeys.Add(item);
-                                Log.LogDebug(
-                                    $"String config with default - {defaultValue} is detected as InputAction path"
-                                );
-                            }
+                            ModKeyToName item = new(configEntry, modName);
+                            ModdedKeys.Add(item);
+                            SettingsHandlerUtility.AddKeyPathToTab(
+                                configEntry,
+                                modName,
+                                newVal => configEntry.BoxedValue = newVal
+                            );
+                            continue;
                         }
 
                         //dropdown box for acceptablevalue list
@@ -527,40 +520,6 @@ public partial class ModConfigPlugin : BaseUnityPlugin
                 }
             }
         }
-    }
-
-    private static bool IsValidPath(string path)
-    {
-        path = path.Replace("<", "").Replace(">", "");
-        return GetValidKeyPaths.Any(x =>
-            x.Contains(path, StringComparison.InvariantCultureIgnoreCase)
-        );
-    }
-
-    //get valid potential keypaths
-    private static List<string> GenerateValidKeyPaths()
-    {
-        List<string> result = [];
-        List<string> doNotAdd = ["/Keyboard/anyKey"];
-        foreach (var device in InputSystem.devices)
-        {
-            if (device == null)
-                continue;
-
-            foreach (var control in device.allControls)
-            {
-                if (
-                    doNotAdd.Any(d =>
-                        d.Equals(control.path, StringComparison.InvariantCultureIgnoreCase)
-                    )
-                )
-                    continue;
-
-                result.Add(control.path);
-            }
-        }
-
-        return result;
     }
 
     // From https://github.com/IsThatTheRealNick/REPOConfig/blob/main/REPOConfig/ConfigMenu.cs#L453

@@ -5,12 +5,12 @@ using UnityEngine;
 
 namespace PEAKLib.ModConfig.SettingOptions;
 
-internal class BepInExKeyCode(
+internal class BepInExKeyPath(
     ConfigEntryBase entryBase,
     string category = "Mods",
-    Action<KeyCode>? saveCallback = null,
-    Action<BepInExKeyCode>? onApply = null
-) : BepInExInputBindingSetting<KeyCode>(entryBase, category, saveCallback)
+    Action<string>? saveCallback = null,
+    Action<BepInExKeyPath>? onApply = null
+) : BepInExInputBindingSetting<string>(entryBase, category, saveCallback)
 {
     private static GameObject? _settingUICell;
     public static GameObject? SettingUICell
@@ -18,8 +18,8 @@ internal class BepInExKeyCode(
         get
         {
             if (_settingUICell == null)
-                _settingUICell = InputBindingSettingCellFactory.Create<BepInExKeyCode_SettingUI>(
-                    "BepInExKeyCodeCell"
+                _settingUICell = InputBindingSettingCellFactory.Create<BepInExKeyPath_SettingUI>(
+                    "BepInExKeyPathCell"
                 );
 
             return _settingUICell;

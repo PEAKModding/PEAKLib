@@ -3,35 +3,35 @@ using Zorro.Settings;
 
 namespace PEAKLib.ModConfig.SettingOptions.SettingUI;
 
-internal class BepInExKeyCode_SettingUI : InputBindingSettingUI
+internal class BepInExKeyPath_SettingUI : InputBindingSettingUI
 {
     public override void Setup(Setting setting, ISettingHandler settingHandler)
     {
-        if (setting is not BepInExKeyCode keyCodeSetting)
+        if (setting is not BepInExKeyPath keyPathSetting)
             return;
 
         SetupBinding(setting);
-        InputBindingDisplay.SetText(text!, keyCodeSetting.Value);
-        button!.onClick.AddListener(() => StartKeybindCapture(keyCodeSetting, settingHandler));
+        InputBindingDisplay.SetText(text!, keyPathSetting.Value);
+        button!.onClick.AddListener(() => StartKeybindCapture(keyPathSetting, settingHandler));
     }
 
     protected override void OnSettingChangedExternal(Setting setting)
     {
         base.OnSettingChangedExternal(setting);
 
-        if (text != null && setting is BepInExKeyCode keyCode)
-            InputBindingDisplay.SetText(text, keyCode.Value);
+        if (text != null && setting is BepInExKeyPath keyPathSetting)
+            InputBindingDisplay.SetText(text, keyPathSetting.Value);
     }
 
-    private void StartKeybindCapture(BepInExKeyCode setting, ISettingHandler settingHandler)
+    private void StartKeybindCapture(BepInExKeyPath setting, ISettingHandler settingHandler)
     {
-        bool started = ModConfigPlugin.instance.InputBindingCapture.TryCaptureKeyCode(
+        bool started = ModConfigPlugin.instance.InputBindingCapture.TryCapturePath(
             this,
-            keyCode =>
+            path =>
             {
                 try
                 {
-                    setting.SetValue(keyCode, settingHandler);
+                    setting.SetValue(path, settingHandler);
                 }
                 finally
                 {

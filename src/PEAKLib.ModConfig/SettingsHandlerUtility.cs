@@ -78,6 +78,20 @@ internal static class SettingsHandlerUtility
         SettingsHandler.Instance.AddSetting(new BepInExString(entry, tabName, saveCallback));
     }
 
+    internal static void AddKeyPathToTab(
+        ConfigEntryBase entry,
+        string tabName,
+        Action<string>? saveCallback = null
+    )
+    {
+        if (SettingsHandler.Instance == null)
+            throw new Exception(
+                "You're registering options too early! Use the Start() function to create new options!"
+            );
+
+        SettingsHandler.Instance.AddSetting(new BepInExKeyPath(entry, tabName, saveCallback));
+    }
+
     internal static void AddKeybindToTab(
         ConfigEntryBase entry,
         string tabName,
